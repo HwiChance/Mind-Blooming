@@ -10,4 +10,12 @@
     <string name="skip">건너뛰기</string>
     <string name="next">다음</string>
     <string name="start">시작</string>
+
+    <!-- Toolbar -->
+    <string name="main_toolbar_title">아이디어 목록</string>
+    <string name="main_toolbar_hint">아이디어 검색</string>
+
+    <!-- menu -->
+    <string name="search_menu">검색</string>
+    <string name="search_menu_description">아이디어를 검색합니다.</string>
 </resources>

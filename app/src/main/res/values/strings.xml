@@ -8,9 +8,17 @@
     <!-- permission message -->
     <string name="permission_denied">Storage access is required to run this app.</string>
 
-    <!-- button text-->
+    <!-- button -->
     <string name="ok">OK</string>
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="start">Start</string>
+
+    <!-- Toolbar -->
+    <string name="main_toolbar_title">Idea List</string>
+    <string name="main_toolbar_hint">Search for ideas</string>
+
+    <!-- menu -->
+    <string name="search_menu">Search</string>
+    <string name="search_menu_description">Search for ideas</string>
 </resources>
