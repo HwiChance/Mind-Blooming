@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Mind Blooming</string>
+
+    <!-- Shared Preference -->
+    <string name="preference_first_run" translatable="false">firstRun</string>
+    <string name="is_first_run" translatable="false">isFirstRun</string>
+
+    <!-- permission message -->
+    <string name="permission_denied">Storage access is required to run this app.</string>
+
+    <!-- button text-->
+    <string name="ok">OK</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="start">Start</string>
 </resources>

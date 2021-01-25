@@ -7,6 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="skyblue">#6EDFFF</color>
     <color name="blube">#26ADE4</color>
     <color name="camborne">#007EB2</color>
+
+    <color name="Rhinoceros">#B0ABAB</color>
 </resources>

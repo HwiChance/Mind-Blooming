@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">마인드 블루밍</string>
+
+    <!-- permission message -->
+    <string name="permission_denied">앱을 실행하려면 저장소 접근 권한이 필요합니다.</string>
+
+    <!-- button text-->
+    <string name="ok">OK</string>
+    <string name="skip">건너뛰기</string>
+    <string name="next">다음</string>
+    <string name="start">시작</string>
 </resources>
