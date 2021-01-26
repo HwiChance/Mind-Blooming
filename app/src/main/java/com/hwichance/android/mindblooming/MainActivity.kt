@@ -2,8 +2,12 @@ package com.hwichance.android.mindblooming
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import com.google.android.material.appbar.MaterialToolbar
 
@@ -28,7 +32,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setSearchAction() {
+        val searchEditFrame = searchView?.findViewById<LinearLayout>(R.id.search_edit_frame)
+        (searchEditFrame.layoutParams as LinearLayout.LayoutParams).leftMargin = 0
         searchView.queryHint = getString(R.string.main_toolbar_hint)
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // TODO("Not yet implemented")

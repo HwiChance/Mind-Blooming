@@ -12,5 +12,6 @@
     <color name="blube">#26ADE4</color>
     <color name="camborne">#007EB2</color>
 
-    <color name="Rhinoceros">#B0ABAB</color>
+    <color name="rhinoceros">#B0ABAB</color>
+    <color name="transparent">#00000000</color>
 </resources>
