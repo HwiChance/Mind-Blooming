@@ -18,4 +18,12 @@
     <!-- menu -->
     <string name="search_menu">검색</string>
     <string name="search_menu_description">아이디어를 검색합니다.</string>
+    <string name="drawer_export_menu">내보내기</string>
+    <string name="drawer_starred_menu">즐겨찾기</string>
+    <string name="drawer_setting_menu">설정</string>
+
+    <string name="drawer_series_title">시리즈</string>
+    <string name="drawer_series_one">시리즈 1</string>
+    <string name="drawer_series_two">시리즈 2</string>
+    <string name="drawer_series_three">시리즈 3</string>
 </resources>

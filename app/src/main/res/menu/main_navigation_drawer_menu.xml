@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/actionGroup"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/mainDrawerExport"
+            android:icon="@drawable/ic_export_24dp"
+            android:title="@string/drawer_export_menu" />
+        <item
+            android:id="@+id/mainDrawerStarred"
+            android:icon="@drawable/ic_star_24dp"
+            android:title="@string/drawer_starred_menu" />
+        <item
+            android:id="@+id/mainDrawerSetting"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="@string/drawer_setting_menu" />
+    </group>
+    <group
+        android:id="@+id/seriesGroup"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/seriesGroupTitle"
+            android:title="@string/drawer_series_title">
+            <menu>
+                <item
+                    android:id="@+id/mainDrawerSeriesOne"
+                    android:icon="@drawable/ic_bookmark_24dp"
+                    android:title="@string/drawer_series_one" />
+                <item
+                    android:id="@+id/mainDrawerSeriesTwo"
+                    android:icon="@drawable/ic_bookmark_24dp"
+                    android:title="@string/drawer_series_two" />
+                <item
+                    android:id="@+id/mainDrawerSeriesThree"
+                    android:icon="@drawable/ic_bookmark_24dp"
+                    android:title="@string/drawer_series_three" />
+            </menu>
+        </item>
+
+    </group>
+</menu>

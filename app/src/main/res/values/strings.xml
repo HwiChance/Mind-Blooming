@@ -21,4 +21,14 @@
     <!-- menu -->
     <string name="search_menu">Search</string>
     <string name="search_menu_description">Search for ideas</string>
+    <string name="drawer_export_menu">Export</string>
+    <string name="drawer_starred_menu">Starred</string>
+    <string name="drawer_setting_menu">Setting</string>
+
+    <string name="drawer_series_title">Series</string>
+    <string name="drawer_series_one">Series 1</string>
+    <string name="drawer_series_two">Series 2</string>
+    <string name="drawer_series_three">Series 3</string>
+
+    <string name="version_text" translatable="false">Ver.</string>
 </resources>
