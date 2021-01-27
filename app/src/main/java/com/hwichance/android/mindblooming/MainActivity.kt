@@ -1,15 +1,23 @@
 package com.hwichance.android.mindblooming
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import com.hwichance.android.mindblooming.enums.DiagramClassEnum
+import com.hwichance.android.mindblooming.enums.FilterCaller
+import com.hwichance.android.mindblooming.enums.SortEnum
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
@@ -18,6 +26,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var versionTextView: TextView
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
+    private var classFilter = DiagramClassEnum.ALL
+    private var sortFilter = SortEnum.TITLE
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("class", classFilter)
+        outState.putSerializable("sort", sortFilter)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        classFilter = savedInstanceState.getSerializable("class") as DiagramClassEnum
+        sortFilter = savedInstanceState.getSerializable("sort") as SortEnum
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +47,15 @@ class MainActivity : AppCompatActivity() {
 
         bindViews()
     }
+
+    private val startForFilterResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
+                sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
+            }
+        }
 
     private fun bindViews() {
         mainToolbar = findViewById(R.id.mainToolbar)
@@ -75,6 +106,19 @@ class MainActivity : AppCompatActivity() {
         mainToolbar.setNavigationOnClickListener {
             mainDrawerLayout.openDrawer(GravityCompat.START)
         }
+        mainToolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.mainFilterMenu -> {
+                    val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
+                    filterActIntent.putExtra("caller", FilterCaller.MAIN)
+                    filterActIntent.putExtra("class", classFilter)
+                    filterActIntent.putExtra("sort", sortFilter)
+                    startForFilterResult.launch(filterActIntent)
+                    true
+                }
+                else -> true
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -85,9 +129,7 @@ class MainActivity : AppCompatActivity() {
             mainDrawerLayout.isDrawerOpen(GravityCompat.START) -> {
                 mainDrawerLayout.closeDrawer(GravityCompat.START)
             }
-            else -> {
-                super.onBackPressed()
-            }
+            else -> super.onBackPressed()
         }
     }
 }

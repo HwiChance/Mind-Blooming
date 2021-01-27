@@ -13,14 +13,19 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="start">Start</string>
+    <string name="reset">Reset</string>
 
     <!-- Toolbar -->
     <string name="main_toolbar_title">Idea List</string>
     <string name="main_toolbar_hint">Search for ideas</string>
+    <string name="filter_toolbar_title">Filter</string>
 
     <!-- menu -->
     <string name="search_menu">Search</string>
     <string name="search_menu_description">Search for ideas</string>
+    <string name="filter_menu">Filter</string>
+    <string name="filter_menu_description">Filter the idea list</string>
+
     <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
     <string name="drawer_setting_menu">Setting</string>
@@ -31,4 +36,26 @@
     <string name="drawer_series_three">Series 3</string>
 
     <string name="version_text" translatable="false">Ver.</string>
+
+    <string name="filter_apply">Apply</string>
+    <string name="filter_apply_description">Filter apply</string>
+
+    <!-- filter -->
+    <string name="filter_group_class">CLASS</string>
+    <string name="filter_class_all">All</string>
+    <string name="filter_class_mind_map">Mind map</string>
+    <string name="filter_class_flow_chart">Flow chart</string>
+    <string name="filter_group_sort">SORT BY</string>
+    <string name="filter_sort_date">Last modified Date</string>
+    <string name="filter_sort_title">Title</string>
+    <string name="filter_sort_starred">Starred Date</string>
+    <string name="filter_sort_series">Series added Date</string>
+
+    <!-- AlertDialog -->
+    <string name="filter_dialog_title">Changes not applied</string>
+    <string name="filter_dialog_msg">Discard Changes?</string>
+
+    <string name="dialog_apply">APPLY</string>
+    <string name="dialog_discard">DISCARD</string>
+    <string name="dialog_cancel">CANCEL</string>
 </resources>

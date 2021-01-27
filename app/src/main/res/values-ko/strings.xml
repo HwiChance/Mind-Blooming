@@ -10,14 +10,19 @@
     <string name="skip">건너뛰기</string>
     <string name="next">다음</string>
     <string name="start">시작</string>
+    <string name="reset">초기화</string>
 
     <!-- Toolbar -->
     <string name="main_toolbar_title">아이디어 목록</string>
     <string name="main_toolbar_hint">아이디어 검색</string>
+    <string name="filter_toolbar_title">필터</string>
 
     <!-- menu -->
     <string name="search_menu">검색</string>
     <string name="search_menu_description">아이디어를 검색합니다.</string>
+    <string name="filter_menu">필터</string>
+    <string name="filter_menu_description">아이디어 목록을 필터링합니다.</string>
+
     <string name="drawer_export_menu">내보내기</string>
     <string name="drawer_starred_menu">즐겨찾기</string>
     <string name="drawer_setting_menu">설정</string>
@@ -26,4 +31,26 @@
     <string name="drawer_series_one">시리즈 1</string>
     <string name="drawer_series_two">시리즈 2</string>
     <string name="drawer_series_three">시리즈 3</string>
+
+    <string name="filter_apply">적용</string>
+    <string name="filter_apply_description">필터를 적용합니다.</string>
+
+    <!-- filter -->
+    <string name="filter_group_class">분류</string>
+    <string name="filter_class_all">전체</string>
+    <string name="filter_class_mind_map">마인드 맵</string>
+    <string name="filter_class_flow_chart">플로우 차트</string>
+    <string name="filter_group_sort">정렬</string>
+    <string name="filter_sort_date">마지막 수정일</string>
+    <string name="filter_sort_title">제목</string>
+    <string name="filter_sort_starred">즐겨찾기 추가일</string>
+    <string name="filter_sort_series">시리즈 추가일</string>
+
+    <!-- AlertDialog -->
+    <string name="filter_dialog_title">변경 사항 존재</string>
+    <string name="filter_dialog_msg">변경 사항을 적용하시겠습니까?</string>
+
+    <string name="dialog_apply">적용</string>
+    <string name="dialog_discard">적용 안함</string>
+    <string name="dialog_cancel">취소</string>
 </resources>

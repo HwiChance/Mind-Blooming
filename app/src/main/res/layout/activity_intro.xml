@@ -31,7 +31,7 @@
             android:background="@android:color/transparent"
             android:text="@string/skip"
             android:textColor="@color/blube"
-            android:textSize="@dimen/intro_btn_text_size"
+            android:textSize="@dimen/transparent_btn_text_size"
             android:textStyle="bold" />
 
         <com.google.android.material.tabs.TabLayout
@@ -51,7 +51,7 @@
             android:background="@android:color/transparent"
             android:text="@string/next"
             android:textColor="@color/blube"
-            android:textSize="@dimen/intro_btn_text_size"
+            android:textSize="@dimen/transparent_btn_text_size"
             android:textStyle="bold" />
     </LinearLayout>
 
