@@ -14,15 +14,18 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
     private lateinit var mainDrawerLayout: DrawerLayout
     private lateinit var mainNavigationDrawer: NavigationView
+    private lateinit var mainFab: FloatingActionButton
     private lateinit var versionTextView: TextView
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
@@ -61,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         mainToolbar = findViewById(R.id.mainToolbar)
         mainDrawerLayout = findViewById(R.id.mainDrawerLayout)
         mainNavigationDrawer = findViewById(R.id.mainNavigationDrawer)
+        mainFab = findViewById(R.id.mainFab)
 
         versionTextView = mainNavigationDrawer.getHeaderView(0).findViewById(R.id.versionTextView)
         searchItem = mainToolbar.menu.findItem(R.id.mainSearchMenu)
@@ -70,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         setSearchAction()
         setDrawerAction()
         setToolbarListener()
+        setFabListener()
     }
 
     private fun setVersionText() {
@@ -118,6 +123,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> true
             }
+        }
+    }
+
+    private fun setFabListener() {
+        mainFab.setOnClickListener {
+            val addDiagramFragment = AddDiagramFragment()
+            addDiagramFragment.show(supportFragmentManager, "ADD_DIAGRAM_FRAGMENT")
         }
     }
 

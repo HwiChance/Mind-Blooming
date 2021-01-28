@@ -53,4 +53,12 @@
     <string name="dialog_apply">적용</string>
     <string name="dialog_discard">적용 안함</string>
     <string name="dialog_cancel">취소</string>
+
+    <!-- Fab -->
+    <string name="main_add_fab">아이디어를 추가합니다.</string>
+
+    <!-- Bottom Sheet -->
+    <string name="add_idea_title">아이디어 생성</string>
+    <string name="add_mind_map">마인드 맵</string>
+    <string name="add_flow_chart">플로우 차트</string>
 </resources>

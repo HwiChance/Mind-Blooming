@@ -58,4 +58,12 @@
     <string name="dialog_apply">APPLY</string>
     <string name="dialog_discard">DISCARD</string>
     <string name="dialog_cancel">CANCEL</string>
+
+    <!-- Fab -->
+    <string name="main_add_fab">Add an Idea</string>
+
+    <!-- Bottom Sheet -->
+    <string name="add_idea_title">Create Idea</string>
+    <string name="add_mind_map">MIND MAP</string>
+    <string name="add_flow_chart">FLOW CHART</string>
 </resources>
