@@ -102,8 +102,19 @@ class MainActivity : AppCompatActivity() {
     private fun setDrawerAction() {
         mainNavigationDrawer.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.mainDrawerExport -> {
+
+                }
                 R.id.mainDrawerStarred -> {
                     startActivity(Intent(this, StarredActivity::class.java))
+                }
+                R.id.mainDrawerSetting -> {
+
+                }
+                else -> {
+                    val seriesIntent = Intent(this, SeriesActivity::class.java)
+                    seriesIntent.putExtra("seriesTitle", menuItem.title)
+                    startActivity(seriesIntent)
                 }
             }
             overridePendingTransition(R.anim.no_animation, R.anim.no_animation)

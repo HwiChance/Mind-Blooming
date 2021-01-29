@@ -23,6 +23,10 @@
     <string name="search_menu_description">아이디어를 검색합니다.</string>
     <string name="filter_menu">필터</string>
     <string name="filter_menu_description">아이디어 목록을 필터링합니다.</string>
+    <string name="series_delete_menu">시리즈 삭제</string>
+    <string name="series_delete_menu_description">시리즈를 삭제합니다.</string>
+    <string name="add_idea_menu">아이디어 추가</string>
+    <string name="add_idea_menu_description">시리즈에 아이디어를 추가합니다.</string>
 
     <string name="drawer_export_menu">내보내기</string>
     <string name="drawer_starred_menu">즐겨찾기</string>
@@ -50,13 +54,19 @@
     <!-- AlertDialog -->
     <string name="filter_dialog_title">변경 사항 존재</string>
     <string name="filter_dialog_msg">변경 사항을 적용하시겠습니까?</string>
+    <string name="series_delete_dialog_title">시리즈 삭제</string>
+    <string name="series_delete_dialog_msg">이 시리즈를 삭제하시겠습니까?</string>
 
     <string name="dialog_apply">적용</string>
     <string name="dialog_discard">적용 안함</string>
     <string name="dialog_cancel">취소</string>
+    <string name="dialog_ok">확인</string>
 
     <!-- Fab -->
     <string name="main_add_fab">아이디어를 추가합니다.</string>
+    <string name="starred_add_fab">즐겨찾기에 아이디어를 추가합니다.</string>
+    <string name="series_add_fab">시리즈에 아이디어를 추가합니다.</string>
+
 
     <!-- Bottom Sheet -->
     <string name="add_idea_title">아이디어 생성</string>

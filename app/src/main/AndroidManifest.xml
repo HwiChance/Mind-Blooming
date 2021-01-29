@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MindBlooming">
-        <activity android:name=".StarredActivity"></activity>
+        <activity android:name=".SeriesActivity"></activity>
+        <activity android:name=".StarredActivity" />
         <activity android:name=".IdeaFilterActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".IntroActivity" />

@@ -93,11 +93,11 @@ class IdeaFilterActivity : AppCompatActivity() {
     private fun setChips() {
         when (caller) {
             FilterCaller.MAIN -> {
-                starredChip.visibility = View.INVISIBLE
-                seriesChip.visibility = View.INVISIBLE
+                starredChip.visibility = View.GONE
+                seriesChip.visibility = View.GONE
             }
-            FilterCaller.STARRED -> seriesChip.visibility = View.INVISIBLE
-            FilterCaller.SERIES -> starredChip.visibility = View.INVISIBLE
+            FilterCaller.STARRED -> seriesChip.visibility = View.GONE
+            FilterCaller.SERIES -> starredChip.visibility = View.GONE
         }
 
         when (classFilter) {

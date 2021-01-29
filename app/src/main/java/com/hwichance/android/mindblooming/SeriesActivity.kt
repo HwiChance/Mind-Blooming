@@ -6,20 +6,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 
-class StarredActivity : AppCompatActivity() {
-    private lateinit var starredToolbar: MaterialToolbar
+class SeriesActivity : AppCompatActivity() {
+    private lateinit var seriesToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
-    private lateinit var starredFab: FloatingActionButton
+    private lateinit var seriesFab: FloatingActionButton
+    private lateinit var seriesTitle: String
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.TITLE
 
@@ -37,8 +40,9 @@ class StarredActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_starred)
+        setContentView(R.layout.activity_series)
 
+        seriesTitle = intent?.getCharSequenceExtra("seriesTitle").toString()
         bindViews()
     }
 
@@ -52,14 +56,15 @@ class StarredActivity : AppCompatActivity() {
         }
 
     private fun bindViews() {
-        starredToolbar = findViewById(R.id.starredToolbar)
-        starredFab = findViewById(R.id.starredFab)
-        searchItem = starredToolbar.menu.findItem(R.id.starredSearchMenu)
+        seriesToolbar = findViewById(R.id.seriesToolbar)
+        seriesToolbar.title = seriesTitle
+
+        seriesFab = findViewById(R.id.seriesFab)
+        searchItem = seriesToolbar.menu.findItem(R.id.seriesSearchMenu)
         searchView = searchItem.actionView as SearchView
 
         setSearchAction()
         setToolbarListener()
-        setFabListener()
     }
 
     private fun setSearchAction() {
@@ -81,18 +86,32 @@ class StarredActivity : AppCompatActivity() {
     }
 
     private fun setToolbarListener() {
-        starredToolbar.setNavigationOnClickListener {
+        seriesToolbar.setNavigationOnClickListener {
             finish()
         }
-        starredToolbar.setOnMenuItemClickListener { menuItem ->
+        seriesToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.starredFilterMenu -> {
+                R.id.seriesFilterMenu -> {
                     val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
-                    filterActIntent.putExtra("caller", FilterCaller.STARRED)
+                    filterActIntent.putExtra("caller", FilterCaller.SERIES)
                     filterActIntent.putExtra("class", classFilter)
                     filterActIntent.putExtra("sort", sortFilter)
                     startForFilterResult.launch(filterActIntent)
                     overridePendingTransition(R.anim.up, R.anim.no_animation)
+                }
+                R.id.seriesDeleteMenu -> {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.series_delete_dialog_title))
+                        .setMessage(getString(R.string.series_delete_dialog_msg))
+                        .setNegativeButton(getString(R.string.dialog_cancel)) { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(getString(R.string.dialog_ok)) { dialog, which ->
+                            // TODO: delete series at database
+                            Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .show()
                 }
             }
             true
@@ -100,7 +119,7 @@ class StarredActivity : AppCompatActivity() {
     }
 
     private fun setFabListener() {
-        starredFab.setOnClickListener {
+        seriesFab.setOnClickListener {
 
         }
     }

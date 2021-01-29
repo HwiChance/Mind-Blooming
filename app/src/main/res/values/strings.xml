@@ -26,6 +26,10 @@
     <string name="search_menu_description">Search for ideas</string>
     <string name="filter_menu">Filter</string>
     <string name="filter_menu_description">Filter the idea list</string>
+    <string name="series_delete_menu">Delete series</string>
+    <string name="series_delete_menu_description">Delete the series</string>
+    <string name="add_idea_menu">Add idea</string>
+    <string name="add_idea_menu_description">Add ideas to the series</string>
 
     <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
@@ -55,13 +59,18 @@
     <!-- AlertDialog -->
     <string name="filter_dialog_title">Changes not applied</string>
     <string name="filter_dialog_msg">Discard Changes?</string>
+    <string name="series_delete_dialog_title">Series delete</string>
+    <string name="series_delete_dialog_msg">Are you sure you want to delete this series?</string>
 
     <string name="dialog_apply">APPLY</string>
     <string name="dialog_discard">DISCARD</string>
     <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- Fab -->
-    <string name="main_add_fab">Add an Idea</string>
+    <string name="main_add_fab">Add an idea</string>
+    <string name="starred_add_fab">Add ideas at starred</string>
+    <string name="series_add_fab">Add ideas at series</string>
 
     <!-- Bottom Sheet -->
     <string name="add_idea_title">Create Idea</string>

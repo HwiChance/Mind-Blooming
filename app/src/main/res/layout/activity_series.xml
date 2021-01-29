@@ -4,38 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StarredActivity">
+    tools:context=".SeriesActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/starredToolbar"
+        android:id="@+id/seriesToolbar"
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/starred_toolbar_menu"
+        app:menu="@menu/series_toolbar_menu"
         app:navigationIcon="@drawable/ic_arrow_back_24dp"
-        app:title="@string/starred_toolbar_title"
         app:titleTextAppearance="@style/toolbarTitleText" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/starredToolbar">
+        app:layout_constraintTop_toBottomOf="@+id/seriesToolbar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/starredRecyclerView"
+            android:id="@+id/seriesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/starredFab"
+            android:id="@+id/seriesFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:contentDescription="@string/starred_add_fab"
+            android:contentDescription="@string/series_add_fab"
             android:src="@drawable/ic_list_add_24dp"
             app:backgroundTint="@color/blube"
             app:tint="@color/white" />
