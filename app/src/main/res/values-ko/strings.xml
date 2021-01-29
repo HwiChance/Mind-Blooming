@@ -16,6 +16,7 @@
     <string name="main_toolbar_title">아이디어 목록</string>
     <string name="main_toolbar_hint">아이디어 검색</string>
     <string name="filter_toolbar_title">필터</string>
+    <string name="starred_toolbar_title">즐겨찾기</string>
 
     <!-- menu -->
     <string name="search_menu">검색</string>

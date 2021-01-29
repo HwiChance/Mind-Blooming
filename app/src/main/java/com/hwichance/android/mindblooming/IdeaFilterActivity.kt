@@ -67,10 +67,9 @@ class IdeaFilterActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.filterApplyMenu -> {
                     applyAndClose(getCheckedClass(), getCheckedSort())
-                    true
                 }
-                else -> false
             }
+            true
         }
     }
 
@@ -157,5 +156,10 @@ class IdeaFilterActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         closeActivity()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.no_animation, R.anim.down)
     }
 }

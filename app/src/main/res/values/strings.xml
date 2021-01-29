@@ -19,6 +19,7 @@
     <string name="main_toolbar_title">Idea List</string>
     <string name="main_toolbar_hint">Search for ideas</string>
     <string name="filter_toolbar_title">Filter</string>
+    <string name="starred_toolbar_title">Starred</string>
 
     <!-- menu -->
     <string name="search_menu">Search</string>

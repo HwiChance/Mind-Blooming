@@ -6,26 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
-import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var mainToolbar: MaterialToolbar
-    private lateinit var mainDrawerLayout: DrawerLayout
-    private lateinit var mainNavigationDrawer: NavigationView
-    private lateinit var mainFab: FloatingActionButton
-    private lateinit var versionTextView: TextView
+class StarredActivity : AppCompatActivity() {
+    private lateinit var starredToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
     private var classFilter = DiagramClassEnum.ALL
@@ -45,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_starred)
 
         bindViews()
     }
@@ -60,25 +51,14 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun bindViews() {
-        mainToolbar = findViewById(R.id.mainToolbar)
-        mainDrawerLayout = findViewById(R.id.mainDrawerLayout)
-        mainNavigationDrawer = findViewById(R.id.mainNavigationDrawer)
-        mainFab = findViewById(R.id.mainFab)
+        starredToolbar = findViewById(R.id.starredToolbar)
 
-        versionTextView = mainNavigationDrawer.getHeaderView(0).findViewById(R.id.versionTextView)
-        searchItem = mainToolbar.menu.findItem(R.id.mainSearchMenu)
+
+        searchItem = starredToolbar.menu.findItem(R.id.starredSearchMenu)
         searchView = searchItem.actionView as SearchView
 
-        setVersionText()
         setSearchAction()
-        setDrawerAction()
         setToolbarListener()
-        setFabListener()
-    }
-
-    private fun setVersionText() {
-        val versionText = getString(R.string.version_text)
-        versionTextView.text = (versionText + BuildConfig.VERSION_NAME)
     }
 
     private fun setSearchAction() {
@@ -99,28 +79,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setDrawerAction() {
-        mainNavigationDrawer.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.mainDrawerStarred -> {
-                    startActivity(Intent(this, StarredActivity::class.java))
-                }
-            }
-            overridePendingTransition(R.anim.no_animation, R.anim.no_animation)
-            mainDrawerLayout.closeDrawer(GravityCompat.START)
-            true
-        }
-    }
-
     private fun setToolbarListener() {
-        mainToolbar.setNavigationOnClickListener {
-            mainDrawerLayout.openDrawer(GravityCompat.START)
+        starredToolbar.setNavigationOnClickListener {
+            finish()
         }
-        mainToolbar.setOnMenuItemClickListener { menuItem ->
+        starredToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.mainFilterMenu -> {
+                R.id.starredFilterMenu -> {
                     val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
-                    filterActIntent.putExtra("caller", FilterCaller.MAIN)
+                    filterActIntent.putExtra("caller", FilterCaller.STARRED)
                     filterActIntent.putExtra("class", classFilter)
                     filterActIntent.putExtra("sort", sortFilter)
                     startForFilterResult.launch(filterActIntent)
@@ -131,22 +98,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFabListener() {
-        mainFab.setOnClickListener {
-            val addDiagramFragment = AddDiagramFragment()
-            addDiagramFragment.show(supportFragmentManager, "ADD_DIAGRAM_FRAGMENT")
-        }
-    }
-
     override fun onBackPressed() {
         when {
             searchItem.isActionViewExpanded -> {
                 searchItem.collapseActionView()
             }
-            mainDrawerLayout.isDrawerOpen(GravityCompat.START) -> {
-                mainDrawerLayout.closeDrawer(GravityCompat.START)
-            }
             else -> super.onBackPressed()
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.no_animation, R.anim.no_animation)
     }
 }
