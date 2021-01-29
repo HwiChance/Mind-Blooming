@@ -78,6 +78,7 @@ class IntroActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun moveNextActivity() {
         startActivity(Intent(this, MainActivity::class.java))
+        overridePendingTransition(R.anim.fadein, R.anim.no_animation)
         finish()
     }
 

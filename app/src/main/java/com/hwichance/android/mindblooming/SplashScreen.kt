@@ -20,40 +20,45 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private val requestMultiplePermissions =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
-            { permissions ->
-                run {
-                    if (permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true
-                            && permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
-                        moveNextActivity()
-                    } else {
-                        Snackbar.make(
-                                findViewById(R.id.splashScreenLayout),
-                                R.string.permission_denied,
-                                Snackbar.LENGTH_INDEFINITE
-                        ).setAction(R.string.ok) {
-                            finish()
-                        }.show()
-                    }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+        { permissions ->
+            run {
+                if (permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true
+                    && permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true
+                ) {
+                    moveNextActivity()
+                } else {
+                    Snackbar.make(
+                        findViewById(R.id.splashScreenLayout),
+                        R.string.permission_denied,
+                        Snackbar.LENGTH_INDEFINITE
+                    ).setAction(R.string.ok) {
+                        finish()
+                    }.show()
                 }
             }
+        }
 
     private fun setPermissions() {
         if (checkGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
-                && checkGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            && checkGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        ) {
             moveNextActivity()
         } else {
             requestMultiplePermissions.launch(
-                    arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
             )
         }
     }
 
     private fun checkGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun moveNextActivity() {
@@ -65,17 +70,19 @@ class SplashScreen : AppCompatActivity() {
 
         Handler().postDelayed({
             startActivity(intent)
+            overridePendingTransition(R.anim.fadein, R.anim.no_animation)
             finish()
         }, 1000)
     }
 
     private fun checkFirstRun(): Boolean {
-        val firstRunPref = getSharedPreferences(getString(R.string.preference_first_run), Context.MODE_PRIVATE)
+        val firstRunPref =
+            getSharedPreferences(getString(R.string.preference_first_run), Context.MODE_PRIVATE)
         val isFirstRun = firstRunPref.getBoolean(getString(R.string.is_first_run), true);
         return if (isFirstRun) {
             firstRunPref.edit()
-                    .putBoolean(getString(R.string.is_first_run), false)
-                    .apply()
+                .putBoolean(getString(R.string.is_first_run), false)
+                .apply()
             true
         } else {
             false
