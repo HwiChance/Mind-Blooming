@@ -8,10 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="crestor">#E4F5FF</color>
     <color name="electric_blue">#4DBCE9</color>
     <color name="blube">#26ADE4</color>
     <color name="camborne">#007EB2</color>
+    <color name="indigo">#2A6496</color>
 
+    <color name="white_gray">#DDDDDD</color>
     <color name="rhinoceros">#B0ABAB</color>
     <color name="mackup">#616161</color>
 

@@ -20,6 +20,8 @@
     <string name="main_toolbar_hint">Search for ideas</string>
     <string name="filter_toolbar_title">Filter</string>
     <string name="starred_toolbar_title">Starred</string>
+    <string name="series_title_edit">Title</string>
+    <string name="series_description_edit">Description</string>
 
     <!-- menu -->
     <string name="search_menu">Search</string>

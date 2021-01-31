@@ -5,24 +5,36 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import com.hwichance.android.mindblooming.listeners.SeriesAppBarListener
 
 class SeriesActivity : AppCompatActivity() {
     private lateinit var seriesToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
+    private lateinit var seriesRecyclerView: RecyclerView
     private lateinit var seriesFab: FloatingActionButton
-    private lateinit var seriesTitle: String
+    private lateinit var seriesToolbarLayout: AppBarLayout
+    private lateinit var seriesTitleEditText: EditText
+    private lateinit var seriesDescriptionEditText: EditText
+    private lateinit var seriesTitleLabel: TextView
+    private lateinit var seriesDescriptionLabel: TextView
+    private lateinit var seriesTitle: TextView
+    private lateinit var seriesTitleText: String
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.TITLE
 
@@ -42,7 +54,7 @@ class SeriesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_series)
 
-        seriesTitle = intent?.getCharSequenceExtra("seriesTitle").toString()
+        seriesTitleText = intent?.getCharSequenceExtra("seriesTitle").toString()
         bindViews()
     }
 
@@ -57,14 +69,27 @@ class SeriesActivity : AppCompatActivity() {
 
     private fun bindViews() {
         seriesToolbar = findViewById(R.id.seriesToolbar)
-        seriesToolbar.title = seriesTitle
-
+        seriesRecyclerView = findViewById(R.id.seriesRecyclerView)
         seriesFab = findViewById(R.id.seriesFab)
+        seriesToolbarLayout = findViewById(R.id.seriesToolbarLayout)
+        seriesTitleEditText = findViewById(R.id.seriesTitleEditText)
+        seriesTitleEditText.setText(seriesTitleText)
+        seriesDescriptionEditText = findViewById(R.id.seriesDescriptionEditText)
+        seriesDescriptionEditText.setText("${seriesTitleText} 입니다.")
+        seriesTitleLabel = findViewById(R.id.seriesTitleLabel)
+        seriesDescriptionLabel = findViewById(R.id.seriesDescriptionLabel)
+        seriesTitle = findViewById(R.id.seriesTitle)
+        seriesTitle.text = seriesTitleText
         searchItem = seriesToolbar.menu.findItem(R.id.seriesSearchMenu)
         searchView = searchItem.actionView as SearchView
 
+        setRecyclerView()
         setSearchAction()
         setToolbarListener()
+    }
+
+    private fun setRecyclerView() {
+
     }
 
     private fun setSearchAction() {
@@ -86,6 +111,15 @@ class SeriesActivity : AppCompatActivity() {
     }
 
     private fun setToolbarListener() {
+        seriesToolbarLayout.addOnOffsetChangedListener(
+            SeriesAppBarListener(
+                seriesTitle,
+                seriesTitleEditText,
+                seriesDescriptionEditText,
+                seriesTitleLabel,
+                seriesDescriptionLabel
+            )
+        )
         seriesToolbar.setNavigationOnClickListener {
             finish()
         }
