@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(seriesIntent)
                 }
             }
-            overridePendingTransition(R.anim.no_animation, R.anim.no_animation)
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
             mainDrawerLayout.closeDrawer(GravityCompat.START)
             true
         }

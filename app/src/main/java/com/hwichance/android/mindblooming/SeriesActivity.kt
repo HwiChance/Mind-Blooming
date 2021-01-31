@@ -169,6 +169,6 @@ class SeriesActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.no_animation, R.anim.no_animation)
+        overridePendingTransition(R.anim.fadein, R.anim.no_animation)
     }
 }

@@ -70,7 +70,6 @@ class SplashScreen : AppCompatActivity() {
 
         Handler().postDelayed({
             startActivity(intent)
-            overridePendingTransition(R.anim.fadein, R.anim.no_animation)
             finish()
         }, 1000)
     }
@@ -87,5 +86,10 @@ class SplashScreen : AppCompatActivity() {
         } else {
             false
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.no_animation, R.anim.fadeout)
     }
 }
