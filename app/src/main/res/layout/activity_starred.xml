@@ -8,7 +8,7 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/starredToolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        style="@style/toolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:contentInsetStartWithNavigation="0dp"
