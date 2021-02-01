@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -70,22 +72,29 @@ class SeriesActivity : AppCompatActivity() {
     private fun bindViews() {
         seriesToolbar = findViewById(R.id.seriesToolbar)
         seriesRecyclerView = findViewById(R.id.seriesRecyclerView)
-        seriesFab = findViewById(R.id.seriesFab)
         seriesToolbarLayout = findViewById(R.id.seriesToolbarLayout)
         seriesTitleEditText = findViewById(R.id.seriesTitleEditText)
-        seriesTitleEditText.setText(seriesTitleText)
         seriesDescriptionEditText = findViewById(R.id.seriesDescriptionEditText)
-        seriesDescriptionEditText.setText("${seriesTitleText} 입니다.")
-        seriesTitleLabel = findViewById(R.id.seriesTitleLabel)
         seriesDescriptionLabel = findViewById(R.id.seriesDescriptionLabel)
+        seriesTitleLabel = findViewById(R.id.seriesTitleLabel)
         seriesTitle = findViewById(R.id.seriesTitle)
-        seriesTitle.text = seriesTitleText
+        seriesFab = findViewById(R.id.seriesFab)
+
         searchItem = seriesToolbar.menu.findItem(R.id.seriesSearchMenu)
         searchView = searchItem.actionView as SearchView
 
+        setInitialState()
         setRecyclerView()
         setSearchAction()
         setToolbarListener()
+    }
+
+    private fun setInitialState() {
+        seriesTitle.text = seriesTitleText
+        seriesTitleEditText.setText(seriesTitleText)
+        seriesDescriptionEditText.setText(seriesTitleText)
+        seriesDescriptionEditText.imeOptions = EditorInfo.IME_ACTION_DONE;
+        seriesDescriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     private fun setRecyclerView() {
