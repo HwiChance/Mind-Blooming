@@ -15,8 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/starred_toolbar_menu"
         app:navigationIcon="@drawable/ic_arrow_back_24dp"
-        app:title="@string/starred_toolbar_title"
-        app:titleTextAppearance="@style/toolbarTitleText" />
+        app:title="@string/starred_toolbar_title" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"

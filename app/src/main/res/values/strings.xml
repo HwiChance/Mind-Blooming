@@ -32,6 +32,10 @@
     <string name="series_delete_menu_description">Delete the series</string>
     <string name="add_idea_menu">Add idea</string>
     <string name="add_idea_menu_description">Add ideas to the series</string>
+    <string name="idea_title_edit_menu">Edit Idea Title</string>
+    <string name="idea_title_edit_menu_description">Edit the idea title</string>
+    <string name="idea_save_menu">Save Idea</string>
+    <string name="idea_save_menu_description">Save the idea</string>
 
     <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
@@ -63,6 +67,7 @@
     <string name="filter_dialog_msg">Discard Changes?</string>
     <string name="series_delete_dialog_title">Series delete</string>
     <string name="series_delete_dialog_msg">Are you sure you want to delete this series?</string>
+    <string name="edit_title_dialog_title">Edit title</string>
 
     <string name="dialog_apply">APPLY</string>
     <string name="dialog_discard">DISCARD</string>
@@ -78,4 +83,13 @@
     <string name="add_idea_title">Create Idea</string>
     <string name="add_mind_map">MIND MAP</string>
     <string name="add_flow_chart">FLOW CHART</string>
+
+    <!-- Diagram Edit -->
+    <string name="new_mind_map">New Mind Map</string>
+
+    <!-- Hint -->
+    <string name="hint_title">Input new title</string>
+
+    <!-- Error msg -->
+    <string name="no_character">Please enter a letter.</string>
 </resources>

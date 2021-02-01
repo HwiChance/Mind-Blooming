@@ -1,5 +1,6 @@
 package com.hwichance.android.mindblooming.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.hwichance.android.mindblooming.MindMapEditActivity
 import com.hwichance.android.mindblooming.R
 
 class AddDiagramFragment : BottomSheetDialogFragment() {
@@ -27,7 +29,7 @@ class AddDiagramFragment : BottomSheetDialogFragment() {
 
     private fun setBtnClickListener() {
         addMindMapBtn.setOnClickListener {
-            Toast.makeText(view?.context, "mindmap", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(view?.context, MindMapEditActivity::class.java))
             dismiss()
         }
         addFlowChartBtn.setOnClickListener {

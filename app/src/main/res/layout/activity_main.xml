@@ -21,8 +21,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/main_toolbar_menu"
             app:navigationIcon="@drawable/ic_menu_24dp"
-            app:title="@string/main_toolbar_title"
-            app:titleTextAppearance="@style/toolbarTitleText" />
+            app:title="@string/main_toolbar_title" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"

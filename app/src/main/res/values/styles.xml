@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ThemeOverlay.App.toolbar" parent="">
-        <item name="colorPrimary">@color/blube</item>
-        <item name="colorPrimaryVariant">@color/camborne</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/white_gray</item>
-        <item name="colorSecondaryVariant">@color/mackup</item>
-        <item name="colorOnSecondary">@color/black</item>
-    </style>
-
     <style name="toolbarStyle" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.toolbar</item>
         <item name="titleTextAppearance">@style/toolbarTitleText</item>
     </style>
 
@@ -35,4 +25,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ThemeOverlay.App.EditDialog" parent="">
+        <item name="colorSecondary">@color/blube</item>
+        <item name="colorSecondaryVariant">@color/camborne</item>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
+
+    <style name="titleEditDialogStyle" parent="Widget.Design.TextInputLayout">
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.EditDialog</item>
+    </style>
 </resources>
