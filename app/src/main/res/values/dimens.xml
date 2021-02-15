@@ -5,4 +5,20 @@
     <dimen name="toolbar_label_size">14sp</dimen>
     <dimen name="filter_group_title_size">16sp</dimen>
     <dimen name="add_idea_title_size">16sp</dimen>
+
+    <dimen name="chart_padding">16dp</dimen>
+    <dimen name="min_chart_size">100dp</dimen>
+
+    <!-- item style -->
+    <dimen name="primary_item_corner_radius">32dp</dimen>
+    <dimen name="item_corner_radius">24dp</dimen>
+    <dimen name="primary_item_text_size">16dp</dimen>
+    <dimen name="item_text_size">12dp</dimen>
+
+    <dimen name="item_padding_vertical">16dp</dimen>
+    <dimen name="item_padding_horizontal">8dp</dimen>
+
+    <dimen name="item_max_width">150dp</dimen>
+
+    <dimen name="edge_width">3dp</dimen>
 </resources>
