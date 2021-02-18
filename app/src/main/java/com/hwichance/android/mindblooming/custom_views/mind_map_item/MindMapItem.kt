@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
+import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 
 class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     LinearLayout(context, attrs, defStyleAttr) {
@@ -21,6 +23,8 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     private var rightChildItems = ArrayList<MindMapItem>()
     private var leftChildItems = ArrayList<MindMapItem>()
 
+    private var itemClickListener: MindMapItemClick? = null
+
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
     constructor(context: Context, pos: ItemPosEnum, text: String, isDefaultStyle: Boolean) : this(
@@ -30,6 +34,7 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     ) {
         itemPosition = pos
 
+        isClickable = true
         orientation = VERTICAL
         gravity = Gravity.CENTER
 
@@ -50,31 +55,6 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     fun getItemTextView(): TextView {
         return itemTextView
-    }
-
-    private fun setDefaultStyle() {
-        val shape = GradientDrawable()
-        when (itemPosition) {
-            ItemPosEnum.PRIMARY -> {
-                shape.setColor(resources.getColor(R.color.blube))
-                shape.cornerRadius = resources.getDimension(R.dimen.primary_item_corner_radius)
-                itemTextView.gravity = Gravity.CENTER
-                itemTextView.setTextAppearance(context, R.style.primary_item_text_style)
-            }
-            else -> {
-                shape.setColor(resources.getColor(R.color.crestor))
-                shape.cornerRadius = resources.getDimension(R.dimen.item_corner_radius)
-                itemTextView.gravity = Gravity.START
-                itemTextView.setTextAppearance(context, R.style.item_text_style)
-            }
-        }
-        background = shape
-        setPadding(
-            resources.getDimension(R.dimen.item_padding_vertical).toInt(),
-            resources.getDimension(R.dimen.item_padding_horizontal).toInt(),
-            resources.getDimension(R.dimen.item_padding_vertical).toInt(),
-            resources.getDimension(R.dimen.item_padding_horizontal).toInt()
-        )
     }
 
     fun addLeftChild(item: MindMapItem) {
@@ -123,5 +103,39 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     fun getItemParent(): MindMapItem? {
         return itemParent
+    }
+
+    private fun setDefaultStyle() {
+        val shape = GradientDrawable()
+        when (itemPosition) {
+            ItemPosEnum.PRIMARY -> {
+                shape.setColor(resources.getColor(R.color.blube))
+                shape.cornerRadius = resources.getDimension(R.dimen.primary_item_corner_radius)
+                itemTextView.gravity = Gravity.CENTER
+                itemTextView.setTextAppearance(context, R.style.primary_item_text_style)
+            }
+            else -> {
+                shape.setColor(resources.getColor(R.color.crestor))
+                shape.cornerRadius = resources.getDimension(R.dimen.item_corner_radius)
+                itemTextView.gravity = Gravity.START
+                itemTextView.setTextAppearance(context, R.style.item_text_style)
+            }
+        }
+        background = shape
+        setPadding(
+            resources.getDimension(R.dimen.item_padding_vertical).toInt(),
+            resources.getDimension(R.dimen.item_padding_horizontal).toInt(),
+            resources.getDimension(R.dimen.item_padding_vertical).toInt(),
+            resources.getDimension(R.dimen.item_padding_horizontal).toInt()
+        )
+    }
+
+    fun setOnItemClick(listener: MindMapItemClick) {
+        itemClickListener = listener
+    }
+
+    override fun performClick(): Boolean {
+        itemClickListener?.onClick(this)
+        return super.performClick()
     }
 }

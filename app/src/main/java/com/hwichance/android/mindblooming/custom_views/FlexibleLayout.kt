@@ -23,26 +23,19 @@ class FlexibleLayout : RelativeLayout {
 
     private var mScaleGestureDetector: ScaleGestureDetector? = null
     private var mGestureDetector: GestureDetectorCompat? = null
-    private val minZoom = 1.0f
+
+    // TODO: Calculate minZoom
+    private val minZoom = 0.5f
     private val maxZoom = 4.0f
-    private var scale = 1f
+    private var scaleFactor = 1f
 
-    // Parameters for zooming.
-    private val start = PointF()
     private val mid = PointF()
-    private var oldDist = 1f
-    private var distanceX = 0f
-    private var distanceY = 0f
 
-    private var contentSize: RectF? = null
-
-    // Matrices used to move and zoom image.
     private val mMatrix = Matrix()
-    private val matrixInverse: Matrix = Matrix()
-    private val savedMatrix: Matrix = Matrix()
+    private val matrixInverse = Matrix()
+    private val savedMatrix = Matrix()
 
-    private val containerRect = Rect()
-    private val childRect = Rect()
+    private var touchPoint = FloatArray(2)
 
     constructor(context: Context) : this(context, null, 0)
 
@@ -53,15 +46,58 @@ class FlexibleLayout : RelativeLayout {
         attrs,
         defStyleAttr
     ) {
-        setWillNotDraw(false)
         mScaleGestureDetector = ScaleGestureDetector(context, mScaleGestureListener)
         mGestureDetector = GestureDetectorCompat(context, mGestureListener)
+    }
+
+    private val mScaleGestureListener: OnScaleGestureListener =
+        object : SimpleOnScaleGestureListener() {
+            override fun onScaleBegin(scaleGestureDetector: ScaleGestureDetector): Boolean {
+                val dist = scaleGestureDetector.currentSpan
+                if (dist > 10f) {
+                    savedMatrix.set(mMatrix)
+                    mid[scaleGestureDetector.focusX] = scaleGestureDetector.focusY
+                }
+                return true
+            }
+
+            override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
+                scaleFactor = scaleGestureDetector.scaleFactor
+
+                if (checkScaleBound()) {
+                    mMatrix.set(savedMatrix)
+                    mMatrix.postScale(scaleFactor, scaleFactor, mid.x, mid.y)
+                    mMatrix.invert(matrixInverse)
+                    savedMatrix.set(mMatrix)
+                    invalidate()
+                }
+
+                return true
+            }
+        }
+
+    private val mGestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            mMatrix.set(savedMatrix)
+            mMatrix.postTranslate(-distanceX, -distanceY)
+            mMatrix.invert(matrixInverse)
+            savedMatrix.set(mMatrix)
+            invalidate()
+
+            return true
+        }
     }
 
     override fun dispatchDraw(canvas: Canvas) {
         val values = FloatArray(9)
         mMatrix.getValues(values)
         canvas.save()
+        Log.v("flexible", "value: ${values[0]} and ${values[1]} and ${values[2]}")
         canvas.translate(values[Matrix.MTRANS_X], values[Matrix.MTRANS_Y])
         canvas.scale(values[Matrix.MSCALE_X], values[Matrix.MSCALE_Y])
         for (edges in leftItemEdges) {
@@ -87,130 +123,49 @@ class FlexibleLayout : RelativeLayout {
         canvas.restore()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        //mDispatchTouchEventWorkingArray[0] = ev.getX();
-        //mDispatchTouchEventWorkingArray[1] = ev.getY();
-        //mDispatchTouchEventWorkingArray = screenPointsToScaledPoints(mDispatchTouchEventWorkingArray);
-        //ev.setLocation(mDispatchTouchEventWorkingArray[0], mDispatchTouchEventWorkingArray[1]);
+    private fun scaledPointsToScreenPoints(point: FloatArray): FloatArray {
+        mMatrix.mapPoints(point)
+        return point
+    }
+
+    private fun screenPointsToScaledPoints(point: FloatArray): FloatArray {
+        matrixInverse.mapPoints(point)
+        return point
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        Log.v("flexible", "here5 : ${primaryItem.x} and ${primaryItem.y}")
+        touchPoint[0] = ev.x
+        touchPoint[1] = ev.y
+        touchPoint = screenPointsToScaledPoints(touchPoint)
+        ev.setLocation(touchPoint[0], touchPoint[1])
         return super.dispatchTouchEvent(ev)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        mMatrix.set(savedMatrix)
-        var gestureDetected = mGestureDetector!!.onTouchEvent(event)
-        if (event.pointerCount > 1) {
-            gestureDetected = mScaleGestureDetector!!.onTouchEvent(event) or gestureDetected
-            if (checkScaleBounds()) {
-                mMatrix.postScale(scale, scale, mid.x, mid.y)
-            }
-        }
-        mMatrix.invert(matrixInverse)
-        savedMatrix.set(mMatrix)
-        invalidate()
-        return gestureDetected
+
+        Log.v("flexible", "here4 : ${primaryItem.x} and ${primaryItem.y}")
+        touchPoint[0] = event.x
+        touchPoint[1] = event.y
+        touchPoint = scaledPointsToScreenPoints(touchPoint)
+        event.setLocation(touchPoint[0], touchPoint[1])
+
+        mScaleGestureDetector?.onTouchEvent(event)
+        mGestureDetector?.onTouchEvent(event)
+        return true
     }
 
-    /**
-     * The scale listener, used for handling multi-finger scale gestures.
-     */
-    private val mScaleGestureListener: OnScaleGestureListener =
-        object : SimpleOnScaleGestureListener() {
-            /**
-             * This is the active focal point in terms of the viewport. Could be a local
-             * variable but kept here to minimize per-frame allocations.
-             */
-            override fun onScaleBegin(scaleGestureDetector: ScaleGestureDetector): Boolean {
-                oldDist = scaleGestureDetector.currentSpan
-                if (oldDist > 10f) {
-                    savedMatrix.set(mMatrix)
-                    mid[scaleGestureDetector.focusX] = scaleGestureDetector.focusY
-                }
-                return true
-            }
-
-            override fun onScaleEnd(detector: ScaleGestureDetector) {}
-            override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-                scale = scaleGestureDetector.scaleFactor
-                return true
-            }
-        }
-
-    /**
-     * The gesture listener, used for handling simple gestures such as double touches, scrolls,
-     * and flings.
-     */
-    private val mGestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
-        override fun onDown(event: MotionEvent): Boolean {
-            savedMatrix.set(mMatrix)
-            start[event.x] = event.y
-            return true
-        }
-
-        override fun onScroll(e1: MotionEvent, e2: MotionEvent, dX: Float, dY: Float): Boolean {
-            setupTranslation(dX, dY)
-            mMatrix.postTranslate(distanceX, distanceY)
-            return true
-        }
-
-        override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            //fling((int) -velocityX, (int) -velocityY);
-            return true
-        }
-    }
-
-    private fun checkScaleBounds(): Boolean {
+    private fun checkScaleBound(): Boolean {
         val values = FloatArray(9)
         mMatrix.getValues(values)
-        val sx = values[Matrix.MSCALE_X] * scale
-        val sy = values[Matrix.MSCALE_Y] * scale
-        return sx > minZoom && sx < maxZoom && sy > minZoom && sy < maxZoom
-    }
-
-    private fun setupTranslation(dX: Float, dY: Float) {
-        distanceX = -1 * dX
-        distanceY = -1 * dY
-        if (contentSize != null) {
-            val values = FloatArray(9)
-            mMatrix.getValues(values)
-            val totX = values[Matrix.MTRANS_X] + distanceX
-            val totY = values[Matrix.MTRANS_Y] + distanceY
-            val sx = values[Matrix.MSCALE_X]
-            val viewableRect = Rect()
-            this@FlexibleLayout.getDrawingRect(viewableRect)
-            val offscreenWidth: Float =
-                contentSize!!.width() - (viewableRect.right - viewableRect.left)
-            val offscreenHeight: Float =
-                contentSize!!.height() - (viewableRect.bottom - viewableRect.top)
-            val maxDx = (contentSize!!.width() - contentSize!!.width() / sx) * sx
-            val maxDy = (contentSize!!.height() - contentSize!!.height() / sx) * sx
-            if (totX > 0 && distanceX > 0) {
-                distanceX = 0f
-            }
-            if (totY > 0 && distanceY > 0) {
-                distanceY = 0f
-            }
-            if (totX * -1 > offscreenWidth + maxDx && distanceX < 0) {
-                distanceX = 0f
-            }
-            if (totY * -1 > offscreenHeight + maxDy && distanceY < 0) {
-                distanceY = 0f
-            }
-        }
-    }
-
-    fun setContentSize(width: Float, height: Float) {
-        contentSize = RectF(0f, 0f, width, height)
+        val scaleX = values[Matrix.MSCALE_X] * scaleFactor
+        val scaleY = values[Matrix.MSCALE_Y] * scaleFactor
+        return (scaleX > minZoom && scaleX < maxZoom) && (scaleY > minZoom && scaleY < maxZoom)
     }
 
     fun addPrimaryItem(item: MindMapItem) {
         item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         item.gravity = CENTER_IN_PARENT
-        this.gravity = Gravity.CENTER
 
         addView(item)
 
@@ -297,6 +252,7 @@ class FlexibleLayout : RelativeLayout {
         }
     }
 
+
     private fun moveLeftItems(item: MindMapItem, distance: Float) {
         item.y -= distance
         for (child in item.getLeftChild()) {
@@ -320,7 +276,6 @@ class FlexibleLayout : RelativeLayout {
 
     private fun changeParentRightHeight(parentItem: MindMapItem, heightIncrease: Int) {
         parentItem.rightTotalHeight += heightIncrease
-        Log.v("flex", "${parentItem.getItemText()} : ${parentItem.rightTotalHeight}")
         if (parentItem.getItemParent() != null) {
             changeParentRightHeight(parentItem.getItemParent() as MindMapItem, heightIncrease)
         }

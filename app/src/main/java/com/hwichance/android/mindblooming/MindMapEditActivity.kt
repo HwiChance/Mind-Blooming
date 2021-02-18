@@ -7,12 +7,21 @@ import androidx.appcompat.widget.Toolbar
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import com.hwichance.android.mindblooming.fragments.MindMapEditToolFragment
+import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.utils.DialogUtils
 
 class MindMapEditActivity : AppCompatActivity() {
     private lateinit var mindMapEditToolbar: Toolbar
     private lateinit var mindMapTitleTextView: TextView
     private lateinit var editFlexibleLayout: FlexibleLayout
+
+    private val itemClickListener = object : MindMapItemClick {
+        override fun onClick(item: MindMapItem) {
+            MindMapEditToolFragment(this@MindMapEditActivity, item, this, editFlexibleLayout)
+                .show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +52,14 @@ class MindMapEditActivity : AppCompatActivity() {
         val item6 = MindMapItem(this, ItemPosEnum.RIGHT, "child 6", true)
         val item7 = MindMapItem(this, ItemPosEnum.RIGHT, "child 7", true)
         val item8 = MindMapItem(this, ItemPosEnum.RIGHT, "child 8", true)
-        val item9 = MindMapItem(this, ItemPosEnum.RIGHT, "child 9 asdkasdjkasjdkasjdkasjdkasjdkajdkajsdkajsdkajsdkajsdkajsdkjasdkajkdjaksjdaskdj", true)
+        val item9 = MindMapItem(
+            this,
+            ItemPosEnum.RIGHT,
+            "child 9 asdkasdjkasjdkasjdkasjdkasjdkajdkajsdkajsdkajsdkajsdkajsdkjasdkajkdjaksjdaskdj",
+            true
+        )
         val item10 = MindMapItem(this, ItemPosEnum.RIGHT, "child 10\nhi\nhello\nzz", true)
-
+        primaryItem.setOnItemClick(itemClickListener)
         editFlexibleLayout.addItem(item1, primaryItem, 150, 10)
         editFlexibleLayout.addItem(item2, primaryItem, 150, 10)
         editFlexibleLayout.addItem(item3, primaryItem, 150, 10)
