@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.hwichance.android.mindblooming.R
@@ -89,7 +88,7 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return rightChildItems[idx]
     }
 
-    fun setItemText(text: String) {
+    fun setItemText(text: CharSequence) {
         itemTextView.text = text
     }
 

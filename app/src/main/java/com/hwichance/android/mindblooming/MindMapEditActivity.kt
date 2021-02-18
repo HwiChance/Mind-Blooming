@@ -9,6 +9,7 @@ import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPos
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 import com.hwichance.android.mindblooming.fragments.MindMapEditToolFragment
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
+import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
 import com.hwichance.android.mindblooming.utils.DialogUtils
 
 class MindMapEditActivity : AppCompatActivity() {
@@ -20,6 +21,12 @@ class MindMapEditActivity : AppCompatActivity() {
         override fun onClick(item: MindMapItem) {
             MindMapEditToolFragment(this@MindMapEditActivity, item, this, editFlexibleLayout)
                 .show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
+        }
+    }
+
+    private val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
+        override fun onClick(text: CharSequence) {
+            mindMapTitleTextView.text = text
         }
     }
 
@@ -60,16 +67,16 @@ class MindMapEditActivity : AppCompatActivity() {
         )
         val item10 = MindMapItem(this, ItemPosEnum.RIGHT, "child 10\nhi\nhello\nzz", true)
         primaryItem.setOnItemClick(itemClickListener)
-        editFlexibleLayout.addItem(item1, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item2, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item3, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item4, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item5, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item6, primaryItem, 150, 10)
-        editFlexibleLayout.addItem(item7, item6, 150, 10)
-        editFlexibleLayout.addItem(item10, item7, 150, 10)
-        editFlexibleLayout.addItem(item8, item6, 150, 10)
-        editFlexibleLayout.addItem(item9, item6, 150, 10)
+        editFlexibleLayout.addItem(item1, primaryItem)
+        editFlexibleLayout.addItem(item2, primaryItem)
+        editFlexibleLayout.addItem(item3, primaryItem)
+        editFlexibleLayout.addItem(item4, primaryItem)
+        editFlexibleLayout.addItem(item5, primaryItem)
+        editFlexibleLayout.addItem(item6, primaryItem)
+        editFlexibleLayout.addItem(item7, item6)
+        editFlexibleLayout.addItem(item10, item7)
+        editFlexibleLayout.addItem(item8, item6)
+        editFlexibleLayout.addItem(item9, item6)
     }
 
     private fun setToolbarListener() {
@@ -82,8 +89,10 @@ class MindMapEditActivity : AppCompatActivity() {
                 R.id.ideaTitleEditMenu -> {
                     DialogUtils.showEditTitleDialog(
                         this,
+                        resources.getString(R.string.edit_title_dialog_title),
+                        resources.getString(R.string.title_edit_hint),
                         mindMapTitleTextView.text,
-                        mindMapTitleTextView
+                        dialogBtnClickListener
                     )
                 }
                 R.id.ideaSaveMenu -> {

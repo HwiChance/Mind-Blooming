@@ -63,9 +63,13 @@
     <string name="series_delete_dialog_title">시리즈 삭제</string>
     <string name="series_delete_dialog_msg">이 시리즈를 삭제하시겠습니까?</string>
     <string name="edit_title_dialog_title">제목 수정</string>
+    <string name="add_item_dialog_title">새 아이템 추가</string>
+    <string name="edit_item_text_dialog_title">아이템 내용 수정</string>
+    <string name="delete_dialog_msg">이 아이템을 삭제하시겠습니까?</string>
 
     <string name="dialog_apply">적용</string>
     <string name="dialog_discard">적용 안함</string>
+    <string name="dialog_delete">삭제</string>
     <string name="dialog_cancel">취소</string>
     <string name="dialog_ok">확인</string>
 
@@ -84,7 +88,8 @@
     <string name="new_mind_map">새 마인드 맵</string>
 
     <!-- Hint -->
-    <string name="hint_title">새로운 제목을 입력하세요.</string>
+    <string name="title_edit_hint">새로운 제목을 입력하세요.</string>
+    <string name="item_text_edit_hint">아이템 내용을 입력하세요.</string>
 
     <!-- Error msg -->
     <string name="no_character">문자를 입력해주세요.</string>

@@ -3,26 +3,26 @@ package com.hwichance.android.mindblooming.custom_views
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.RelativeLayout
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.children
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
-import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapEdge
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 
 class FlexibleLayout : RelativeLayout {
 
     private lateinit var primaryItem: MindMapItem
-    private val leftItemEdges = ArrayList<MindMapEdge>()
-    private val rightItemEdges = ArrayList<MindMapEdge>()
 
     private var mScaleGestureDetector: ScaleGestureDetector? = null
     private var mGestureDetector: GestureDetectorCompat? = null
+
+    private val horMargin = 200
+    private val verMargin = 20
 
     // TODO: Calculate minZoom
     private val minZoom = 0.5f
@@ -93,34 +93,75 @@ class FlexibleLayout : RelativeLayout {
         }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val maxHeight = MeasureSpec.getSize(heightMeasureSpec)
+
+        for (item in children) {
+            item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        }
+
+        setMeasuredDimension(maxWidth, maxHeight)
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+        val left = (this.measuredWidth - primaryItem.measuredWidth) / 2
+        val top = (this.measuredHeight - primaryItem.measuredHeight) / 2
+        val right = left + primaryItem.measuredWidth
+        val bottom = top + primaryItem.measuredHeight
+
+        primaryItem.layout(left, top, right, bottom)
+        setLeftFamilyPosition(primaryItem)
+        setRightFamilyPosition(primaryItem)
+    }
+
     override fun dispatchDraw(canvas: Canvas) {
         val values = FloatArray(9)
         mMatrix.getValues(values)
         canvas.save()
-        Log.v("flexible", "value: ${values[0]} and ${values[1]} and ${values[2]}")
         canvas.translate(values[Matrix.MTRANS_X], values[Matrix.MTRANS_Y])
         canvas.scale(values[Matrix.MSCALE_X], values[Matrix.MSCALE_Y])
-        for (edges in leftItemEdges) {
-            drawEdge(
-                canvas,
-                edges.item.x + edges.item.measuredWidth,
-                edges.item.y + edges.item.measuredHeight / 2,
-                edges.parentItem.x,
-                edges.parentItem.y + edges.parentItem.measuredHeight / 2
-            )
-        }
 
-        for (edges in rightItemEdges) {
-            drawEdge(
-                canvas,
-                edges.parentItem.x + edges.parentItem.measuredWidth,
-                edges.parentItem.y + edges.parentItem.measuredHeight / 2,
-                edges.item.x,
-                edges.item.y + edges.item.measuredHeight / 2
-            )
-        }
+        findEdges(primaryItem, canvas)
+
         super.dispatchDraw(canvas)
         canvas.restore()
+    }
+
+    private fun findEdges(item: MindMapItem, canvas: Canvas) {
+        for (child in item.getLeftChild()) {
+            drawEdge(
+                canvas,
+                child.left + child.measuredWidth.toFloat(),
+                child.top + child.measuredHeight.toFloat() / 2,
+                item.left.toFloat(),
+                item.top + item.measuredHeight.toFloat() / 2
+            )
+            findEdges(child, canvas)
+        }
+        for (child in item.getRightChild()) {
+            drawEdge(
+                canvas,
+                item.left + item.measuredWidth.toFloat(),
+                item.top + item.measuredHeight.toFloat() / 2,
+                child.left.toFloat(),
+                child.top + child.measuredHeight.toFloat() / 2
+            )
+            findEdges(child, canvas)
+        }
+    }
+
+    private fun drawEdge(canvas: Canvas, startX: Float, startY: Float, stopX: Float, stopY: Float) {
+        val paint = Paint()
+        paint.isAntiAlias = true
+        paint.style = Paint.Style.STROKE
+        paint.color = resources.getColor(R.color.white_gray)
+        paint.strokeWidth = resources.getDimension(R.dimen.edge_width)
+
+        canvas.drawLine(startX, startY, stopX, stopY, paint)
     }
 
     private fun scaledPointsToScreenPoints(point: FloatArray): FloatArray {
@@ -134,7 +175,6 @@ class FlexibleLayout : RelativeLayout {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        Log.v("flexible", "here5 : ${primaryItem.x} and ${primaryItem.y}")
         touchPoint[0] = ev.x
         touchPoint[1] = ev.y
         touchPoint = screenPointsToScaledPoints(touchPoint)
@@ -143,8 +183,6 @@ class FlexibleLayout : RelativeLayout {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
-        Log.v("flexible", "here4 : ${primaryItem.x} and ${primaryItem.y}")
         touchPoint[0] = event.x
         touchPoint[1] = event.y
         touchPoint = scaledPointsToScreenPoints(touchPoint)
@@ -164,38 +202,27 @@ class FlexibleLayout : RelativeLayout {
     }
 
     fun addPrimaryItem(item: MindMapItem) {
-        item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        item.gravity = CENTER_IN_PARENT
-
         addView(item)
+
+        item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
 
         primaryItem = item
     }
 
-    fun addItem(item: MindMapItem, parentItem: MindMapItem, horMargin: Int, verMargin: Int) {
+    fun addItem(item: MindMapItem, parentItem: MindMapItem) {
         addView(item)
-
-        item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        item.leftTotalHeight = item.measuredHeight
-        item.rightTotalHeight = item.measuredHeight
 
         item.setItemParent(parentItem)
 
-        item.y = parentItem.y + (parentItem.measuredHeight - item.measuredHeight).toFloat() / 2
+        item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+
+        item.leftTotalHeight = item.measuredHeight
+        item.rightTotalHeight = item.measuredHeight
 
         when (item.itemPosition) {
             ItemPosEnum.LEFT -> {
                 var heightIncrease = 0
-                val childNum = parentItem.getLeftChildSize()
-
-                item.x = parentItem.x - (item.measuredWidth + horMargin)
-
-                if (childNum > 0) {
-                    for (child in parentItem.getLeftChild()) {
-                        moveLeftItems(child, (item.measuredHeight.toFloat() + verMargin) / 2)
-                    }
-                    val lastChild = parentItem.getLeftChildByIndex(childNum - 1)
-                    item.y = lastChild.y + lastChild.measuredHeight + verMargin
+                if (parentItem.getLeftChildSize() > 0) {
                     heightIncrease = item.measuredHeight + verMargin
                 } else {
                     if (item.measuredHeight > parentItem.measuredHeight) {
@@ -210,23 +237,11 @@ class FlexibleLayout : RelativeLayout {
 
                 if (heightIncrease > 0) {
                     changeParentLeftHeight(parentItem, heightIncrease)
-                    moveLeftFamily(primaryItem, verMargin)
                 }
-
-                leftItemEdges.add(MindMapEdge(item, parentItem))
             }
             ItemPosEnum.RIGHT -> {
                 var heightIncrease = 0
-                val childNum = parentItem.getRightChildSize()
-
-                item.x = parentItem.x + (parentItem.measuredWidth + horMargin)
-
-                if (childNum > 0) {
-                    for (child in parentItem.getRightChild()) {
-                        moveRightItems(child, (item.measuredHeight.toFloat() + verMargin) / 2)
-                    }
-                    val lastChild = parentItem.getRightChildByIndex(childNum - 1)
-                    item.y = lastChild.y + lastChild.measuredHeight + verMargin
+                if (parentItem.getRightChildSize() > 0) {
                     heightIncrease = item.measuredHeight + verMargin
                 } else {
                     if (item.measuredHeight > parentItem.measuredHeight) {
@@ -241,10 +256,7 @@ class FlexibleLayout : RelativeLayout {
 
                 if (heightIncrease > 0) {
                     changeParentRightHeight(parentItem, heightIncrease)
-                    moveRightFamily(primaryItem, verMargin)
                 }
-
-                rightItemEdges.add(MindMapEdge(item, parentItem))
             }
             else -> {
 
@@ -252,62 +264,55 @@ class FlexibleLayout : RelativeLayout {
         }
     }
 
-
-    private fun moveLeftItems(item: MindMapItem, distance: Float) {
-        item.y -= distance
+    fun removeChildViews(item: MindMapItem) {
         for (child in item.getLeftChild()) {
-            moveLeftItems(child, distance)
+            removeChildViews(child)
         }
-    }
-
-    private fun moveRightItems(item: MindMapItem, distance: Float) {
-        item.y -= distance
         for (child in item.getRightChild()) {
-            moveRightItems(child, distance)
+            removeChildViews(child)
         }
+        removeView(item)
     }
 
-    private fun changeParentLeftHeight(parentItem: MindMapItem, heightIncrease: Int) {
+    fun changeParentLeftHeight(parentItem: MindMapItem, heightIncrease: Int) {
         parentItem.leftTotalHeight += heightIncrease
         if (parentItem.getItemParent() != null) {
             changeParentLeftHeight(parentItem.getItemParent() as MindMapItem, heightIncrease)
         }
     }
 
-    private fun changeParentRightHeight(parentItem: MindMapItem, heightIncrease: Int) {
+    fun changeParentRightHeight(parentItem: MindMapItem, heightIncrease: Int) {
         parentItem.rightTotalHeight += heightIncrease
         if (parentItem.getItemParent() != null) {
             changeParentRightHeight(parentItem.getItemParent() as MindMapItem, heightIncrease)
         }
     }
 
-    private fun moveLeftFamily(item: MindMapItem, verMargin: Int) {
-        val centerPos = item.y + item.measuredHeight.toFloat() / 2
-        var nextTop = centerPos - item.leftTotalHeight.toFloat() / 2
+    private fun setLeftFamilyPosition(item: MindMapItem) {
+        val centerPos = item.top + item.measuredHeight / 2
+        var nextTop = centerPos - item.leftTotalHeight / 2
         for (child in item.getLeftChild()) {
-            child.y = nextTop + (child.leftTotalHeight - child.measuredHeight).toFloat() / 2
+            val l = item.left - horMargin - child.measuredWidth
+            val t = nextTop + (child.leftTotalHeight - child.measuredHeight) / 2
+            val r = l + child.measuredWidth
+            val b = t + child.measuredHeight
+            child.layout(l, t, r, b)
             nextTop += (child.leftTotalHeight + verMargin)
-            moveLeftFamily(child, verMargin)
+            setLeftFamilyPosition(child)
         }
     }
 
-    private fun moveRightFamily(item: MindMapItem, verMargin: Int) {
-        val centerPos = item.y + item.measuredHeight.toFloat() / 2
-        var nextTop = centerPos - item.rightTotalHeight.toFloat() / 2
+    private fun setRightFamilyPosition(item: MindMapItem) {
+        val centerPos = item.top + item.measuredHeight / 2
+        var nextTop = centerPos - item.rightTotalHeight / 2
         for (child in item.getRightChild()) {
-            child.y = nextTop + (child.rightTotalHeight - child.measuredHeight).toFloat() / 2
+            val l = item.right + horMargin
+            val t = nextTop + (child.rightTotalHeight - child.measuredHeight) / 2
+            val r = l + child.measuredWidth
+            val b = t + child.measuredHeight
+            child.layout(l, t, r, b)
             nextTop += (child.rightTotalHeight + verMargin)
-            moveRightFamily(child, verMargin)
+            setRightFamilyPosition(child)
         }
-    }
-
-    private fun drawEdge(canvas: Canvas, startX: Float, startY: Float, stopX: Float, stopY: Float) {
-        val paint = Paint()
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.STROKE
-        paint.color = resources.getColor(R.color.white_gray)
-        paint.strokeWidth = resources.getDimension(R.dimen.edge_width)
-
-        canvas.drawLine(startX, startY, stopX, stopY, paint)
     }
 }
