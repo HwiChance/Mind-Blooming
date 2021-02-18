@@ -24,6 +24,7 @@ class MindMapEditToolFragment(
 ) : BottomSheetDialogFragment() {
     private lateinit var mindMapAddBtn: ImageButton
     private lateinit var mindMapRemoveBtn: ImageButton
+    private lateinit var mindMapEditBtn: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +34,7 @@ class MindMapEditToolFragment(
         val view = inflater.inflate(R.layout.fragment_mind_map_edit_tool, container, false)
         mindMapAddBtn = view.findViewById(R.id.mindMapAddBtn)
         mindMapRemoveBtn = view.findViewById(R.id.mindMapRemoveBtn)
+        mindMapEditBtn = view.findViewById(R.id.mindMapEditBtn)
 
         when (mItem.itemPosition) {
             ItemPosEnum.PRIMARY -> {
@@ -90,19 +92,26 @@ class MindMapEditToolFragment(
                 .setMessage(resources.getString(R.string.delete_dialog_msg))
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .setPositiveButton(R.string.dialog_delete) { dialog, which ->
+                    val parentItem = mItem.getItemParent()!!
                     when (mItem.itemPosition) {
                         ItemPosEnum.LEFT -> {
-                            mLayout.changeParentLeftHeight(
-                                mItem,
-                                -1 * mItem.leftTotalHeight
-                            )
-                            mItem.getItemParent()?.getLeftChild()?.remove(mItem)
+                            var changes = -(mItem.leftTotalHeight + mLayout.verMargin)
+                            if (parentItem.getLeftChildSize() == 1) {
+                                changes = parentItem.leftTotalHeight - parentItem.measuredHeight
+                            }
+                            if (changes != 0) {
+                                mLayout.changeParentLeftHeight(mItem, changes)
+                            }
+                            parentItem.getLeftChild().remove(mItem)
                         }
                         ItemPosEnum.RIGHT -> {
-                            mLayout.changeParentRightHeight(
-                                mItem,
-                                -1 * mItem.rightTotalHeight
-                            )
+                            var changes = -(mItem.rightTotalHeight + mLayout.verMargin)
+                            if (parentItem.getRightChildSize() == 1) {
+                                changes = parentItem.rightTotalHeight - parentItem.measuredHeight
+                            }
+                            if (changes != 0) {
+                                mLayout.changeParentRightHeight(mItem, changes)
+                            }
                             mItem.getItemParent()?.getRightChild()?.remove(mItem)
                         }
                         else -> {
@@ -110,10 +119,72 @@ class MindMapEditToolFragment(
                         }
                     }
                     mLayout.removeChildViews(mItem)
+
                     dismiss()
                 }
                 .create()
                 .show()
+        }
+
+        mindMapEditBtn.setOnClickListener {
+            val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
+                override fun onClick(text: CharSequence) {
+                    val prevHeight = mItem.measuredHeight
+                    mItem.setItemText(text)
+                    mItem.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val nowHeight = mItem.measuredHeight
+                    when (mItem.itemPosition) {
+                        ItemPosEnum.LEFT -> {
+                            var heightIncrease = 0
+                            if (mItem.leftTotalHeight == prevHeight) {
+                                if (prevHeight > nowHeight && mItem.getLeftChildSize() == 0) {
+                                    heightIncrease = nowHeight - prevHeight
+                                } else if (prevHeight < nowHeight) {
+                                    heightIncrease = nowHeight - prevHeight
+                                }
+                            } else if (mItem.leftTotalHeight > prevHeight) {
+                                if (mItem.leftTotalHeight < nowHeight) {
+                                    heightIncrease = nowHeight - mItem.leftTotalHeight
+                                }
+                            }
+
+                            if (heightIncrease != 0) {
+                                mLayout.changeParentLeftHeight(mItem, heightIncrease)
+                            }
+                        }
+                        ItemPosEnum.RIGHT -> {
+                            var heightIncrease = 0
+                            if (mItem.rightTotalHeight == prevHeight) {
+                                if (prevHeight > nowHeight && mItem.getRightChildSize() == 0) {
+                                    heightIncrease = nowHeight - prevHeight
+                                } else if (prevHeight < nowHeight) {
+                                    heightIncrease = nowHeight - prevHeight
+                                }
+                            } else if (mItem.rightTotalHeight > prevHeight) {
+                                if (mItem.rightTotalHeight < nowHeight) {
+                                    heightIncrease = nowHeight - mItem.rightTotalHeight
+                                }
+                            }
+
+                            if (heightIncrease != 0) {
+                                mLayout.changeParentRightHeight(mItem, heightIncrease)
+                            }
+                        }
+                        else -> {
+
+                        }
+                    }
+                    dismiss()
+                }
+            }
+
+            DialogUtils.showEditTitleDialog(
+                mContext,
+                resources.getString(R.string.edit_item_text_dialog_title),
+                resources.getString(R.string.item_text_edit_hint),
+                mItem.getItemText(),
+                dialogBtnClickListener
+            )
         }
     }
 }

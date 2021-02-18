@@ -21,8 +21,8 @@ class FlexibleLayout : RelativeLayout {
     private var mScaleGestureDetector: ScaleGestureDetector? = null
     private var mGestureDetector: GestureDetectorCompat? = null
 
-    private val horMargin = 200
-    private val verMargin = 20
+    val horMargin = 200
+    val verMargin = 20
 
     // TODO: Calculate minZoom
     private val minZoom = 0.5f
