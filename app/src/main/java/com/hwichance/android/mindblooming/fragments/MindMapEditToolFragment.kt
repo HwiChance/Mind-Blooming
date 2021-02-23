@@ -55,16 +55,16 @@ class MindMapEditToolFragment(
             val item = when (mItem.itemPosition) {
                 ItemPosEnum.PRIMARY -> {
                     if (mItem.leftTotalHeight < mItem.rightTotalHeight) {
-                        MindMapItem(mContext, ItemPosEnum.LEFT, "new child", true)
+                        MindMapItem(mContext, ItemPosEnum.LEFT, "", true)
                     } else {
-                        MindMapItem(mContext, ItemPosEnum.RIGHT, "new child", true)
+                        MindMapItem(mContext, ItemPosEnum.RIGHT, "", true)
                     }
                 }
                 ItemPosEnum.LEFT -> {
-                    MindMapItem(mContext, ItemPosEnum.LEFT, "new child", true)
+                    MindMapItem(mContext, ItemPosEnum.LEFT, "", true)
                 }
                 ItemPosEnum.RIGHT -> {
-                    MindMapItem(mContext, ItemPosEnum.RIGHT, "new child", true)
+                    MindMapItem(mContext, ItemPosEnum.RIGHT, "", true)
                 }
             }
 
@@ -95,7 +95,7 @@ class MindMapEditToolFragment(
                     val parentItem = mItem.getItemParent()!!
                     when (mItem.itemPosition) {
                         ItemPosEnum.LEFT -> {
-                            var changes = -(mItem.leftTotalHeight + mLayout.verMargin)
+                            var changes = -(mItem.leftTotalHeight + mLayout.verInterval)
                             if (parentItem.getLeftChildSize() == 1) {
                                 changes = parentItem.leftTotalHeight - parentItem.measuredHeight
                             }
@@ -105,7 +105,7 @@ class MindMapEditToolFragment(
                             parentItem.getLeftChild().remove(mItem)
                         }
                         ItemPosEnum.RIGHT -> {
-                            var changes = -(mItem.rightTotalHeight + mLayout.verMargin)
+                            var changes = -(mItem.rightTotalHeight + mLayout.verInterval)
                             if (parentItem.getRightChildSize() == 1) {
                                 changes = parentItem.rightTotalHeight - parentItem.measuredHeight
                             }

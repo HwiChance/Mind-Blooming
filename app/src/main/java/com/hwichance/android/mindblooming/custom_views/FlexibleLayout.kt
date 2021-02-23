@@ -8,11 +8,13 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.children
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import kotlin.math.abs
 
 class FlexibleLayout : RelativeLayout {
 
@@ -21,10 +23,11 @@ class FlexibleLayout : RelativeLayout {
     private var mScaleGestureDetector: ScaleGestureDetector? = null
     private var mGestureDetector: GestureDetectorCompat? = null
 
-    val horMargin = 200
-    val verMargin = 20
+    private val horInterval = 250
+    val verInterval = 40
 
-    // TODO: Calculate minZoom
+    private val edgePaint = Paint()
+
     private val minZoom = 0.5f
     private val maxZoom = 4.0f
     private var scaleFactor = 1f
@@ -38,16 +41,23 @@ class FlexibleLayout : RelativeLayout {
     private var touchPoint = FloatArray(2)
 
     constructor(context: Context) : this(context, null, 0)
-
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     ) {
+        setPaint()
+
         mScaleGestureDetector = ScaleGestureDetector(context, mScaleGestureListener)
         mGestureDetector = GestureDetectorCompat(context, mGestureListener)
+    }
+
+    private fun setPaint() {
+        edgePaint.isAntiAlias = true
+        edgePaint.style = Paint.Style.STROKE
+        edgePaint.color = ContextCompat.getColor(context, R.color.white_gray)
+        edgePaint.strokeWidth = resources.getDimension(R.dimen.edge_width)
     }
 
     private val mScaleGestureListener: OnScaleGestureListener =
@@ -56,7 +66,7 @@ class FlexibleLayout : RelativeLayout {
                 val dist = scaleGestureDetector.currentSpan
                 if (dist > 10f) {
                     savedMatrix.set(mMatrix)
-                    mid[scaleGestureDetector.focusX] = scaleGestureDetector.focusY
+                    mid.set(scaleGestureDetector.focusX, scaleGestureDetector.focusY)
                 }
                 return true
             }
@@ -135,10 +145,11 @@ class FlexibleLayout : RelativeLayout {
         for (child in item.getLeftChild()) {
             drawEdge(
                 canvas,
+                item.left.toFloat(),
+                item.top + item.measuredHeight.toFloat() / 2,
                 child.left + child.measuredWidth.toFloat(),
                 child.top + child.measuredHeight.toFloat() / 2,
-                item.left.toFloat(),
-                item.top + item.measuredHeight.toFloat() / 2
+                true
             )
             findEdges(child, canvas)
         }
@@ -148,20 +159,42 @@ class FlexibleLayout : RelativeLayout {
                 item.left + item.measuredWidth.toFloat(),
                 item.top + item.measuredHeight.toFloat() / 2,
                 child.left.toFloat(),
-                child.top + child.measuredHeight.toFloat() / 2
+                child.top + child.measuredHeight.toFloat() / 2,
+                false
             )
             findEdges(child, canvas)
         }
     }
 
-    private fun drawEdge(canvas: Canvas, startX: Float, startY: Float, stopX: Float, stopY: Float) {
-        val paint = Paint()
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.STROKE
-        paint.color = resources.getColor(R.color.white_gray)
-        paint.strokeWidth = resources.getDimension(R.dimen.edge_width)
+    private fun drawEdge(canvas: Canvas, sX: Float, sY: Float, eX: Float, eY: Float, isL: Boolean) {
+        val oval = RectF()
 
-        canvas.drawLine(startX, startY, stopX, stopY, paint)
+        val verDist = abs(eY - sY)
+        val horDist = abs(eX - sX)
+
+        when {
+            sY == eY -> {
+                canvas.drawLine(sX, sY, eX, eY, edgePaint)
+            }
+            sY > eY -> {
+                if (isL) {
+                    oval.set(eX - horDist, eY, sX, sY + verDist)
+                    canvas.drawArc(oval, 270f, 90f, false, edgePaint)
+                } else {
+                    oval.set(sX, eY, eX + horDist, sY + verDist)
+                    canvas.drawArc(oval, 180f, 90f, false, edgePaint)
+                }
+            }
+            else -> {
+                if (isL) {
+                    oval.set(eX - horDist, sY - verDist, sX, eY)
+                    canvas.drawArc(oval, 0f, 90f, false, edgePaint)
+                } else {
+                    oval.set(sX, sY - verDist, eX + horDist, eY)
+                    canvas.drawArc(oval, 90f, 90f, false, edgePaint)
+                }
+            }
+        }
     }
 
     private fun scaledPointsToScreenPoints(point: FloatArray): FloatArray {
@@ -223,7 +256,7 @@ class FlexibleLayout : RelativeLayout {
             ItemPosEnum.LEFT -> {
                 var heightIncrease = 0
                 if (parentItem.getLeftChildSize() > 0) {
-                    heightIncrease = item.measuredHeight + verMargin
+                    heightIncrease = item.measuredHeight + verInterval
                 } else {
                     if (item.measuredHeight > parentItem.measuredHeight) {
                         parentItem.leftTotalHeight = parentItem.measuredHeight
@@ -242,7 +275,7 @@ class FlexibleLayout : RelativeLayout {
             ItemPosEnum.RIGHT -> {
                 var heightIncrease = 0
                 if (parentItem.getRightChildSize() > 0) {
-                    heightIncrease = item.measuredHeight + verMargin
+                    heightIncrease = item.measuredHeight + verInterval
                 } else {
                     if (item.measuredHeight > parentItem.measuredHeight) {
                         parentItem.rightTotalHeight = parentItem.measuredHeight
@@ -292,12 +325,12 @@ class FlexibleLayout : RelativeLayout {
         val centerPos = item.top + item.measuredHeight / 2
         var nextTop = centerPos - item.leftTotalHeight / 2
         for (child in item.getLeftChild()) {
-            val l = item.left - horMargin - child.measuredWidth
+            val l = item.left - horInterval - child.measuredWidth
             val t = nextTop + (child.leftTotalHeight - child.measuredHeight) / 2
             val r = l + child.measuredWidth
             val b = t + child.measuredHeight
             child.layout(l, t, r, b)
-            nextTop += (child.leftTotalHeight + verMargin)
+            nextTop += (child.leftTotalHeight + verInterval)
             setLeftFamilyPosition(child)
         }
     }
@@ -306,12 +339,12 @@ class FlexibleLayout : RelativeLayout {
         val centerPos = item.top + item.measuredHeight / 2
         var nextTop = centerPos - item.rightTotalHeight / 2
         for (child in item.getRightChild()) {
-            val l = item.right + horMargin
+            val l = item.right + horInterval
             val t = nextTop + (child.rightTotalHeight - child.measuredHeight) / 2
             val r = l + child.measuredWidth
             val b = t + child.measuredHeight
             child.layout(l, t, r, b)
-            nextTop += (child.rightTotalHeight + verMargin)
+            nextTop += (child.rightTotalHeight + verInterval)
             setRightFamilyPosition(child)
         }
     }
