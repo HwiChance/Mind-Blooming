@@ -1,17 +1,21 @@
 package com.hwichance.android.mindblooming.fragments
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.R
+import com.hwichance.android.mindblooming.adapters.ColorPaletteAdapter
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import com.hwichance.android.mindblooming.dialogs.ColorPaletteDialog
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
 import com.hwichance.android.mindblooming.utils.DialogUtils
@@ -25,6 +29,8 @@ class MindMapEditToolFragment(
     private lateinit var mindMapAddBtn: ImageButton
     private lateinit var mindMapRemoveBtn: ImageButton
     private lateinit var mindMapEditBtn: ImageButton
+    private lateinit var mindMapBgColorBtn: ImageButton
+    private lateinit var mindMapTxtColorBtn: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +41,8 @@ class MindMapEditToolFragment(
         mindMapAddBtn = view.findViewById(R.id.mindMapAddBtn)
         mindMapRemoveBtn = view.findViewById(R.id.mindMapRemoveBtn)
         mindMapEditBtn = view.findViewById(R.id.mindMapEditBtn)
+        mindMapBgColorBtn = view.findViewById(R.id.mindMapBgColorBtn)
+        mindMapTxtColorBtn = view.findViewById(R.id.mindMapTxtColorBtn)
 
         when (mItem.itemPosition) {
             ItemPosEnum.PRIMARY -> {
@@ -185,6 +193,48 @@ class MindMapEditToolFragment(
                 mItem.getItemText(),
                 dialogBtnClickListener
             )
+        }
+
+        mindMapBgColorBtn.setOnClickListener {
+            val shape = if (mItem.itemPosition == ItemPosEnum.PRIMARY) {
+                ContextCompat.getDrawable(
+                    mContext,
+                    R.drawable.primary_mind_map_item_shape
+                ) as GradientDrawable
+            } else {
+                ContextCompat.getDrawable(
+                    mContext,
+                    R.drawable.mind_map_item_shape
+                ) as GradientDrawable
+            }
+            val builder = ColorPaletteDialog(mContext)
+            val dialog = builder.setTitle(R.string.background_color_dialog_title)
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .create()
+            builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
+                override fun onClick(color: Int) {
+                    shape.setColor(color)
+                    mItem.background = shape
+                    dialog.dismiss()
+                    dismiss()
+                }
+            })
+            dialog.show()
+        }
+
+        mindMapTxtColorBtn.setOnClickListener {
+            val builder = ColorPaletteDialog(mContext)
+            val dialog = builder.setTitle(R.string.text_color_dialog_title)
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .create()
+            builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
+                override fun onClick(color: Int) {
+                    mItem.getItemTextView().setTextColor(color)
+                    dialog.dismiss()
+                    dismiss()
+                }
+            })
+            dialog.show()
         }
     }
 }

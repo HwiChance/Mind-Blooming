@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="palette_soft_pink">#F9C0C7</color>
+    <color name="palette_pink">#F2728C</color>
+    <color name="palette_red">#EF404A</color>
+    <color name="palette_orange">#F79552</color>
+
+    <color name="palette_yellow">#FFD400</color>
+    <color name="palette_yellow_green">#D5E05B</color>
+    <color name="palette_green">#80B463</color>
+    <color name="palette_green_blue">#B0DFDB</color>
+
+    <color name="palette_sky_blue">#81D3EB</color>
+    <color name="palette_blue">#27AAE1</color>
+    <color name="palette_purple">#9E7EB9</color>
+    <color name="palette_soft_purple">#BBB8DC</color>
+
+    <color name="palette_white_gray">#E9ECEF</color>
+    <color name="palette_gray">#A7A9AC</color>
+    <color name="palette_black">#000000</color>
+
+    <array name="palettes">
+        <item>@color/palette_soft_pink</item>
+        <item>@color/palette_pink</item>
+        <item>@color/palette_red</item>
+        <item>@color/palette_orange</item>
+
+        <item>@color/palette_yellow</item>
+        <item>@color/palette_yellow_green</item>
+        <item>@color/palette_green</item>
+        <item>@color/palette_green_blue</item>
+
+        <item>@color/palette_sky_blue</item>
+        <item>@color/palette_blue</item>
+        <item>@color/palette_purple</item>
+        <item>@color/palette_soft_purple</item>
+
+        <item>@color/palette_white_gray</item>
+        <item>@color/palette_gray</item>
+        <item>@color/palette_black</item>
+    </array>
+</resources>

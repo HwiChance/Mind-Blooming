@@ -67,6 +67,9 @@
     <string name="edit_item_text_dialog_title">아이템 내용 수정</string>
     <string name="delete_dialog_msg">이 아이템을 삭제하시겠습니까?</string>
 
+    <string name="background_color_dialog_title">배경색 선택</string>
+    <string name="text_color_dialog_title">글자색 선택</string>
+
     <string name="dialog_apply">적용</string>
     <string name="dialog_discard">적용 안함</string>
     <string name="dialog_delete">삭제</string>
