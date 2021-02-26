@@ -15,15 +15,17 @@ import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 import kotlin.math.abs
+import kotlin.math.max
 
 class FlexibleLayout : RelativeLayout {
 
     private lateinit var primaryItem: MindMapItem
+    private val items = ArrayList<MindMapItem>()
 
     private var mScaleGestureDetector: ScaleGestureDetector? = null
     private var mGestureDetector: GestureDetectorCompat? = null
 
-    private val horInterval = 250
+    private val horInterval = 180
     val verInterval = 40
 
     private val edgePaint = Paint()
@@ -101,6 +103,10 @@ class FlexibleLayout : RelativeLayout {
 
             return true
         }
+    }
+
+    fun getItemList(): ArrayList<MindMapItem> {
+        return items
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -238,6 +244,8 @@ class FlexibleLayout : RelativeLayout {
         addView(item)
 
         item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        item.leftTotalHeight = item.measuredHeight
+        item.rightTotalHeight = item.measuredHeight
 
         primaryItem = item
     }
@@ -248,48 +256,25 @@ class FlexibleLayout : RelativeLayout {
         item.setItemParent(parentItem)
 
         item.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-
         item.leftTotalHeight = item.measuredHeight
         item.rightTotalHeight = item.measuredHeight
 
         when (item.itemPosition) {
             ItemPosEnum.LEFT -> {
-                var heightIncrease = 0
-                if (parentItem.getLeftChildSize() > 0) {
-                    heightIncrease = item.measuredHeight + verInterval
-                } else {
-                    if (item.measuredHeight > parentItem.measuredHeight) {
-                        parentItem.leftTotalHeight = parentItem.measuredHeight
-                        heightIncrease = item.measuredHeight - parentItem.measuredHeight
-                    } else {
-                        parentItem.leftTotalHeight = item.measuredHeight
-                    }
+                parentItem.leftChildHeight += item.measuredHeight
+                if (parentItem.getLeftChildSize() != 0) {
+                    parentItem.leftChildHeight += verInterval
                 }
-
                 parentItem.addLeftChild(item)
-
-                if (heightIncrease > 0) {
-                    changeParentLeftHeight(parentItem, heightIncrease)
-                }
+                changeParentLeftHeight(parentItem)
             }
             ItemPosEnum.RIGHT -> {
-                var heightIncrease = 0
-                if (parentItem.getRightChildSize() > 0) {
-                    heightIncrease = item.measuredHeight + verInterval
-                } else {
-                    if (item.measuredHeight > parentItem.measuredHeight) {
-                        parentItem.rightTotalHeight = parentItem.measuredHeight
-                        heightIncrease = item.measuredHeight - parentItem.measuredHeight
-                    } else {
-                        parentItem.rightTotalHeight = item.measuredHeight
-                    }
+                parentItem.rightChildHeight += item.measuredHeight
+                if (parentItem.getRightChildSize() != 0) {
+                    parentItem.rightChildHeight += verInterval
                 }
-
                 parentItem.addRightChild(item)
-
-                if (heightIncrease > 0) {
-                    changeParentRightHeight(parentItem, heightIncrease)
-                }
+                changeParentRightHeight(parentItem)
             }
             else -> {
 
@@ -307,23 +292,34 @@ class FlexibleLayout : RelativeLayout {
         removeView(item)
     }
 
-    fun changeParentLeftHeight(parentItem: MindMapItem, heightIncrease: Int) {
-        parentItem.leftTotalHeight += heightIncrease
-        if (parentItem.getItemParent() != null) {
-            changeParentLeftHeight(parentItem.getItemParent() as MindMapItem, heightIncrease)
+    fun changeParentLeftHeight(parentItem: MindMapItem) {
+        if (parentItem.leftTotalHeight != parentItem.leftChildHeight) {
+            val prevHeight = parentItem.leftTotalHeight
+            parentItem.leftTotalHeight = max(parentItem.leftChildHeight, parentItem.measuredHeight)
+            val diff = parentItem.leftTotalHeight - prevHeight
+            if (parentItem.getItemParent() != null) {
+                parentItem.getItemParent()!!.leftChildHeight += diff
+                changeParentLeftHeight(parentItem.getItemParent()!!)
+            }
         }
     }
 
-    fun changeParentRightHeight(parentItem: MindMapItem, heightIncrease: Int) {
-        parentItem.rightTotalHeight += heightIncrease
-        if (parentItem.getItemParent() != null) {
-            changeParentRightHeight(parentItem.getItemParent() as MindMapItem, heightIncrease)
+    fun changeParentRightHeight(parentItem: MindMapItem) {
+        if (parentItem.rightTotalHeight != parentItem.rightChildHeight) {
+            val prevHeight = parentItem.rightTotalHeight
+            parentItem.rightTotalHeight =
+                max(parentItem.rightChildHeight, parentItem.measuredHeight)
+            val diff = parentItem.rightTotalHeight - prevHeight
+            if (parentItem.getItemParent() != null) {
+                parentItem.getItemParent()!!.rightChildHeight += diff
+                changeParentRightHeight(parentItem.getItemParent()!!)
+            }
         }
     }
 
     private fun setLeftFamilyPosition(item: MindMapItem) {
         val centerPos = item.top + item.measuredHeight / 2
-        var nextTop = centerPos - item.leftTotalHeight / 2
+        var nextTop = centerPos - item.leftChildHeight / 2
         for (child in item.getLeftChild()) {
             val l = item.left - horInterval - child.measuredWidth
             val t = nextTop + (child.leftTotalHeight - child.measuredHeight) / 2
@@ -337,7 +333,7 @@ class FlexibleLayout : RelativeLayout {
 
     private fun setRightFamilyPosition(item: MindMapItem) {
         val centerPos = item.top + item.measuredHeight / 2
-        var nextTop = centerPos - item.rightTotalHeight / 2
+        var nextTop = centerPos - item.rightChildHeight / 2
         for (child in item.getRightChild()) {
             val l = item.right + horInterval
             val t = nextTop + (child.rightTotalHeight - child.measuredHeight) / 2

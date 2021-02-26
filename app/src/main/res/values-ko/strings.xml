@@ -89,6 +89,7 @@
 
     <!-- Diagram Edit -->
     <string name="new_mind_map">새 마인드 맵</string>
+    <string name="new_flow_chart">새 플로우 차트</string>
 
     <!-- Hint -->
     <string name="title_edit_hint">새로운 제목을 입력하세요.</string>
@@ -96,4 +97,7 @@
 
     <!-- Error msg -->
     <string name="no_character">문자를 입력해주세요.</string>
+
+    <!-- Idea List -->
+    <string name="idea_list_date">마지막 수정일:</string>
 </resources>

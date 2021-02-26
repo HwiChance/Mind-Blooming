@@ -1,13 +1,14 @@
 package com.hwichance.android.mindblooming.fragments
 
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.R
@@ -16,21 +17,23 @@ import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 import com.hwichance.android.mindblooming.dialogs.ColorPaletteDialog
-import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
+import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
+import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DialogUtils
 
 class MindMapEditToolFragment(
     private val mContext: Context,
     private val mItem: MindMapItem,
-    private val listener: MindMapItemClick,
-    private val mLayout: FlexibleLayout
+    private val mLayout: FlexibleLayout,
+    private val groupId: Long
 ) : BottomSheetDialogFragment() {
     private lateinit var mindMapAddBtn: ImageButton
     private lateinit var mindMapRemoveBtn: ImageButton
     private lateinit var mindMapEditBtn: ImageButton
     private lateinit var mindMapBgColorBtn: ImageButton
     private lateinit var mindMapTxtColorBtn: ImageButton
+    private val mindMapViewModel: MindMapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,28 +63,35 @@ class MindMapEditToolFragment(
 
     private fun setBtnClickListener() {
         mindMapAddBtn.setOnClickListener {
-            val item = when (mItem.itemPosition) {
+            val itemData = MindMapItemData(
+                parentId = mItem.getItemData().itemId,
+                itemPos = ItemPosEnum.LEFT,
+                backgroundColor = getColor(mContext, R.color.crestor),
+                textColor = getColor(mContext, R.color.black),
+                itemGroup = groupId
+            )
+            when (mItem.itemPosition) {
                 ItemPosEnum.PRIMARY -> {
-                    if (mItem.leftTotalHeight < mItem.rightTotalHeight) {
-                        MindMapItem(mContext, ItemPosEnum.LEFT, "", true)
+                    if (mItem.leftChildHeight <= mItem.rightChildHeight) {
+                        itemData.itemPos = ItemPosEnum.LEFT
                     } else {
-                        MindMapItem(mContext, ItemPosEnum.RIGHT, "", true)
+                        itemData.itemPos = ItemPosEnum.RIGHT
                     }
                 }
                 ItemPosEnum.LEFT -> {
-                    MindMapItem(mContext, ItemPosEnum.LEFT, "", true)
+                    itemData.itemPos = ItemPosEnum.LEFT
                 }
                 ItemPosEnum.RIGHT -> {
-                    MindMapItem(mContext, ItemPosEnum.RIGHT, "", true)
+                    itemData.itemPos = ItemPosEnum.RIGHT
                 }
             }
 
             val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
                 override fun onClick(text: CharSequence) {
-                    item.setItemText(text)
-                    item.setOnItemClick(listener)
-                    mLayout.addItem(item, mItem)
-
+                    itemData.itemText = text.toString()
+                    mindMapViewModel.insert(itemData) { id ->
+                        itemData.itemId = id
+                    }
                     dismiss()
                 }
             }
@@ -99,33 +109,32 @@ class MindMapEditToolFragment(
             MaterialAlertDialogBuilder(mContext)
                 .setMessage(resources.getString(R.string.delete_dialog_msg))
                 .setNegativeButton(R.string.dialog_cancel, null)
-                .setPositiveButton(R.string.dialog_delete) { dialog, which ->
+                .setPositiveButton(R.string.dialog_delete) { _, _ ->
                     val parentItem = mItem.getItemParent()!!
                     when (mItem.itemPosition) {
                         ItemPosEnum.LEFT -> {
-                            var changes = -(mItem.leftTotalHeight + mLayout.verInterval)
-                            if (parentItem.getLeftChildSize() == 1) {
-                                changes = parentItem.leftTotalHeight - parentItem.measuredHeight
+                            var changes = -mItem.leftTotalHeight
+                            if (parentItem.getLeftChildSize() > 1) {
+                                changes -= mLayout.verInterval
                             }
-                            if (changes != 0) {
-                                mLayout.changeParentLeftHeight(mItem, changes)
-                            }
+                            parentItem.leftChildHeight += changes
+                            mLayout.changeParentLeftHeight(parentItem)
                             parentItem.getLeftChild().remove(mItem)
                         }
                         ItemPosEnum.RIGHT -> {
-                            var changes = -(mItem.rightTotalHeight + mLayout.verInterval)
-                            if (parentItem.getRightChildSize() == 1) {
-                                changes = parentItem.rightTotalHeight - parentItem.measuredHeight
+                            var changes = -mItem.rightTotalHeight
+                            if (parentItem.getRightChildSize() > 1) {
+                                changes -= mLayout.verInterval
                             }
-                            if (changes != 0) {
-                                mLayout.changeParentRightHeight(mItem, changes)
-                            }
-                            mItem.getItemParent()?.getRightChild()?.remove(mItem)
+                            parentItem.rightChildHeight += changes
+                            mLayout.changeParentRightHeight(parentItem)
+                            parentItem.getRightChild().remove(mItem)
                         }
                         else -> {
 
                         }
                     }
+                    removeFromDB(mItem)
                     mLayout.removeChildViews(mItem)
 
                     dismiss()
@@ -137,51 +146,8 @@ class MindMapEditToolFragment(
         mindMapEditBtn.setOnClickListener {
             val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
                 override fun onClick(text: CharSequence) {
-                    val prevHeight = mItem.measuredHeight
-                    mItem.setItemText(text)
-                    mItem.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    val nowHeight = mItem.measuredHeight
-                    when (mItem.itemPosition) {
-                        ItemPosEnum.LEFT -> {
-                            var heightIncrease = 0
-                            if (mItem.leftTotalHeight == prevHeight) {
-                                if (prevHeight > nowHeight && mItem.getLeftChildSize() == 0) {
-                                    heightIncrease = nowHeight - prevHeight
-                                } else if (prevHeight < nowHeight) {
-                                    heightIncrease = nowHeight - prevHeight
-                                }
-                            } else if (mItem.leftTotalHeight > prevHeight) {
-                                if (mItem.leftTotalHeight < nowHeight) {
-                                    heightIncrease = nowHeight - mItem.leftTotalHeight
-                                }
-                            }
-
-                            if (heightIncrease != 0) {
-                                mLayout.changeParentLeftHeight(mItem, heightIncrease)
-                            }
-                        }
-                        ItemPosEnum.RIGHT -> {
-                            var heightIncrease = 0
-                            if (mItem.rightTotalHeight == prevHeight) {
-                                if (prevHeight > nowHeight && mItem.getRightChildSize() == 0) {
-                                    heightIncrease = nowHeight - prevHeight
-                                } else if (prevHeight < nowHeight) {
-                                    heightIncrease = nowHeight - prevHeight
-                                }
-                            } else if (mItem.rightTotalHeight > prevHeight) {
-                                if (mItem.rightTotalHeight < nowHeight) {
-                                    heightIncrease = nowHeight - mItem.rightTotalHeight
-                                }
-                            }
-
-                            if (heightIncrease != 0) {
-                                mLayout.changeParentRightHeight(mItem, heightIncrease)
-                            }
-                        }
-                        else -> {
-
-                        }
-                    }
+                    mItem.getItemData().itemText = text.toString()
+                    mindMapViewModel.update(mItem.getItemData())
                     dismiss()
                 }
             }
@@ -196,25 +162,14 @@ class MindMapEditToolFragment(
         }
 
         mindMapBgColorBtn.setOnClickListener {
-            val shape = if (mItem.itemPosition == ItemPosEnum.PRIMARY) {
-                ContextCompat.getDrawable(
-                    mContext,
-                    R.drawable.primary_mind_map_item_shape
-                ) as GradientDrawable
-            } else {
-                ContextCompat.getDrawable(
-                    mContext,
-                    R.drawable.mind_map_item_shape
-                ) as GradientDrawable
-            }
             val builder = ColorPaletteDialog(mContext)
             val dialog = builder.setTitle(R.string.background_color_dialog_title)
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .create()
             builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
                 override fun onClick(color: Int) {
-                    shape.setColor(color)
-                    mItem.background = shape
+                    mItem.getItemData().backgroundColor = color
+                    mindMapViewModel.update(mItem.getItemData())
                     dialog.dismiss()
                     dismiss()
                 }
@@ -229,12 +184,24 @@ class MindMapEditToolFragment(
                 .create()
             builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
                 override fun onClick(color: Int) {
-                    mItem.getItemTextView().setTextColor(color)
+                    mItem.getItemData().textColor = color
+                    mindMapViewModel.update(mItem.getItemData())
                     dialog.dismiss()
                     dismiss()
                 }
             })
             dialog.show()
         }
+    }
+
+    private fun removeFromDB(item: MindMapItem) {
+        for (child in item.getLeftChild()) {
+            removeFromDB(child)
+        }
+        for (child in item.getRightChild()) {
+            removeFromDB(child)
+        }
+        mLayout.getItemList().remove(item)
+        mindMapViewModel.delete(item.getItemData())
     }
 }

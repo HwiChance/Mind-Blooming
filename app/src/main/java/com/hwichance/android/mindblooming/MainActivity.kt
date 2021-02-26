@@ -9,16 +9,22 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
+import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
@@ -28,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var versionTextView: TextView
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
+    private lateinit var mainRecyclerView: RecyclerView
+    private val ideaViewModel: IdeaViewModel by viewModels()
+    private var ideaListAdapter = IdeaListAdapter()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.TITLE
 
@@ -47,6 +56,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        ideaViewModel.getAllIdeas().observe(this, { ideas ->
+            ideaListAdapter.setIdeaList(ideas)
+        })
         bindViews()
     }
 
@@ -68,6 +80,21 @@ class MainActivity : AppCompatActivity() {
         versionTextView = mainNavigationDrawer.getHeaderView(0).findViewById(R.id.versionTextView)
         searchItem = mainToolbar.menu.findItem(R.id.mainSearchMenu)
         searchView = searchItem.actionView as SearchView
+
+        mainRecyclerView = findViewById(R.id.mainRecyclerView)
+        ideaListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+            override fun onClick(idea: IdeaData) {
+                val intent = Intent(this@MainActivity, MindMapEditActivity::class.java)
+                intent.putExtra("groupId", idea.ideaId)
+                startActivity(intent)
+            }
+
+            override fun onLongClick(idea: IdeaData) {
+                ideaViewModel.delete(idea)
+            }
+        })
+        mainRecyclerView.adapter = ideaListAdapter
+        mainRecyclerView.layoutManager = LinearLayoutManager(this)
 
         setVersionText()
         setSearchAction()

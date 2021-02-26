@@ -19,5 +19,6 @@ class ColorPaletteDialog(context: Context) : MaterialAlertDialogBuilder(context)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(context, 4)
         setView(view)
+        setCancelable(false)
     }
 }

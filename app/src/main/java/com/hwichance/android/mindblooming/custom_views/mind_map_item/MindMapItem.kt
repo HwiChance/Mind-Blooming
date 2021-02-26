@@ -6,16 +6,25 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
+import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
+import kotlin.math.max
 
 class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     LinearLayout(context, attrs, defStyleAttr) {
 
+    private lateinit var itemData: MindMapItemData
     var itemPosition = ItemPosEnum.PRIMARY
     var leftTotalHeight = 0
     var rightTotalHeight = 0
+    var leftChildHeight = 0
+    var rightChildHeight = 0
+
+    private lateinit var shape: GradientDrawable
+
     private lateinit var itemTextView: TextView
 
     private var itemParent: MindMapItem? = null
@@ -26,22 +35,17 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0)
-    constructor(context: Context, pos: ItemPosEnum, text: String, isDefaultStyle: Boolean) : this(
-        context,
-        null,
-        0
-    ) {
-        itemPosition = pos
+    constructor(context: Context, data: MindMapItemData) : this(context, null, 0) {
+        itemData = data
+        itemPosition = itemData.itemPos
 
         isClickable = true
         orientation = VERTICAL
         gravity = Gravity.CENTER
 
-        addItemTextView(text)
-
-        if (isDefaultStyle) {
-            setDefaultStyle()
-        }
+        addItemTextView(itemData.itemText)
+        setBaseStyle()
+        setColorStyle(itemData.backgroundColor, itemData.textColor)
     }
 
     private fun addItemTextView(text: String) {
@@ -52,8 +56,8 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         addView(itemTextView)
     }
 
-    fun getItemTextView(): TextView {
-        return itemTextView
+    fun getItemData(): MindMapItemData {
+        return itemData
     }
 
     fun addLeftChild(item: MindMapItem) {
@@ -68,10 +72,6 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return leftChildItems.size
     }
 
-    fun getLeftChildByIndex(idx: Int): MindMapItem {
-        return leftChildItems[idx]
-    }
-
     fun addRightChild(item: MindMapItem) {
         rightChildItems.add(item)
     }
@@ -84,12 +84,29 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return rightChildItems.size
     }
 
-    fun getRightChildByIndex(idx: Int): MindMapItem {
-        return rightChildItems[idx]
-    }
-
-    fun setItemText(text: CharSequence) {
+    private fun setItemText(text: CharSequence) {
         itemTextView.text = text
+        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+
+        when (itemPosition) {
+            ItemPosEnum.LEFT -> {
+                val prevHeight = leftTotalHeight
+                leftTotalHeight = max(leftTotalHeight, measuredHeight)
+                if(prevHeight != leftTotalHeight && itemParent != null) {
+                    itemParent!!.leftChildHeight += (leftTotalHeight - prevHeight)
+                }
+            }
+            ItemPosEnum.RIGHT -> {
+                val prevHeight = rightTotalHeight
+                rightTotalHeight = max(rightTotalHeight, measuredHeight)
+                if(prevHeight != rightTotalHeight && itemParent != null) {
+                    itemParent!!.rightChildHeight += (rightTotalHeight - prevHeight)
+                }
+            }
+            else -> {
+
+            }
+        }
     }
 
     fun getItemText(): String {
@@ -104,20 +121,31 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         return itemParent
     }
 
-    private fun setDefaultStyle() {
-        val shape = GradientDrawable()
+    private fun setBaseStyle() {
         when (itemPosition) {
             ItemPosEnum.PRIMARY -> {
-                shape.setColor(resources.getColor(R.color.blube))
-                shape.cornerRadius = resources.getDimension(R.dimen.primary_item_corner_radius)
+                shape = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.primary_mind_map_item_shape
+                ) as GradientDrawable
                 itemTextView.gravity = Gravity.CENTER
-                itemTextView.setTextAppearance(context, R.style.primary_item_text_style)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    itemTextView.setTextAppearance(R.style.primary_item_text_style)
+                } else {
+                    itemTextView.setTextAppearance(context, R.style.primary_item_text_style)
+                }
             }
             else -> {
-                shape.setColor(resources.getColor(R.color.crestor))
-                shape.cornerRadius = resources.getDimension(R.dimen.item_corner_radius)
+                shape = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.mind_map_item_shape
+                ) as GradientDrawable
                 itemTextView.gravity = Gravity.START
-                itemTextView.setTextAppearance(context, R.style.item_text_style)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    itemTextView.setTextAppearance(R.style.item_text_style)
+                } else {
+                    itemTextView.setTextAppearance(context, R.style.item_text_style)
+                }
             }
         }
         background = shape
@@ -129,8 +157,20 @@ class MindMapItem(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         )
     }
 
+    private fun setColorStyle(bgColor: Int, txtColor: Int) {
+        shape.setColor(bgColor)
+        background = shape
+        itemTextView.setTextColor(txtColor)
+    }
+
     fun setOnItemClick(listener: MindMapItemClick) {
         itemClickListener = listener
+    }
+
+    fun applyChanges(data: MindMapItemData) {
+        itemData = data
+        setColorStyle(itemData.backgroundColor, itemData.textColor)
+        setItemText(itemData.itemText)
     }
 
     override fun performClick(): Boolean {

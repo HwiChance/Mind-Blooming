@@ -46,6 +46,7 @@ class DialogUtils {
                 .setView(view)
                 .setNegativeButton(context.resources.getString(R.string.dialog_cancel), null)
                 .setPositiveButton(context.resources.getString(R.string.dialog_ok), null)
+                .setCancelable(false)
                 .create()
 
             dialog.setOnShowListener {

@@ -12,7 +12,7 @@
     <!-- item style -->
     <dimen name="primary_item_corner_radius">32dp</dimen>
     <dimen name="item_corner_radius">24dp</dimen>
-    <dimen name="primary_item_text_size">16dp</dimen>
+    <dimen name="primary_item_text_size">24dp</dimen>
     <dimen name="item_text_size">12dp</dimen>
 
     <dimen name="item_padding_vertical">16dp</dimen>

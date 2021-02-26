@@ -93,6 +93,7 @@
 
     <!-- Diagram Edit -->
     <string name="new_mind_map">New Mind Map</string>
+    <string name="new_flow_chart">New Flow Chart</string>
 
     <!-- Hint -->
     <string name="title_edit_hint">Input new title</string>
@@ -100,4 +101,7 @@
 
     <!-- Error msg -->
     <string name="no_character">Please enter a letter.</string>
+
+    <!-- Idea List -->
+    <string name="idea_list_date">Last modified Date:</string>
 </resources>

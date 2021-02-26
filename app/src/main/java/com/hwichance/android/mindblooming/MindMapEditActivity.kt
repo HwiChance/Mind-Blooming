@@ -2,31 +2,48 @@ package com.hwichance.android.mindblooming
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.getColor
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 import com.hwichance.android.mindblooming.fragments.MindMapEditToolFragment
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
+import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
+import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DialogUtils
 
 class MindMapEditActivity : AppCompatActivity() {
     private lateinit var mindMapEditToolbar: Toolbar
     private lateinit var mindMapTitleTextView: TextView
     private lateinit var editFlexibleLayout: FlexibleLayout
+    private lateinit var ideaData: IdeaData
+
+    private val ideaViewModel: IdeaViewModel by viewModels()
+    private val mindMapViewModel: MindMapViewModel by viewModels()
+    private var groupId: Long = -1L
 
     private val itemClickListener = object : MindMapItemClick {
         override fun onClick(item: MindMapItem) {
-            MindMapEditToolFragment(this@MindMapEditActivity, item, this, editFlexibleLayout)
-                .show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
+            MindMapEditToolFragment(
+                this@MindMapEditActivity,
+                item,
+                editFlexibleLayout,
+                groupId
+            ).show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
         }
     }
 
     private val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
         override fun onClick(text: CharSequence) {
-            mindMapTitleTextView.text = text
+            ideaData.ideaTitle = text.toString()
+            ideaViewModel.update(ideaData)
         }
     }
 
@@ -35,6 +52,52 @@ class MindMapEditActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mind_map_edit)
 
         bindViews()
+
+        groupId = intent.getLongExtra("groupId", -1L)
+        val isNewIdea = intent.getBooleanExtra("isNewIdea", false)
+
+        setInitialState(isNewIdea)
+
+        ideaViewModel.findOneIdeaById(groupId).observe(this, { idea ->
+            ideaData = idea
+            mindMapTitleTextView.text = ideaData.ideaTitle
+        })
+
+        mindMapViewModel.getAll(groupId).observe(this, { items ->
+            if (items.isNotEmpty()) {
+                val mindMapItems = editFlexibleLayout.getItemList()
+                val arraySize = mindMapItems.size
+                val listSize = items.size
+                for (i in 0 until arraySize) {
+                    mindMapItems[i].applyChanges(items[i])
+                    when (mindMapItems[i].itemPosition) {
+                        ItemPosEnum.LEFT -> {
+                            if (mindMapItems[i].getItemParent() != null) {
+                                editFlexibleLayout.changeParentLeftHeight(mindMapItems[i].getItemParent()!!)
+                            }
+                        }
+                        ItemPosEnum.RIGHT -> {
+                            if (mindMapItems[i].getItemParent() != null) {
+                                editFlexibleLayout.changeParentRightHeight(mindMapItems[i].getItemParent()!!)
+                            }
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+                for (i in arraySize until listSize) {
+                    val newItem = MindMapItem(this, items[i])
+                    newItem.setOnItemClick(itemClickListener)
+                    mindMapItems.add(newItem)
+                    if (items[i].itemPos != ItemPosEnum.PRIMARY) {
+                        val parentItem =
+                            mindMapItems.find { item -> (item.getItemData().itemId == items[i].parentId) }
+                        editFlexibleLayout.addItem(newItem, parentItem!!)
+                    }
+                }
+            }
+        })
     }
 
     private fun bindViews() {
@@ -42,41 +105,26 @@ class MindMapEditActivity : AppCompatActivity() {
         mindMapTitleTextView = findViewById(R.id.mindMapTitleTextView)
         editFlexibleLayout = findViewById(R.id.editFlexibleLayout)
 
-        setInitialState()
         setToolbarListener()
     }
 
-    private fun setInitialState() {
-        mindMapTitleTextView.text = getString(R.string.new_mind_map)
-
-        val primaryItem = MindMapItem(this, ItemPosEnum.PRIMARY, "hello world", true)
-        editFlexibleLayout.addPrimaryItem(primaryItem)
-        val item1 = MindMapItem(this, ItemPosEnum.LEFT, "child 1", true)
-        val item2 = MindMapItem(this, ItemPosEnum.LEFT, "child 2", true)
-        val item3 = MindMapItem(this, ItemPosEnum.LEFT, "child 3", true)
-        val item4 = MindMapItem(this, ItemPosEnum.LEFT, "child 4", true)
-        val item5 = MindMapItem(this, ItemPosEnum.RIGHT, "child 5", true)
-        val item6 = MindMapItem(this, ItemPosEnum.RIGHT, "child 6", true)
-        val item7 = MindMapItem(this, ItemPosEnum.RIGHT, "child 7", true)
-        val item8 = MindMapItem(this, ItemPosEnum.RIGHT, "child 8", true)
-        val item9 = MindMapItem(
-            this,
-            ItemPosEnum.RIGHT,
-            "child 9 asdkasdjkasjdkasjdkasjdkasjdkajdkajsdkajsdkajsdkajsdkajsdkjasdkajkdjaksjdaskdj",
-            true
+    private fun setInitialState(isNewIdea: Boolean) {
+        val primaryItemData = MindMapItemData(
+            itemPos = ItemPosEnum.PRIMARY,
+            itemText = getString(R.string.new_mind_map),
+            backgroundColor = getColor(this, R.color.blube),
+            textColor = getColor(this, R.color.white),
+            itemGroup = groupId
         )
-        val item10 = MindMapItem(this, ItemPosEnum.RIGHT, "child 10\nhi\nhello\nzz", true)
+        val primaryItem = MindMapItem(this, primaryItemData)
         primaryItem.setOnItemClick(itemClickListener)
-        editFlexibleLayout.addItem(item1, primaryItem)
-        editFlexibleLayout.addItem(item2, primaryItem)
-        editFlexibleLayout.addItem(item3, primaryItem)
-        editFlexibleLayout.addItem(item4, primaryItem)
-        editFlexibleLayout.addItem(item5, primaryItem)
-        editFlexibleLayout.addItem(item6, primaryItem)
-        editFlexibleLayout.addItem(item7, item6)
-        editFlexibleLayout.addItem(item10, item7)
-        editFlexibleLayout.addItem(item8, item6)
-        editFlexibleLayout.addItem(item9, item6)
+        editFlexibleLayout.addPrimaryItem(primaryItem)
+        editFlexibleLayout.getItemList().add(primaryItem)
+        if (isNewIdea) {
+            mindMapViewModel.insert(primaryItemData) { id ->
+                primaryItem.getItemData().itemId = id
+            }
+        }
     }
 
     private fun setToolbarListener() {
