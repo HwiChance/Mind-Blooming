@@ -8,18 +8,27 @@ import android.view.MenuItem
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 
 class StarredActivity : AppCompatActivity() {
     private lateinit var starredToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
-    private lateinit var starredFab: FloatingActionButton
+    private lateinit var starredRecyclerView: RecyclerView
+    private val starredListAdapter = IdeaListAdapter()
+    private val ideaViewModel: IdeaViewModel by viewModels()
+    private val mindMapViewModel: MindMapViewModel by viewModels()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.TITLE
 
@@ -39,6 +48,10 @@ class StarredActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_starred)
 
+        ideaViewModel.findStarredIdea(true).observe(this, { ideas ->
+            starredListAdapter.setIdeaList(ideas)
+        })
+
         bindViews()
     }
 
@@ -53,13 +66,27 @@ class StarredActivity : AppCompatActivity() {
 
     private fun bindViews() {
         starredToolbar = findViewById(R.id.starredToolbar)
-        starredFab = findViewById(R.id.starredFab)
         searchItem = starredToolbar.menu.findItem(R.id.starredSearchMenu)
         searchView = searchItem.actionView as SearchView
 
+        starredRecyclerView = findViewById(R.id.starredRecyclerView)
+        starredListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+            override fun onClick(idea: IdeaData) {
+                val intent = Intent(this@StarredActivity, MindMapEditActivity::class.java)
+                intent.putExtra("groupId", idea.ideaId)
+                startActivity(intent)
+            }
+
+            override fun onLongClick(idea: IdeaData) {
+                mindMapViewModel.deleteByGroupId(idea.ideaId!!)
+                ideaViewModel.delete(idea)
+            }
+        })
+        starredRecyclerView.adapter = starredListAdapter
+        starredRecyclerView.layoutManager = LinearLayoutManager(this)
+
         setSearchAction()
         setToolbarListener()
-        setFabListener()
     }
 
     private fun setSearchAction() {
@@ -96,12 +123,6 @@ class StarredActivity : AppCompatActivity() {
                 }
             }
             true
-        }
-    }
-
-    private fun setFabListener() {
-        starredFab.setOnClickListener {
-
         }
     }
 

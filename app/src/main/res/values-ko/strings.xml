@@ -29,10 +29,13 @@
     <string name="series_delete_menu_description">시리즈를 삭제합니다.</string>
     <string name="add_idea_menu">아이디어 추가</string>
     <string name="add_idea_menu_description">시리즈에 아이디어를 추가합니다.</string>
+
     <string name="idea_title_edit_menu">아이디어 제목 수정</string>
     <string name="idea_title_edit_menu_description">아이디어 제목을 수정합니다.</string>
     <string name="idea_save_menu">아이디어 저장</string>
     <string name="idea_save_menu_description">아이디어를 저장합니다.</string>
+    <string name="idea_delete_menu">아이디어 삭제</string>
+    <string name="idea_delete_menu_description">아이디어를 삭제합니다.</string>
 
     <string name="drawer_export_menu">내보내기</string>
     <string name="drawer_starred_menu">즐겨찾기</string>
@@ -65,7 +68,8 @@
     <string name="edit_title_dialog_title">제목 수정</string>
     <string name="add_item_dialog_title">새 아이템 추가</string>
     <string name="edit_item_text_dialog_title">아이템 내용 수정</string>
-    <string name="delete_dialog_msg">이 아이템을 삭제하시겠습니까?</string>
+    <string name="item_delete_dialog_msg">이 아이템을 삭제하시겠습니까?</string>
+    <string name="idea_delete_dialog_msg">이 아이디어를 삭제하시겠습니까?</string>
 
     <string name="background_color_dialog_title">배경색 선택</string>
     <string name="text_color_dialog_title">글자색 선택</string>

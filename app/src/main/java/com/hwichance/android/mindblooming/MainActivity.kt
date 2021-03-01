@@ -25,6 +25,7 @@ import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
     private lateinit var mainRecyclerView: RecyclerView
     private val ideaViewModel: IdeaViewModel by viewModels()
+    private val mindMapViewModel: MindMapViewModel by viewModels()
     private var ideaListAdapter = IdeaListAdapter()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.TITLE
@@ -59,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         ideaViewModel.getAllIdeas().observe(this, { ideas ->
             ideaListAdapter.setIdeaList(ideas)
         })
+
         bindViews()
     }
 
@@ -90,6 +93,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onLongClick(idea: IdeaData) {
+                mindMapViewModel.deleteByGroupId(idea.ideaId!!)
                 ideaViewModel.delete(idea)
             }
         })
@@ -105,7 +109,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setVersionText() {
         val versionText = getString(R.string.version_text)
-        versionTextView.text = (versionText + BuildConfig.VERSION_NAME)
+        val pi = packageManager.getPackageInfo("com.hwichance.android.mindblooming", 0)
+        versionTextView.text = (versionText + pi.versionName)
     }
 
     private fun setSearchAction() {

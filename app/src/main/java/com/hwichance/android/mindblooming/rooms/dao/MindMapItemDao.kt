@@ -14,8 +14,11 @@ interface MindMapItemDao {
     suspend fun insertItem(data: MindMapItemData): Long
 
     @Update
-    suspend fun updateItem(data:MindMapItemData)
+    suspend fun updateItem(data: MindMapItemData)
 
     @Delete
     suspend fun deleteItem(data: MindMapItemData)
+
+    @Query("DELETE FROM mind_map_item_data WHERE item_group_id = (:itemGroupId)")
+    suspend fun deleteItemByGroupId(itemGroupId: Long)
 }

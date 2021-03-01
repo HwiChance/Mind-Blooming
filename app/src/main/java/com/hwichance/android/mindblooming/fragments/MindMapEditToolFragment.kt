@@ -2,7 +2,6 @@ package com.hwichance.android.mindblooming.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,9 @@ import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPos
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
 import com.hwichance.android.mindblooming.dialogs.ColorPaletteDialog
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
+import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
+import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DialogUtils
 
@@ -28,12 +29,14 @@ class MindMapEditToolFragment(
     private val mLayout: FlexibleLayout,
     private val groupId: Long
 ) : BottomSheetDialogFragment() {
+    private lateinit var ideaData: IdeaData
     private lateinit var mindMapAddBtn: ImageButton
     private lateinit var mindMapRemoveBtn: ImageButton
     private lateinit var mindMapEditBtn: ImageButton
     private lateinit var mindMapBgColorBtn: ImageButton
     private lateinit var mindMapTxtColorBtn: ImageButton
     private val mindMapViewModel: MindMapViewModel by activityViewModels()
+    private val ideaViewModel: IdeaViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +49,10 @@ class MindMapEditToolFragment(
         mindMapEditBtn = view.findViewById(R.id.mindMapEditBtn)
         mindMapBgColorBtn = view.findViewById(R.id.mindMapBgColorBtn)
         mindMapTxtColorBtn = view.findViewById(R.id.mindMapTxtColorBtn)
+
+        ideaViewModel.findOneIdeaById(groupId).observe(this, { idea ->
+            ideaData = idea
+        })
 
         when (mItem.itemPosition) {
             ItemPosEnum.PRIMARY -> {
@@ -92,6 +99,7 @@ class MindMapEditToolFragment(
                     mindMapViewModel.insert(itemData) { id ->
                         itemData.itemId = id
                     }
+                    updateChangesAndModifiedDate()
                     dismiss()
                 }
             }
@@ -107,7 +115,7 @@ class MindMapEditToolFragment(
 
         mindMapRemoveBtn.setOnClickListener {
             MaterialAlertDialogBuilder(mContext)
-                .setMessage(resources.getString(R.string.delete_dialog_msg))
+                .setMessage(resources.getString(R.string.item_delete_dialog_msg))
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .setPositiveButton(R.string.dialog_delete) { _, _ ->
                     val parentItem = mItem.getItemParent()!!
@@ -135,6 +143,7 @@ class MindMapEditToolFragment(
                         }
                     }
                     removeFromDB(mItem)
+                    updateChangesAndModifiedDate()
                     mLayout.removeChildViews(mItem)
 
                     dismiss()
@@ -148,6 +157,7 @@ class MindMapEditToolFragment(
                 override fun onClick(text: CharSequence) {
                     mItem.getItemData().itemText = text.toString()
                     mindMapViewModel.update(mItem.getItemData())
+                    updateChangesAndModifiedDate()
                     dismiss()
                 }
             }
@@ -170,6 +180,7 @@ class MindMapEditToolFragment(
                 override fun onClick(color: Int) {
                     mItem.getItemData().backgroundColor = color
                     mindMapViewModel.update(mItem.getItemData())
+                    updateChangesAndModifiedDate()
                     dialog.dismiss()
                     dismiss()
                 }
@@ -186,6 +197,7 @@ class MindMapEditToolFragment(
                 override fun onClick(color: Int) {
                     mItem.getItemData().textColor = color
                     mindMapViewModel.update(mItem.getItemData())
+                    updateChangesAndModifiedDate()
                     dialog.dismiss()
                     dismiss()
                 }
@@ -203,5 +215,10 @@ class MindMapEditToolFragment(
         }
         mLayout.getItemList().remove(item)
         mindMapViewModel.delete(item.getItemData())
+    }
+
+    private fun updateChangesAndModifiedDate() {
+        ideaData.modifiedDate = System.currentTimeMillis()
+        ideaViewModel.update(ideaData)
     }
 }

@@ -32,10 +32,13 @@
     <string name="series_delete_menu_description">Delete the series</string>
     <string name="add_idea_menu">Add idea</string>
     <string name="add_idea_menu_description">Add ideas to the series</string>
+
     <string name="idea_title_edit_menu">Edit Idea Title</string>
     <string name="idea_title_edit_menu_description">Edit the idea title</string>
     <string name="idea_save_menu">Save Idea</string>
     <string name="idea_save_menu_description">Save the idea</string>
+    <string name="idea_delete_menu">Delete Idea</string>
+    <string name="idea_delete_menu_description">Delete the idea</string>
 
     <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
@@ -70,7 +73,8 @@
     <string name="edit_title_dialog_title">Edit title</string>
     <string name="add_item_dialog_title">Add new item</string>
     <string name="edit_item_text_dialog_title">Edit item text</string>
-    <string name="delete_dialog_msg">Are you sure you want to delete this item?</string>
+    <string name="item_delete_dialog_msg">Are you sure you want to delete this item?</string>
+    <string name="idea_delete_dialog_msg">Are you sure you want to delete this idea?</string>
 
     <string name="background_color_dialog_title">Select background color</string>
     <string name="text_color_dialog_title">Select text color</string>

@@ -37,6 +37,10 @@ class IdeaRepository(application: Application) {
         return ideaDao.getOneIdeaById(ideaId)
     }
 
+    fun findStarredIdea(isStarred: Boolean): LiveData<List<IdeaData>> {
+        return ideaDao.getStarredIdea(isStarred)
+    }
+
     suspend fun insert(idea: IdeaData): Long {
         return ideaDao.insertIdea(idea)
     }

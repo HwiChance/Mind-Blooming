@@ -34,7 +34,7 @@ class AddDiagramFragment : BottomSheetDialogFragment() {
         addMindMapBtn.setOnClickListener {
             val date = System.currentTimeMillis()
             val title = getString(R.string.new_mind_map)
-            val newIdea = IdeaData(null, title, date, date, true)
+            val newIdea = IdeaData(null, title, date, date, true, null)
             ideaViewModel.insert(newIdea) { groupId ->
                 val intent = Intent(context, MindMapEditActivity::class.java)
                 intent.putExtra("groupId", groupId)
@@ -46,7 +46,7 @@ class AddDiagramFragment : BottomSheetDialogFragment() {
         addFlowChartBtn.setOnClickListener {
             val date = System.currentTimeMillis()
             val title = getString(R.string.new_flow_chart)
-            val newIdea = IdeaData(null, title, date, date, false)
+            val newIdea = IdeaData(null, title, date, date, false, null)
             ideaViewModel.insert(newIdea) {
                 // TODO: go flow chart edit activity
             }

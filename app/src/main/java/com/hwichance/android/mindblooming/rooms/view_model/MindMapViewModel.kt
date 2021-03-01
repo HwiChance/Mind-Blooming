@@ -31,4 +31,8 @@ class MindMapViewModel(application: Application) : AndroidViewModel(application)
     fun delete(item: MindMapItemData) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(item)
     }
+
+    fun deleteByGroupId(itemGroupId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteByGroupId(itemGroupId)
+    }
 }

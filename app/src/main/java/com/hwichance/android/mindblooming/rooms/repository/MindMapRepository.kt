@@ -27,4 +27,8 @@ class MindMapRepository(application: Application) {
     suspend fun delete(item: MindMapItemData) {
         mindMapItemDao.deleteItem(item)
     }
+
+    suspend fun deleteByGroupId(itemGroupId: Long) {
+        mindMapItemDao.deleteItemByGroupId(itemGroupId)
+    }
 }

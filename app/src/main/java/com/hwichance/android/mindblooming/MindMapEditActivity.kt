@@ -2,11 +2,11 @@ package com.hwichance.android.mindblooming
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.getColor
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
@@ -43,7 +43,7 @@ class MindMapEditActivity : AppCompatActivity() {
     private val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
         override fun onClick(text: CharSequence) {
             ideaData.ideaTitle = text.toString()
-            ideaViewModel.update(ideaData)
+            updateChangesAndModifiedDate()
         }
     }
 
@@ -59,8 +59,16 @@ class MindMapEditActivity : AppCompatActivity() {
         setInitialState(isNewIdea)
 
         ideaViewModel.findOneIdeaById(groupId).observe(this, { idea ->
-            ideaData = idea
-            mindMapTitleTextView.text = ideaData.ideaTitle
+            if (idea != null) {
+                ideaData = idea
+                mindMapTitleTextView.text = idea.ideaTitle
+                val star = mindMapEditToolbar.menu.findItem(R.id.ideaStarredMenu)
+                if (idea.isStarred) {
+                    star.setIcon(R.drawable.ic_star_24dp)
+                } else {
+                    star.setIcon(R.drawable.ic_star_border_24dp)
+                }
+            }
         })
 
         mindMapViewModel.getAll(groupId).observe(this, { items ->
@@ -129,7 +137,7 @@ class MindMapEditActivity : AppCompatActivity() {
 
     private fun setToolbarListener() {
         mindMapEditToolbar.setNavigationOnClickListener {
-
+            finish()
         }
 
         mindMapEditToolbar.setOnMenuItemClickListener { menuItem ->
@@ -143,11 +151,30 @@ class MindMapEditActivity : AppCompatActivity() {
                         dialogBtnClickListener
                     )
                 }
-                R.id.ideaSaveMenu -> {
-
+                R.id.ideaStarredMenu -> {
+                    ideaData.isStarred = !ideaData.isStarred
+                    updateChangesAndModifiedDate()
+                }
+                R.id.ideaDeleteMenu -> {
+                    MaterialAlertDialogBuilder(this)
+                        .setMessage(R.string.idea_delete_dialog_msg)
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .setPositiveButton(R.string.dialog_ok) { _, _ ->
+                            mindMapViewModel.deleteByGroupId(groupId)
+                            ideaViewModel.delete(ideaData)
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .create()
+                        .show()
                 }
             }
             true
         }
+    }
+
+    private fun updateChangesAndModifiedDate() {
+        ideaData.modifiedDate = System.currentTimeMillis()
+        ideaViewModel.update(ideaData)
     }
 }

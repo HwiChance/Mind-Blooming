@@ -25,6 +25,10 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
         return repository.findOneIdeaById(ideaId)
     }
 
+    fun findStarredIdea(isStarred: Boolean): LiveData<List<IdeaData>> {
+        return repository.findStarredIdea(isStarred)
+    }
+
     fun insert(idea: IdeaData, func: (id: Long) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         func(repository.insert(idea))
     }
