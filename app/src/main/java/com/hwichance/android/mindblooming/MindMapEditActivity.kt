@@ -153,6 +153,7 @@ class MindMapEditActivity : AppCompatActivity() {
                 }
                 R.id.ideaStarredMenu -> {
                     ideaData.isStarred = !ideaData.isStarred
+                    ideaData.starredDate = System.currentTimeMillis()
                     updateChangesAndModifiedDate()
                 }
                 R.id.ideaDeleteMenu -> {

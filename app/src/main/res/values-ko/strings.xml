@@ -54,9 +54,11 @@
     <string name="filter_class_all">전체</string>
     <string name="filter_class_mind_map">마인드 맵</string>
     <string name="filter_class_flow_chart">플로우 차트</string>
+
     <string name="filter_group_sort">정렬</string>
-    <string name="filter_sort_date">마지막 수정일</string>
     <string name="filter_sort_title">제목</string>
+    <string name="filter_sort_created_date">생성일</string>
+    <string name="filter_sort_modified_date">마지막 수정일</string>
     <string name="filter_sort_starred">즐겨찾기 추가일</string>
     <string name="filter_sort_series">시리즈 추가일</string>
 

@@ -30,7 +30,7 @@ class StarredActivity : AppCompatActivity() {
     private val ideaViewModel: IdeaViewModel by viewModels()
     private val mindMapViewModel: MindMapViewModel by viewModels()
     private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.TITLE
+    private var sortFilter = SortEnum.CREATED_DATE
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -61,6 +61,7 @@ class StarredActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
                 sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
+                starredListAdapter.filtering(classFilter, sortFilter)
             }
         }
 

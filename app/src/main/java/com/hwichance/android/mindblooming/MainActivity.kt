@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val mindMapViewModel: MindMapViewModel by viewModels()
     private var ideaListAdapter = IdeaListAdapter()
     private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.TITLE
+    private var sortFilter = SortEnum.CREATED_DATE
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
                 sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
+                ideaListAdapter.filtering(classFilter, sortFilter)
             }
         }
 

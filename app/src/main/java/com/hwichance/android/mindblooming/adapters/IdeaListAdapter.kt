@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hwichance.android.mindblooming.R
+import com.hwichance.android.mindblooming.enums.DiagramClassEnum
+import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.utils.DateTimeUtils
 
@@ -39,7 +41,7 @@ class IdeaListAdapter : RecyclerView.Adapter<IdeaListAdapter.IdeaListViewHolder>
     override fun getItemCount(): Int = showList.size
 
     fun setIdeaList(ideas: List<IdeaData>) {
-        ideaList = ideas
+        ideaList = ideas.reversed()
         showList = ideaList
         notifyDataSetChanged()
     }
@@ -51,6 +53,22 @@ class IdeaListAdapter : RecyclerView.Adapter<IdeaListAdapter.IdeaListViewHolder>
             }
         } else {
             ideaList
+        }
+        notifyDataSetChanged()
+    }
+
+    fun filtering(classFilter: DiagramClassEnum, sortFilter: SortEnum) {
+        showList = when (classFilter) {
+            DiagramClassEnum.ALL -> ideaList
+            DiagramClassEnum.MIND_MAP -> ideaList.filter { data -> data.isMindMap }
+            DiagramClassEnum.FLOW_CHART -> ideaList.filter { data -> !data.isMindMap }
+        }
+        showList = when (sortFilter) {
+            SortEnum.CREATED_DATE -> showList.sortedByDescending { data -> data.createdDate }
+            SortEnum.LAST_MODIFIED_DATE -> showList.sortedByDescending { data -> data.modifiedDate }
+            SortEnum.TITLE -> showList.sortedBy { data -> data.ideaTitle }
+            SortEnum.STARRED_DATE -> showList.sortedByDescending { data -> data.starredDate }
+            SortEnum.SERIES_ADDED_DATE -> showList.sortedByDescending { data -> data.seriesAddedDate }
         }
         notifyDataSetChanged()
     }

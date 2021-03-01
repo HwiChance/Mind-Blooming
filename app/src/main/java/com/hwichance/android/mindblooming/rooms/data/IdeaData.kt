@@ -13,5 +13,7 @@ data class IdeaData(
     @ColumnInfo(name = "modified_date") var modifiedDate: Long,
     @ColumnInfo(name = "is_mind_map") var isMindMap: Boolean,
     @ColumnInfo(name = "series") var seriesId: Long?,
+    @ColumnInfo(name = "starred_date") var starredDate: Long? = null,
+    @ColumnInfo(name = "series_added_date") var seriesAddedDate: Long? = null,
     @ColumnInfo(name = "is_starred") var isStarred: Boolean = false
 )

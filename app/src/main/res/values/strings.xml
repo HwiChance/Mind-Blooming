@@ -59,9 +59,11 @@
     <string name="filter_class_all">All</string>
     <string name="filter_class_mind_map">Mind map</string>
     <string name="filter_class_flow_chart">Flow chart</string>
+
     <string name="filter_group_sort">SORT BY</string>
-    <string name="filter_sort_date">Last modified Date</string>
     <string name="filter_sort_title">Title</string>
+    <string name="filter_sort_created_date">Created Date</string>
+    <string name="filter_sort_modified_date">Last modified Date</string>
     <string name="filter_sort_starred">Starred Date</string>
     <string name="filter_sort_series">Series added Date</string>
 

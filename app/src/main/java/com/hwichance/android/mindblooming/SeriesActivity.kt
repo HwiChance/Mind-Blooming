@@ -38,7 +38,7 @@ class SeriesActivity : AppCompatActivity() {
     private lateinit var seriesTitle: TextView
     private lateinit var seriesTitleText: String
     private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.TITLE
+    private var sortFilter = SortEnum.CREATED_DATE
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -66,6 +66,7 @@ class SeriesActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
                 sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
+                //TODO: Filtering - adpater.filtering(classFilter, sortFilter)
             }
         }
 

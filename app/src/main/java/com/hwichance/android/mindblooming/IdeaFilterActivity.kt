@@ -21,7 +21,8 @@ class IdeaFilterActivity : AppCompatActivity() {
     private lateinit var mindMapChip: Chip
     private lateinit var flowChart: Chip
     private lateinit var titleChip: Chip
-    private lateinit var dateChip: Chip
+    private lateinit var createdDateChip: Chip
+    private lateinit var modifiedDateChip: Chip
     private lateinit var starredChip: Chip
     private lateinit var seriesChip: Chip
     private lateinit var resetBtn: Button
@@ -49,7 +50,8 @@ class IdeaFilterActivity : AppCompatActivity() {
         mindMapChip = findViewById(R.id.classMindMapChip)
         flowChart = findViewById(R.id.classFlowChartChip)
         titleChip = findViewById(R.id.sortTitleChip)
-        dateChip = findViewById(R.id.sortDateChip)
+        createdDateChip = findViewById(R.id.sortCreatedDateChip)
+        modifiedDateChip = findViewById(R.id.sortModifiedDateChip)
         starredChip = findViewById(R.id.sortStarredChip)
         seriesChip = findViewById(R.id.sortSeriesChip)
         resetBtn = findViewById(R.id.filterResetBtn)
@@ -83,7 +85,8 @@ class IdeaFilterActivity : AppCompatActivity() {
 
     private fun getCheckedSort(): SortEnum {
         return when (sortChipGroup.checkedChipId) {
-            R.id.sortDateChip -> SortEnum.LAST_MODIFIED_DATE
+            R.id.sortCreatedDateChip -> SortEnum.CREATED_DATE
+            R.id.sortModifiedDateChip -> SortEnum.LAST_MODIFIED_DATE
             R.id.sortStarredChip -> SortEnum.STARRED_DATE
             R.id.sortSeriesChip -> SortEnum.SERIES_ADDED_DATE
             else -> SortEnum.TITLE
@@ -108,7 +111,8 @@ class IdeaFilterActivity : AppCompatActivity() {
 
         when (sortFilter) {
             SortEnum.TITLE -> sortChipGroup.check(R.id.sortTitleChip)
-            SortEnum.LAST_MODIFIED_DATE -> sortChipGroup.check(R.id.sortDateChip)
+            SortEnum.CREATED_DATE -> sortChipGroup.check(R.id.sortCreatedDateChip)
+            SortEnum.LAST_MODIFIED_DATE -> sortChipGroup.check(R.id.sortModifiedDateChip)
             SortEnum.STARRED_DATE -> sortChipGroup.check(R.id.sortStarredChip)
             SortEnum.SERIES_ADDED_DATE -> sortChipGroup.check(R.id.sortSeriesChip)
         }
@@ -117,7 +121,7 @@ class IdeaFilterActivity : AppCompatActivity() {
     private fun setResetClickListener() {
         resetBtn.setOnClickListener {
             classChipGroup.check(R.id.classAllChip)
-            sortChipGroup.check(R.id.sortTitleChip)
+            sortChipGroup.check(R.id.sortCreatedDateChip)
         }
     }
 

@@ -96,19 +96,19 @@
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/sortTitleChip"
+                android:id="@+id/sortCreatedDateChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/filter_sort_title" />
+                android:text="@string/filter_sort_created_date" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/sortDateChip"
+                android:id="@+id/sortModifiedDateChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/filter_sort_date" />
+                android:text="@string/filter_sort_modified_date" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/sortStarredChip"
@@ -123,6 +123,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/filter_sort_series" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/sortTitleChip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_sort_title" />
+
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 
