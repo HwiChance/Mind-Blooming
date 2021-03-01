@@ -96,12 +96,11 @@ class StarredActivity : AppCompatActivity() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // TODO("Not yet implemented")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // TODO("Not yet implemented")
+                starredListAdapter.filtering(newText)
                 return true
             }
         })

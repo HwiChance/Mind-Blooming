@@ -16,6 +16,7 @@ class IdeaListAdapter : RecyclerView.Adapter<IdeaListAdapter.IdeaListViewHolder>
     }
 
     private var ideaList = listOf<IdeaData>()
+    private var showList = listOf<IdeaData>()
     private lateinit var ideaClickListener: IdeaClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IdeaListViewHolder {
@@ -25,20 +26,32 @@ class IdeaListAdapter : RecyclerView.Adapter<IdeaListAdapter.IdeaListViewHolder>
     }
 
     override fun onBindViewHolder(holder: IdeaListViewHolder, position: Int) {
-        holder.setViews(ideaList[position].ideaTitle, ideaList[position].modifiedDate)
+        holder.setViews(showList[position].ideaTitle, showList[position].modifiedDate)
         holder.itemView.setOnClickListener {
-            ideaClickListener.onClick(ideaList[position])
+            ideaClickListener.onClick(showList[position])
         }
         holder.itemView.setOnLongClickListener {
-            ideaClickListener.onLongClick(ideaList[position])
+            ideaClickListener.onLongClick(showList[position])
             true
         }
     }
 
-    override fun getItemCount(): Int = ideaList.size
+    override fun getItemCount(): Int = showList.size
 
     fun setIdeaList(ideas: List<IdeaData>) {
         ideaList = ideas
+        showList = ideaList
+        notifyDataSetChanged()
+    }
+
+    fun filtering(text: String?) {
+        showList = if (text != null && text.isNotEmpty()) {
+            ideaList.filter { data ->
+                data.ideaTitle.toLowerCase().contains(text.toLowerCase())
+            }
+        } else {
+            ideaList
+        }
         notifyDataSetChanged()
     }
 
