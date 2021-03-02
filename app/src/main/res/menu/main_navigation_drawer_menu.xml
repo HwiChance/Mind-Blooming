@@ -24,6 +24,10 @@
             android:title="@string/drawer_series_title">
             <menu>
                 <item
+                    android:id="@+id/mainDrawerSeriesList"
+                    android:icon="@drawable/ic_bookmarks_24dp"
+                    android:title="@string/drawer_series_list" />
+                <item
                     android:id="@+id/mainDrawerSeriesOne"
                     android:icon="@drawable/ic_bookmark_24dp"
                     android:title="@string/drawer_series_one" />
@@ -33,19 +37,6 @@
                     android:title="@string/drawer_series_two" />
                 <item
                     android:id="@+id/mainDrawerSeriesThree"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_three" />
-
-                <item
-                    android:id="@+id/mainDrawerSeriesO"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_one" />
-                <item
-                    android:id="@+id/mainDrawerSeriesT"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_two" />
-                <item
-                    android:id="@+id/mainDrawerSeriesTh"
                     android:icon="@drawable/ic_bookmark_24dp"
                     android:title="@string/drawer_series_three" />
             </menu>

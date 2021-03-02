@@ -12,7 +12,11 @@ class MindMapRepository(application: Application) {
         db.mindMapItemDao()
     }
 
-    fun getAll(groupId: Long): LiveData<List<MindMapItemData>> {
+    fun getAll():LiveData<List<MindMapItemData>> {
+        return mindMapItemDao.getAllItems()
+    }
+
+    fun getAllByGroupId(groupId: Long): LiveData<List<MindMapItemData>> {
         return mindMapItemDao.getItemsByGroupId(groupId)
     }
 
@@ -30,5 +34,9 @@ class MindMapRepository(application: Application) {
 
     suspend fun deleteByGroupId(itemGroupId: Long) {
         mindMapItemDao.deleteItemByGroupId(itemGroupId)
+    }
+
+    suspend fun deleteItems(itemGroupIds: List<Long>) {
+        mindMapItemDao.deleteItemInList(itemGroupIds)
     }
 }

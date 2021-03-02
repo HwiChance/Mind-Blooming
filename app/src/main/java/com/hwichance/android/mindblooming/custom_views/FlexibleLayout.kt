@@ -12,8 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.children
 import com.hwichance.android.mindblooming.R
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
-import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import kotlin.math.abs
 import kotlin.math.max
 

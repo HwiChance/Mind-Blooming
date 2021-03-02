@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/filterApplyMenu"
-        android:contentDescription="@string/filter_apply_description"
         android:icon="@drawable/ic_check_24dp"
         android:title="@string/filter_apply"
         app:showAsAction="always"/>

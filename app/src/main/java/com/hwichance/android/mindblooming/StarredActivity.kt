@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +67,64 @@ class StarredActivity : AppCompatActivity() {
             }
         }
 
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            menuInflater.inflate(R.menu.toolbar_action_mode_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            val count = starredListAdapter.getCheckedItemCount()
+            val selectAllIcon = menu?.findItem(R.id.actionModeSelectAll)
+            val deleteIcon = menu?.findItem(R.id.actionModeDelete)
+
+            mode?.title = count.toString() + getString(R.string.selected_idea_count)
+
+            when (count) {
+                starredListAdapter.itemCount -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_colored_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+                0 -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = false
+                }
+                else -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+            }
+            return true
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.actionModeSelectAll -> {
+                    if (starredListAdapter.getCheckedItemCount() == starredListAdapter.itemCount) {
+                        starredListAdapter.initializeChecked(false)
+                    } else {
+                        starredListAdapter.initializeChecked(true)
+                    }
+                    mode?.invalidate()
+                    true
+                }
+                R.id.actionModeDelete -> {
+                    val deleteList = starredListAdapter.getCheckedItemIds()
+                    mindMapViewModel.deleteItems(deleteList)
+                    ideaViewModel.deleteIdeas(deleteList)
+                    mode?.finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            starredListAdapter.setActionMode(false)
+            starredListAdapter.initializeChecked(false)
+        }
+    }
+
     private fun bindViews() {
         starredToolbar = findViewById(R.id.starredToolbar)
         searchItem = starredToolbar.menu.findItem(R.id.starredSearchMenu)
@@ -72,15 +132,25 @@ class StarredActivity : AppCompatActivity() {
 
         starredRecyclerView = findViewById(R.id.starredRecyclerView)
         starredListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
-            override fun onClick(idea: IdeaData) {
-                val intent = Intent(this@StarredActivity, MindMapEditActivity::class.java)
-                intent.putExtra("groupId", idea.ideaId)
-                startActivity(intent)
+            var actionMode: ActionMode? = null
+            override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
+                if (isActionMode) {
+                    starredListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                } else {
+                    val intent = Intent(this@StarredActivity, MindMapEditActivity::class.java)
+                    intent.putExtra("groupId", idea.ideaId)
+                    startActivity(intent)
+                }
             }
 
-            override fun onLongClick(idea: IdeaData) {
-                mindMapViewModel.deleteByGroupId(idea.ideaId!!)
-                ideaViewModel.delete(idea)
+            override fun onLongClick(isActionMode: Boolean, position: Int) {
+                if (!isActionMode) {
+                    actionMode = startSupportActionMode(actionModeCallback)
+                    starredListAdapter.setActionMode(true)
+                    starredListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                }
             }
         })
         starredRecyclerView.adapter = starredListAdapter

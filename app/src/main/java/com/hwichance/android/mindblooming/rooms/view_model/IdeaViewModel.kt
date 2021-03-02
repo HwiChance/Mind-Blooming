@@ -17,7 +17,7 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
         return ideaList
     }
 
-    fun findIdeasByIds(ideaIds: LongArray): LiveData<List<IdeaData>> {
+    fun findIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>> {
         return repository.findIdeasByIds(ideaIds)
     }
 
@@ -39,5 +39,9 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun delete(idea: IdeaData) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(idea)
+    }
+
+    fun deleteIdeas(ideaIds: List<Long>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteIdeas(ideaIds)
     }
 }

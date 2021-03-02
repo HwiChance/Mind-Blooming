@@ -43,4 +43,10 @@
     <style name="item_text_style">
         <item name="android:textSize">@dimen/item_text_size</item>
     </style>
+
+    <style name="Widget.App.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="titleTextStyle">?attr/textAppearanceSubtitle1</item>
+        <item name="subtitleTextStyle">?attr/textAppearanceSubtitle2</item>
+        <item name="background">@color/indigo</item>
+    </style>
 </resources>

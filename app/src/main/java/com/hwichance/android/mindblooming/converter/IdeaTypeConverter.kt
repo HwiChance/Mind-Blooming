@@ -1,7 +1,7 @@
 package com.hwichance.android.mindblooming.converter
 
 import androidx.room.TypeConverter
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
 
 class IdeaTypeConverter {
     @TypeConverter

@@ -4,13 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -76,6 +77,65 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            menuInflater.inflate(R.menu.toolbar_action_mode_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            val count = ideaListAdapter.getCheckedItemCount()
+            val selectAllIcon = menu?.findItem(R.id.actionModeSelectAll)
+            val deleteIcon = menu?.findItem(R.id.actionModeDelete)
+
+            mode?.title = count.toString() + getString(R.string.selected_idea_count)
+
+            when (count) {
+                ideaListAdapter.itemCount -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_colored_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+                0 -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = false
+                }
+                else -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+            }
+            return true
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.actionModeSelectAll -> {
+                    if (ideaListAdapter.getCheckedItemCount() == ideaListAdapter.itemCount) {
+                        ideaListAdapter.initializeChecked(false)
+                    } else {
+                        ideaListAdapter.initializeChecked(true)
+                    }
+                    mode?.invalidate()
+                    true
+                }
+                R.id.actionModeDelete -> {
+                    val deleteList = ideaListAdapter.getCheckedItemIds()
+                    mindMapViewModel.deleteItems(deleteList)
+                    ideaViewModel.deleteIdeas(deleteList)
+                    mode?.finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            ideaListAdapter.setActionMode(false)
+            ideaListAdapter.initializeChecked(false)
+            mainFab.show()
+        }
+    }
+
     private fun bindViews() {
         mainToolbar = findViewById(R.id.mainToolbar)
         mainDrawerLayout = findViewById(R.id.mainDrawerLayout)
@@ -88,15 +148,26 @@ class MainActivity : AppCompatActivity() {
 
         mainRecyclerView = findViewById(R.id.mainRecyclerView)
         ideaListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
-            override fun onClick(idea: IdeaData) {
-                val intent = Intent(this@MainActivity, MindMapEditActivity::class.java)
-                intent.putExtra("groupId", idea.ideaId)
-                startActivity(intent)
+            var actionMode: ActionMode? = null
+            override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
+                if (isActionMode) {
+                    ideaListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                } else {
+                    val intent = Intent(this@MainActivity, MindMapEditActivity::class.java)
+                    intent.putExtra("groupId", idea.ideaId)
+                    startActivity(intent)
+                }
             }
 
-            override fun onLongClick(idea: IdeaData) {
-                mindMapViewModel.deleteByGroupId(idea.ideaId!!)
-                ideaViewModel.delete(idea)
+            override fun onLongClick(isActionMode: Boolean, position: Int) {
+                if (!isActionMode) {
+                    actionMode = startSupportActionMode(actionModeCallback)
+                    ideaListAdapter.setActionMode(true)
+                    ideaListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                    mainFab.hide()
+                }
             }
         })
         mainRecyclerView.adapter = ideaListAdapter
@@ -143,6 +214,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.mainDrawerSetting -> {
 
+                }
+                R.id.mainDrawerSeriesList -> {
+                    startActivity(Intent(this, SeriesListActivity::class.java))
                 }
                 else -> {
                     val seriesIntent = Intent(this, SeriesActivity::class.java)

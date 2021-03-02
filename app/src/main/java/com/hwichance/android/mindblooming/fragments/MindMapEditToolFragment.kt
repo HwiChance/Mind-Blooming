@@ -13,8 +13,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.adapters.ColorPaletteAdapter
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
-import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
+import com.hwichance.android.mindblooming.custom_views.MindMapItem
 import com.hwichance.android.mindblooming.dialogs.ColorPaletteDialog
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
 import com.hwichance.android.mindblooming.rooms.data.IdeaData

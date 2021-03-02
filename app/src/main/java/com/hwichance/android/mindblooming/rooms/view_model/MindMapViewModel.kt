@@ -13,9 +13,13 @@ class MindMapViewModel(application: Application) : AndroidViewModel(application)
     private val repository = MindMapRepository(application)
     private var mindMapItems: LiveData<List<MindMapItemData>>? = null
 
-    fun getAll(groupId: Long): LiveData<List<MindMapItemData>> {
+    fun getAll(): LiveData<List<MindMapItemData>> {
+        return repository.getAll()
+    }
+
+    fun getAllByGroupId(groupId: Long): LiveData<List<MindMapItemData>> {
         return mindMapItems ?: synchronized(this) {
-            mindMapItems ?: repository.getAll(groupId).also { mindMapItems = it }
+            mindMapItems ?: repository.getAllByGroupId(groupId).also { mindMapItems = it }
         }
     }
 
@@ -34,5 +38,9 @@ class MindMapViewModel(application: Application) : AndroidViewModel(application)
 
     fun deleteByGroupId(itemGroupId: Long) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteByGroupId(itemGroupId)
+    }
+
+    fun deleteItems(itemGroupIds: List<Long>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteItems(itemGroupIds)
     }
 }

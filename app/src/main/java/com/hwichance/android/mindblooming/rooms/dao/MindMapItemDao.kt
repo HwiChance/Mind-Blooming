@@ -7,6 +7,9 @@ import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 
 @Dao
 interface MindMapItemDao {
+    @Query("SELECT * FROM mind_map_item_data")
+    fun getAllItems(): LiveData<List<MindMapItemData>>
+
     @Query("SELECT * FROM mind_map_item_data WHERE item_group_id = (:itemGroupId)")
     fun getItemsByGroupId(itemGroupId: Long): LiveData<List<MindMapItemData>>
 
@@ -21,4 +24,7 @@ interface MindMapItemDao {
 
     @Query("DELETE FROM mind_map_item_data WHERE item_group_id = (:itemGroupId)")
     suspend fun deleteItemByGroupId(itemGroupId: Long)
+
+    @Query("DELETE FROM mind_map_item_data WHERE item_group_id IN (:itemGroupIds)")
+    suspend fun deleteItemInList(itemGroupIds: List<Long>)
 }

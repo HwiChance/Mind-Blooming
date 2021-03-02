@@ -11,7 +11,7 @@ interface IdeaDao {
     fun getAll(): LiveData<List<IdeaData>>
 
     @Query("SELECT * FROM idea_data WHERE idea_id IN (:ideaIds)")
-    fun getIdeasByIds(ideaIds: LongArray): LiveData<List<IdeaData>>
+    fun getIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>>
 
     @Query("SELECT * FROM idea_data WHERE idea_id = :ideaId")
     fun getOneIdeaById(ideaId: Long): LiveData<IdeaData>
@@ -27,4 +27,7 @@ interface IdeaDao {
 
     @Delete
     suspend fun deleteIdea(idea: IdeaData)
+
+    @Query("DELETE FROM idea_data WHERE idea_id IN (:ideaIds)")
+    suspend fun deleteIdeaInList(ideaIds: List<Long>)
 }

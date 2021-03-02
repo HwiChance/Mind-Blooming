@@ -1,4 +1,4 @@
-package com.hwichance.android.mindblooming.custom_views.mind_map_item
+package com.hwichance.android.mindblooming.custom_views
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.hwichance.android.mindblooming.R
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 import kotlin.math.max

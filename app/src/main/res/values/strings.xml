@@ -25,26 +25,23 @@
 
     <!-- menu -->
     <string name="search_menu">Search</string>
-    <string name="search_menu_description">Search for ideas</string>
     <string name="filter_menu">Filter</string>
-    <string name="filter_menu_description">Filter the idea list</string>
     <string name="series_delete_menu">Delete series</string>
-    <string name="series_delete_menu_description">Delete the series</string>
     <string name="add_idea_menu">Add idea</string>
-    <string name="add_idea_menu_description">Add ideas to the series</string>
 
     <string name="idea_title_edit_menu">Edit Idea Title</string>
-    <string name="idea_title_edit_menu_description">Edit the idea title</string>
     <string name="idea_save_menu">Save Idea</string>
-    <string name="idea_save_menu_description">Save the idea</string>
     <string name="idea_delete_menu">Delete Idea</string>
-    <string name="idea_delete_menu_description">Delete the idea</string>
+
+    <string name="action_mode_select_all_menu">Select all</string>
+    <string name="action_mode_delete_menu">Delete</string>
 
     <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
     <string name="drawer_setting_menu">Setting</string>
 
     <string name="drawer_series_title">Series</string>
+    <string name="drawer_series_list">Series list</string>
     <string name="drawer_series_one">Series 1</string>
     <string name="drawer_series_two">Series 2</string>
     <string name="drawer_series_three">Series 3</string>
@@ -52,7 +49,6 @@
     <string name="version_text" translatable="false">Ver.</string>
 
     <string name="filter_apply">Apply</string>
-    <string name="filter_apply_description">Filter apply</string>
 
     <!-- filter -->
     <string name="filter_group_class">CLASS</string>
@@ -110,4 +106,5 @@
 
     <!-- Idea List -->
     <string name="idea_list_date">Last modified Date:</string>
+    <string name="selected_idea_count">\t selected</string>
 </resources>

@@ -8,8 +8,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.getColor
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
-import com.hwichance.android.mindblooming.custom_views.mind_map_item.MindMapItem
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
+import com.hwichance.android.mindblooming.custom_views.MindMapItem
 import com.hwichance.android.mindblooming.fragments.MindMapEditToolFragment
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
@@ -71,7 +71,7 @@ class MindMapEditActivity : AppCompatActivity() {
             }
         })
 
-        mindMapViewModel.getAll(groupId).observe(this, { items ->
+        mindMapViewModel.getAllByGroupId(groupId).observe(this, { items ->
             if (items.isNotEmpty()) {
                 val mindMapItems = editFlexibleLayout.getItemList()
                 val arraySize = mindMapItems.size

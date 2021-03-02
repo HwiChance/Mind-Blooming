@@ -29,7 +29,7 @@ class IdeaRepository(application: Application) {
         return ideaList
     }
 
-    fun findIdeasByIds(ideaIds: LongArray): LiveData<List<IdeaData>> {
+    fun findIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>> {
         return ideaDao.getIdeasByIds(ideaIds)
     }
 
@@ -51,5 +51,9 @@ class IdeaRepository(application: Application) {
 
     suspend fun delete(idea: IdeaData) {
         ideaDao.deleteIdea(idea)
+    }
+
+    suspend fun deleteIdeas(ideaIds: List<Long>) {
+        ideaDao.deleteIdeaInList(ideaIds)
     }
 }

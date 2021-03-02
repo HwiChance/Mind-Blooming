@@ -3,7 +3,7 @@ package com.hwichance.android.mindblooming.rooms.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.hwichance.android.mindblooming.custom_views.flexible_view_use.ItemPosEnum
+import com.hwichance.android.mindblooming.enums.ItemPosEnum
 
 @Entity(tableName = "mind_map_item_data")
 data class MindMapItemData(

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/seriesSearchMenu"
-        android:contentDescription="@string/search_menu_description"
         android:icon="@drawable/ic_search_24dp"
         android:title="@string/search_menu"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
@@ -11,14 +10,12 @@
 
     <item
         android:id="@+id/seriesFilterMenu"
-        android:contentDescription="@string/filter_menu_description"
         android:icon="@drawable/ic_filter_list_24dp"
         android:title="@string/filter_menu"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/seriesDeleteMenu"
-        android:contentDescription="@string/series_delete_menu_description"
         android:icon="@drawable/ic_delete_24dp"
         android:title="@string/series_delete_menu"
         app:showAsAction="ifRoom" />
