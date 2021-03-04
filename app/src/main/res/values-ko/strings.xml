@@ -17,18 +17,21 @@
     <string name="main_toolbar_hint">아이디어 검색</string>
     <string name="filter_toolbar_title">필터</string>
     <string name="starred_toolbar_title">즐겨찾기</string>
+    <string name="series_list_toolbar_title">시리즈 목록</string>
     <string name="series_title_edit">제목</string>
     <string name="series_description_edit">설명</string>
 
     <!-- menu -->
     <string name="search_menu">검색</string>
     <string name="filter_menu">필터</string>
+    <string name="series_add_menu">시리즈 추가</string>
     <string name="series_delete_menu">시리즈 삭제</string>
     <string name="add_idea_menu">아이디어 추가</string>
 
     <string name="idea_title_edit_menu">아이디어 제목 수정</string>
     <string name="idea_save_menu">아이디어 저장</string>
     <string name="idea_delete_menu">아이디어 삭제</string>
+    <string name="idea_series_add_menu">시리즈에 추가</string>
 
     <string name="action_mode_select_all_menu">모두 선택</string>
     <string name="action_mode_delete_menu">삭제</string>
@@ -61,6 +64,7 @@
     <!-- AlertDialog -->
     <string name="filter_dialog_title">변경 사항 존재</string>
     <string name="filter_dialog_msg">변경 사항을 적용하시겠습니까?</string>
+    <string name="delete_dialog_msg">삭제하시겠습니까?</string>
     <string name="series_delete_dialog_title">시리즈 삭제</string>
     <string name="series_delete_dialog_msg">이 시리즈를 삭제하시겠습니까?</string>
     <string name="edit_title_dialog_title">제목 수정</string>
@@ -80,7 +84,6 @@
 
     <!-- Fab -->
     <string name="main_add_fab">아이디어를 추가합니다.</string>
-    <string name="starred_add_fab">즐겨찾기에 아이디어를 추가합니다.</string>
     <string name="series_add_fab">시리즈에 아이디어를 추가합니다.</string>
 
 
@@ -96,11 +99,17 @@
     <!-- Hint -->
     <string name="title_edit_hint">새로운 제목을 입력하세요.</string>
     <string name="item_text_edit_hint">아이템 내용을 입력하세요.</string>
+    <string name="series_add_hint">시리즈 추가</string>
 
     <!-- Error msg -->
     <string name="no_character">문자를 입력해주세요.</string>
+    <string name="no_character_toast">문자가 입력되야 합니다.</string>
 
     <!-- Idea List -->
     <string name="idea_list_date">마지막 수정일:</string>
     <string name="selected_idea_count">개 선택됨</string>
+
+    <!-- Series -->
+    <string name="new_series">새 시리즈</string>
+    <string name="no_series">시리즈 없음</string>
 </resources>

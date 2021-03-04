@@ -29,6 +29,10 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
         return repository.findStarredIdea(isStarred)
     }
 
+    fun findIdeaInSeries(seriesId: Long): LiveData<List<IdeaData>> {
+        return repository.findIdeaInSeries(seriesId)
+    }
+
     fun insert(idea: IdeaData, func: (id: Long) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         func(repository.insert(idea))
     }
@@ -36,6 +40,20 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
     fun update(idea: IdeaData) = viewModelScope.launch(Dispatchers.IO) {
         repository.update(idea)
     }
+
+    fun updateStar(isStarred: Boolean, ideaIds: List<Long>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateStar(isStarred, ideaIds)
+        }
+
+    fun updateSeries(ideaIds: List<Long>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateSeries(ideaIds)
+    }
+
+    fun updateSeriesDelete(seriesIds: List<Long>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateSeriesDelete(seriesIds)
+    }
+
 
     fun delete(idea: IdeaData) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(idea)

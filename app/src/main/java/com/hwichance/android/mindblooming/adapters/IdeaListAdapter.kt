@@ -120,6 +120,14 @@ class IdeaListAdapter : RecyclerView.Adapter<IdeaListAdapter.IdeaListViewHolder>
         return ids.toList()
     }
 
+    fun getItemIds(): List<Long> {
+        val ids = ArrayList<Long>()
+        for(idea in ideaList) {
+            ids.add(idea.ideaId!!)
+        }
+        return ids.toList()
+    }
+
     fun setIdeaClickListener(listener: IdeaClickListener) {
         ideaClickListener = listener
     }

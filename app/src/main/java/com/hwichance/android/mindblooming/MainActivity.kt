@@ -28,6 +28,7 @@ import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
     private val ideaViewModel: IdeaViewModel by viewModels()
     private val mindMapViewModel: MindMapViewModel by viewModels()
+    private val seriesViewModel: SeriesViewModel by viewModels()
     private var ideaListAdapter = IdeaListAdapter()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.CREATED_DATE
@@ -60,11 +62,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        bindViews()
+
         ideaViewModel.getAllIdeas().observe(this, { ideas ->
             ideaListAdapter.setIdeaList(ideas)
         })
 
-        bindViews()
+        seriesViewModel.findFavoriteSeries(true).observe(this, { seriesList ->
+            val container = mainNavigationDrawer.menu.findItem(R.id.seriesGroupTitle).subMenu
+            container.clear()
+            container.add(getString(R.string.drawer_series_list))
+                .setIcon(R.drawable.ic_bookmarks_24dp)
+                .setOnMenuItemClickListener {
+                    startActivity(Intent(this, SeriesListActivity::class.java))
+                    false
+                }
+            for (series in seriesList) {
+                container.add(series.seriesTitle)
+                    .setIcon(R.drawable.ic_bookmark_24dp)
+                    .setOnMenuItemClickListener {
+                        val seriesIntent = Intent(this, SeriesActivity::class.java)
+                        seriesIntent.putExtra("seriesId", series.seriesId)
+                        startActivity(seriesIntent)
+                        false
+                    }
+            }
+        })
     }
 
     private val startForFilterResult =
@@ -214,14 +237,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.mainDrawerSetting -> {
 
-                }
-                R.id.mainDrawerSeriesList -> {
-                    startActivity(Intent(this, SeriesListActivity::class.java))
-                }
-                else -> {
-                    val seriesIntent = Intent(this, SeriesActivity::class.java)
-                    seriesIntent.putExtra("seriesTitle", menuItem.title)
-                    startActivity(seriesIntent)
                 }
             }
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)

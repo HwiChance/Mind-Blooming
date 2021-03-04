@@ -21,7 +21,6 @@ import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
-import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 
 class StarredActivity : AppCompatActivity() {
     private lateinit var starredToolbar: MaterialToolbar
@@ -30,7 +29,6 @@ class StarredActivity : AppCompatActivity() {
     private lateinit var starredRecyclerView: RecyclerView
     private val starredListAdapter = IdeaListAdapter()
     private val ideaViewModel: IdeaViewModel by viewModels()
-    private val mindMapViewModel: MindMapViewModel by viewModels()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.CREATED_DATE
 
@@ -70,6 +68,7 @@ class StarredActivity : AppCompatActivity() {
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             menuInflater.inflate(R.menu.toolbar_action_mode_menu, menu)
+            menu?.findItem(R.id.actionModeDelete)?.setIcon(R.drawable.ic_star_remove_24dp)
             return true
         }
 
@@ -110,8 +109,7 @@ class StarredActivity : AppCompatActivity() {
                 }
                 R.id.actionModeDelete -> {
                     val deleteList = starredListAdapter.getCheckedItemIds()
-                    mindMapViewModel.deleteItems(deleteList)
-                    ideaViewModel.deleteIdeas(deleteList)
+                    ideaViewModel.updateStar(false, deleteList)
                     mode?.finish()
                     true
                 }

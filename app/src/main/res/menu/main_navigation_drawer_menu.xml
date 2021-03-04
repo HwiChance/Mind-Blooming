@@ -23,22 +23,7 @@
             android:id="@+id/seriesGroupTitle"
             android:title="@string/drawer_series_title">
             <menu>
-                <item
-                    android:id="@+id/mainDrawerSeriesList"
-                    android:icon="@drawable/ic_bookmarks_24dp"
-                    android:title="@string/drawer_series_list" />
-                <item
-                    android:id="@+id/mainDrawerSeriesOne"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_one" />
-                <item
-                    android:id="@+id/mainDrawerSeriesTwo"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_two" />
-                <item
-                    android:id="@+id/mainDrawerSeriesThree"
-                    android:icon="@drawable/ic_bookmark_24dp"
-                    android:title="@string/drawer_series_three" />
+
             </menu>
         </item>
 

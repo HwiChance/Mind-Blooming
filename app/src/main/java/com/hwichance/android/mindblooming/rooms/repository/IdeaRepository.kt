@@ -41,12 +41,28 @@ class IdeaRepository(application: Application) {
         return ideaDao.getStarredIdea(isStarred)
     }
 
+    fun findIdeaInSeries(seriesId: Long): LiveData<List<IdeaData>> {
+        return ideaDao.getIdeaInSeries(seriesId)
+    }
+
     suspend fun insert(idea: IdeaData): Long {
         return ideaDao.insertIdea(idea)
     }
 
     suspend fun update(idea: IdeaData) {
-        return ideaDao.updateIdea(idea)
+        ideaDao.updateIdea(idea)
+    }
+
+    suspend fun updateStar(isStarred: Boolean, ideaIds: List<Long>) {
+        ideaDao.updateNotStarred(isStarred, ideaIds)
+    }
+
+    suspend fun updateSeries(ideaIds: List<Long>) {
+        ideaDao.updateNoSeries(ideaIds)
+    }
+
+    suspend fun updateSeriesDelete(seriesIds: List<Long>) {
+        ideaDao.updateSeriesDeleted(seriesIds)
     }
 
     suspend fun delete(idea: IdeaData) {

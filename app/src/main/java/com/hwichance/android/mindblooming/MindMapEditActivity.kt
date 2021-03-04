@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.MindMapItem
+import com.hwichance.android.mindblooming.dialogs.SeriesListDialog
 import com.hwichance.android.mindblooming.fragments.MindMapEditToolFragment
 import com.hwichance.android.mindblooming.listeners.MindMapItemClick
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
@@ -168,6 +169,12 @@ class MindMapEditActivity : AppCompatActivity() {
                         .setCancelable(false)
                         .create()
                         .show()
+                }
+                R.id.ideaSeriesAddMenu -> {
+                    SeriesListDialog(ideaData).show(
+                        supportFragmentManager,
+                        "SERIES_LIST_DIALOG"
+                    )
                 }
             }
             true

@@ -2,41 +2,54 @@ package com.hwichance.android.mindblooming
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.listeners.SeriesAppBarListener
+import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.data.SeriesData
+import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
 
 class SeriesActivity : AppCompatActivity() {
     private lateinit var seriesToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
     private lateinit var seriesRecyclerView: RecyclerView
-    private lateinit var seriesFab: FloatingActionButton
     private lateinit var seriesToolbarLayout: AppBarLayout
     private lateinit var seriesTitleEditText: EditText
     private lateinit var seriesDescriptionEditText: EditText
     private lateinit var seriesTitleLabel: TextView
     private lateinit var seriesDescriptionLabel: TextView
     private lateinit var seriesTitle: TextView
-    private lateinit var seriesTitleText: String
+    private lateinit var newSeriesText: String
+    private lateinit var seriesData: SeriesData
+    private val ideaListAdapter = IdeaListAdapter()
+    private val seriesViewModel: SeriesViewModel by viewModels()
+    private val ideaViewModel: IdeaViewModel by viewModels()
+    private var seriesId: Long = -1L
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.CREATED_DATE
 
@@ -56,8 +69,25 @@ class SeriesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_series)
 
-        seriesTitleText = intent?.getCharSequenceExtra("seriesTitle").toString()
+        newSeriesText = getString(R.string.new_series)
+        seriesId = intent?.getLongExtra("seriesId", -1L) ?: -1L
+
         bindViews()
+
+        if (seriesId != -1L) {
+            seriesViewModel.findSeriesById(seriesId).observe(this, { series ->
+                if (series != null) {
+                    seriesData = series
+                    seriesTitle.text = series.seriesTitle
+                    seriesTitleEditText.setText(series.seriesTitle)
+                    seriesDescriptionEditText.setText(series.seriesDescription)
+                }
+            })
+
+            ideaViewModel.findIdeaInSeries(seriesId).observe(this, { ideas ->
+                ideaListAdapter.setIdeaList(ideas)
+            })
+        }
     }
 
     private val startForFilterResult =
@@ -66,9 +96,67 @@ class SeriesActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
                 sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
-                //TODO: Filtering - adpater.filtering(classFilter, sortFilter)
+                ideaListAdapter.filtering(classFilter, sortFilter)
             }
         }
+
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            menuInflater.inflate(R.menu.toolbar_action_mode_menu, menu)
+            menu?.findItem(R.id.actionModeDelete)?.setIcon(R.drawable.ic_bookmark_remove_24dp)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            val count = ideaListAdapter.getCheckedItemCount()
+            val selectAllIcon = menu?.findItem(R.id.actionModeSelectAll)
+            val deleteIcon = menu?.findItem(R.id.actionModeDelete)
+
+            mode?.title = count.toString() + getString(R.string.selected_idea_count)
+
+            when (count) {
+                ideaListAdapter.itemCount -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_colored_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+                0 -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = false
+                }
+                else -> {
+                    selectAllIcon?.setIcon(R.drawable.ic_select_all_24dp)
+                    deleteIcon?.isEnabled = true
+                }
+            }
+            return true
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.actionModeSelectAll -> {
+                    if (ideaListAdapter.getCheckedItemCount() == ideaListAdapter.itemCount) {
+                        ideaListAdapter.initializeChecked(false)
+                    } else {
+                        ideaListAdapter.initializeChecked(true)
+                    }
+                    mode?.invalidate()
+                    true
+                }
+                R.id.actionModeDelete -> {
+                    val deleteList = ideaListAdapter.getCheckedItemIds()
+                    ideaViewModel.updateSeries(deleteList)
+                    mode?.finish()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            ideaListAdapter.setActionMode(false)
+            ideaListAdapter.initializeChecked(false)
+        }
+    }
 
     private fun bindViews() {
         seriesToolbar = findViewById(R.id.seriesToolbar)
@@ -79,27 +167,103 @@ class SeriesActivity : AppCompatActivity() {
         seriesDescriptionLabel = findViewById(R.id.seriesDescriptionLabel)
         seriesTitleLabel = findViewById(R.id.seriesTitleLabel)
         seriesTitle = findViewById(R.id.seriesTitle)
-        seriesFab = findViewById(R.id.seriesFab)
 
         searchItem = seriesToolbar.menu.findItem(R.id.seriesSearchMenu)
         searchView = searchItem.actionView as SearchView
 
         setInitialState()
         setRecyclerView()
+        setEditTextListener()
         setSearchAction()
         setToolbarListener()
     }
 
     private fun setInitialState() {
-        seriesTitle.text = seriesTitleText
-        seriesTitleEditText.setText(seriesTitleText)
-        seriesDescriptionEditText.setText(seriesTitleText)
-        seriesDescriptionEditText.imeOptions = EditorInfo.IME_ACTION_DONE;
-        seriesDescriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        seriesTitle.text = newSeriesText
+
+        seriesTitleEditText.setText(newSeriesText)
+        seriesTitleEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+
+        seriesDescriptionEditText.setText(newSeriesText)
+        seriesDescriptionEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+        seriesDescriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT)
     }
 
     private fun setRecyclerView() {
+        seriesRecyclerView.layoutManager = LinearLayoutManager(this)
+        ideaListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+            var actionMode: ActionMode? = null
+            override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
+                if (isActionMode) {
+                    ideaListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                } else {
+                    val intent = Intent(this@SeriesActivity, MindMapEditActivity::class.java)
+                    intent.putExtra("groupId", idea.ideaId)
+                    startActivity(intent)
+                }
+            }
 
+            override fun onLongClick(isActionMode: Boolean, position: Int) {
+                if (!isActionMode) {
+                    actionMode = startSupportActionMode(actionModeCallback)
+                    ideaListAdapter.setActionMode(true)
+                    ideaListAdapter.toggleItemChecked(position)
+                    actionMode?.invalidate()
+                }
+            }
+
+        })
+        seriesRecyclerView.adapter = ideaListAdapter
+    }
+
+    private fun setEditTextListener() {
+        seriesTitleEditText.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                val newText = v.text.trim().toString()
+                if (newText.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    seriesData.seriesTitle = newText
+                    seriesViewModel.update(seriesData)
+                }
+                v.clearFocus()
+            }
+            false
+        }
+        seriesTitleEditText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                if (seriesTitleEditText.text.trim().isEmpty()) {
+                    seriesTitleEditText.setText(seriesData.seriesTitle)
+                }
+                val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        }
+        seriesDescriptionEditText.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val newText = v.text.trim().toString()
+                if (newText.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    seriesData.seriesDescription = newText
+                    seriesViewModel.update(seriesData)
+                }
+                v.clearFocus()
+            }
+            false
+        }
+        seriesDescriptionEditText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                if (seriesDescriptionEditText.text.trim().isEmpty()) {
+                    seriesDescriptionEditText.setText(seriesData.seriesDescription)
+                }
+                val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        }
     }
 
     private fun setSearchAction() {
@@ -109,12 +273,11 @@ class SeriesActivity : AppCompatActivity() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // TODO("Not yet implemented")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // TODO("Not yet implemented")
+                ideaListAdapter.filtering(newText)
                 return true
             }
         })
@@ -147,24 +310,18 @@ class SeriesActivity : AppCompatActivity() {
                     MaterialAlertDialogBuilder(this)
                         .setTitle(getString(R.string.series_delete_dialog_title))
                         .setMessage(getString(R.string.series_delete_dialog_msg))
-                        .setNegativeButton(getString(R.string.dialog_cancel)) { dialog, which ->
+                        .setNegativeButton(getString(R.string.dialog_cancel)) { dialog, _ ->
                             dialog.dismiss()
                         }
-                        .setPositiveButton(getString(R.string.dialog_ok)) { dialog, which ->
-                            // TODO: delete series at database
-                            Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show()
+                        .setPositiveButton(getString(R.string.dialog_ok)) { _, _ ->
+                            ideaViewModel.updateSeries(ideaListAdapter.getItemIds())
+                            seriesViewModel.delete(seriesData)
                             finish()
                         }
                         .show()
                 }
             }
             true
-        }
-    }
-
-    private fun setFabListener() {
-        seriesFab.setOnClickListener {
-
         }
     }
 

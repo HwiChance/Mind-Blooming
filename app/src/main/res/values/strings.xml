@@ -20,18 +20,21 @@
     <string name="main_toolbar_hint">Search for ideas</string>
     <string name="filter_toolbar_title">Filter</string>
     <string name="starred_toolbar_title">Starred</string>
+    <string name="series_list_toolbar_title">Series List</string>
     <string name="series_title_edit">Title</string>
     <string name="series_description_edit">Description</string>
 
     <!-- menu -->
     <string name="search_menu">Search</string>
     <string name="filter_menu">Filter</string>
+    <string name="series_add_menu">Add series</string>
     <string name="series_delete_menu">Delete series</string>
     <string name="add_idea_menu">Add idea</string>
 
     <string name="idea_title_edit_menu">Edit Idea Title</string>
     <string name="idea_save_menu">Save Idea</string>
     <string name="idea_delete_menu">Delete Idea</string>
+    <string name="idea_series_add_menu">Add to series</string>
 
     <string name="action_mode_select_all_menu">Select all</string>
     <string name="action_mode_delete_menu">Delete</string>
@@ -66,6 +69,7 @@
     <!-- AlertDialog -->
     <string name="filter_dialog_title">Changes not applied</string>
     <string name="filter_dialog_msg">Discard Changes?</string>
+    <string name="delete_dialog_msg">Are you sure you want to delete?</string>
     <string name="series_delete_dialog_title">Series delete</string>
     <string name="series_delete_dialog_msg">Are you sure you want to delete this series?</string>
     <string name="edit_title_dialog_title">Edit title</string>
@@ -85,7 +89,6 @@
 
     <!-- Fab -->
     <string name="main_add_fab">Add an idea</string>
-    <string name="starred_add_fab">Add ideas at starred</string>
     <string name="series_add_fab">Add ideas at series</string>
 
     <!-- Bottom Sheet -->
@@ -100,11 +103,17 @@
     <!-- Hint -->
     <string name="title_edit_hint">Input new title</string>
     <string name="item_text_edit_hint">Input item text</string>
+    <string name="series_add_hint">Series add</string>
 
     <!-- Error msg -->
     <string name="no_character">Please enter a letter.</string>
+    <string name="no_character_toast">Character must be entered.</string>
 
     <!-- Idea List -->
     <string name="idea_list_date">Last modified Date:</string>
     <string name="selected_idea_count">\t selected</string>
+
+    <!-- Series -->
+    <string name="new_series">New Series</string>
+    <string name="no_series">No Series</string>
 </resources>
