@@ -21,6 +21,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
@@ -66,6 +67,10 @@ class MainActivity : AppCompatActivity() {
 
         ideaViewModel.getAllIdeas().observe(this, { ideas ->
             ideaListAdapter.setIdeaList(ideas)
+        })
+
+        seriesViewModel.getAll().observe(this, {seriesList ->
+            ideaListAdapter.setSeriesList(seriesList)
         })
 
         seriesViewModel.findFavoriteSeries(true).observe(this, { seriesList ->
@@ -170,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         searchView = searchItem.actionView as SearchView
 
         mainRecyclerView = findViewById(R.id.mainRecyclerView)
-        ideaListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+        ideaListAdapter.setIdeaClickListener(object : IdeaClickListener {
             var actionMode: ActionMode? = null
             override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
                 if (isActionMode) {
@@ -193,8 +198,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+        ideaListAdapter.setStarredBtnClickListener(object : StarredBtnClickListener {
+            override fun onClick(isChecked: Boolean, idea: IdeaData) {
+                idea.isStarred = isChecked
+                idea.starredDate = if (isChecked) {
+                    System.currentTimeMillis()
+                } else {
+                    null
+                }
+                ideaViewModel.update(idea)
+            }
+        })
         mainRecyclerView.adapter = ideaListAdapter
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        mainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    mainFab.hide()
+                } else if (dy < 0) {
+                    mainFab.show()
+                }
+            }
+        })
 
         setVersionText()
         setSearchAction()

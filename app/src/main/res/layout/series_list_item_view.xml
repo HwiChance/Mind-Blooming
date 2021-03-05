@@ -3,7 +3,7 @@
     android:id="@+id/seriesCard"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:layout_margin="8dp"
+    android:layout_margin="4dp"
     android:checkable="true"
     android:clickable="true"
     android:focusable="true">
@@ -20,6 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="0"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />

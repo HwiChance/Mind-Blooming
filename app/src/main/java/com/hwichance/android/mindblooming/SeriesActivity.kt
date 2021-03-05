@@ -24,6 +24,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
@@ -82,6 +83,10 @@ class SeriesActivity : AppCompatActivity() {
                     seriesTitleEditText.setText(series.seriesTitle)
                     seriesDescriptionEditText.setText(series.seriesDescription)
                 }
+            })
+
+            seriesViewModel.getAll().observe(this, {seriesList ->
+                ideaListAdapter.setSeriesList(seriesList)
             })
 
             ideaViewModel.findIdeaInSeries(seriesId).observe(this, { ideas ->
@@ -191,7 +196,7 @@ class SeriesActivity : AppCompatActivity() {
 
     private fun setRecyclerView() {
         seriesRecyclerView.layoutManager = LinearLayoutManager(this)
-        ideaListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+        ideaListAdapter.setIdeaClickListener(object : IdeaClickListener {
             var actionMode: ActionMode? = null
             override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
                 if (isActionMode) {
@@ -213,6 +218,17 @@ class SeriesActivity : AppCompatActivity() {
                 }
             }
 
+        })
+        ideaListAdapter.setStarredBtnClickListener(object : StarredBtnClickListener {
+            override fun onClick(isChecked: Boolean, idea: IdeaData) {
+                idea.isStarred = isChecked
+                idea.starredDate = if (isChecked) {
+                    System.currentTimeMillis()
+                } else {
+                    null
+                }
+                ideaViewModel.update(idea)
+            }
         })
         seriesRecyclerView.adapter = ideaListAdapter
     }

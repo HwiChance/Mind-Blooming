@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/camborne</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/white_gray</item>
+        <item name="colorSecondary">@color/soft_gray</item>
         <item name="colorSecondaryVariant">@color/mackup</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->

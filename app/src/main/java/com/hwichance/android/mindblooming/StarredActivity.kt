@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
+import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
 import com.hwichance.android.mindblooming.enums.DiagramClassEnum
 import com.hwichance.android.mindblooming.enums.FilterCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
 
 class StarredActivity : AppCompatActivity() {
     private lateinit var starredToolbar: MaterialToolbar
@@ -29,6 +31,7 @@ class StarredActivity : AppCompatActivity() {
     private lateinit var starredRecyclerView: RecyclerView
     private val starredListAdapter = IdeaListAdapter()
     private val ideaViewModel: IdeaViewModel by viewModels()
+    private val seriesViewModel: SeriesViewModel by viewModels()
     private var classFilter = DiagramClassEnum.ALL
     private var sortFilter = SortEnum.CREATED_DATE
 
@@ -50,6 +53,10 @@ class StarredActivity : AppCompatActivity() {
 
         ideaViewModel.findStarredIdea(true).observe(this, { ideas ->
             starredListAdapter.setIdeaList(ideas)
+        })
+
+        seriesViewModel.getAll().observe(this, { seriesList ->
+            starredListAdapter.setSeriesList(seriesList)
         })
 
         bindViews()
@@ -129,7 +136,7 @@ class StarredActivity : AppCompatActivity() {
         searchView = searchItem.actionView as SearchView
 
         starredRecyclerView = findViewById(R.id.starredRecyclerView)
-        starredListAdapter.setIdeaClickListener(object : IdeaListAdapter.IdeaClickListener {
+        starredListAdapter.setIdeaClickListener(object : IdeaClickListener {
             var actionMode: ActionMode? = null
             override fun onClick(idea: IdeaData, isActionMode: Boolean, position: Int) {
                 if (isActionMode) {
@@ -149,6 +156,17 @@ class StarredActivity : AppCompatActivity() {
                     starredListAdapter.toggleItemChecked(position)
                     actionMode?.invalidate()
                 }
+            }
+        })
+        starredListAdapter.setStarredBtnClickListener(object : StarredBtnClickListener {
+            override fun onClick(isChecked: Boolean, idea: IdeaData) {
+                idea.isStarred = isChecked
+                idea.starredDate = if (isChecked) {
+                    System.currentTimeMillis()
+                } else {
+                    null
+                }
+                ideaViewModel.update(idea)
             }
         })
         starredRecyclerView.adapter = starredListAdapter

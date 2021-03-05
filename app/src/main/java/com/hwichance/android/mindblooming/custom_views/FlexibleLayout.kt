@@ -57,7 +57,7 @@ class FlexibleLayout : RelativeLayout {
     private fun setPaint() {
         edgePaint.isAntiAlias = true
         edgePaint.style = Paint.Style.STROKE
-        edgePaint.color = ContextCompat.getColor(context, R.color.white_gray)
+        edgePaint.color = ContextCompat.getColor(context, R.color.soft_gray)
         edgePaint.strokeWidth = resources.getDimension(R.dimen.edge_width)
     }
 

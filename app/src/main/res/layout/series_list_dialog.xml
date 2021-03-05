@@ -54,7 +54,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white_gray" />
+        android:background="@color/soft_gray" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/seriesDialogRecyclerView"
@@ -67,7 +67,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white_gray" />
+        android:background="@color/soft_gray" />
 
     <Button
         android:id="@+id/seriesSetBtn"

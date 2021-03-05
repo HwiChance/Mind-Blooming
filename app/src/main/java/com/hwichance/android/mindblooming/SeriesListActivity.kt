@@ -5,14 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hwichance.android.mindblooming.adapters.SeriesListAdapter
 import com.hwichance.android.mindblooming.adapters.SeriesListAdapter.*
 import com.hwichance.android.mindblooming.rooms.data.SeriesData
@@ -40,7 +38,6 @@ class SeriesListActivity : AppCompatActivity() {
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             menuInflater.inflate(R.menu.toolbar_action_mode_menu, menu)
-            menu?.findItem(R.id.actionModeDelete)?.setIcon(R.drawable.ic_bookmark_remove_24dp)
             return true
         }
 

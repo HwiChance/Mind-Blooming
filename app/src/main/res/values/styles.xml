@@ -14,13 +14,13 @@
         <item name="android:paddingTop">0dp</item>
         <item name="android:editTextColor">@color/white</item>
         <item name="android:textSize">@dimen/toolbar_text_size</item>
-        <item name="colorControlActivated">@color/white_gray</item>
-        <item name="colorControlHighlight">@color/white_gray</item>
-        <item name="colorControlNormal">@color/white_gray</item>
+        <item name="colorControlActivated">@color/soft_gray</item>
+        <item name="colorControlHighlight">@color/soft_gray</item>
+        <item name="colorControlNormal">@color/soft_gray</item>
     </style>
 
     <style name="seriesTextLabel">
-        <item name="android:textColor">@color/white_gray</item>
+        <item name="android:textColor">@color/soft_gray</item>
         <item name="android:textSize">@dimen/toolbar_label_size</item>
         <item name="android:textStyle">bold</item>
     </style>
