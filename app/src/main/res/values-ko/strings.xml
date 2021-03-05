@@ -15,7 +15,6 @@
     <!-- Toolbar -->
     <string name="main_toolbar_title">아이디어 목록</string>
     <string name="main_toolbar_hint">아이디어 검색</string>
-    <string name="filter_toolbar_title">필터</string>
     <string name="starred_toolbar_title">즐겨찾기</string>
     <string name="series_list_toolbar_title">시리즈 목록</string>
     <string name="series_title_edit">제목</string>
@@ -23,7 +22,6 @@
 
     <!-- menu -->
     <string name="search_menu">검색</string>
-    <string name="filter_menu">필터</string>
     <string name="series_add_menu">시리즈 추가</string>
     <string name="series_delete_menu">시리즈 삭제</string>
     <string name="add_idea_menu">아이디어 추가</string>
@@ -46,24 +44,15 @@
     <string name="drawer_series_two">시리즈 2</string>
     <string name="drawer_series_three">시리즈 3</string>
 
-    <string name="filter_apply">적용</string>
-
-    <!-- filter -->
-    <string name="filter_group_class">분류</string>
-    <string name="filter_class_all">전체</string>
-    <string name="filter_class_mind_map">마인드 맵</string>
-    <string name="filter_class_flow_chart">플로우 차트</string>
-
-    <string name="filter_group_sort">정렬</string>
-    <string name="filter_sort_title">제목</string>
-    <string name="filter_sort_created_date">생성일</string>
-    <string name="filter_sort_modified_date">마지막 수정일</string>
-    <string name="filter_sort_starred">즐겨찾기 추가일</string>
-    <string name="filter_sort_series">시리즈 추가일</string>
+    <!-- sort -->
+    <string name="sort_group">정렬</string>
+    <string name="sort_title">아이디어 제목</string>
+    <string name="sort_created_date">아이디어 생성일</string>
+    <string name="sort_modified_date">마지막 수정일</string>
+    <string name="sort_starred">즐겨찾기한 날짜</string>
+    <string name="sort_series">시리즈에 추가한 날짜</string>
 
     <!-- AlertDialog -->
-    <string name="filter_dialog_title">변경 사항 존재</string>
-    <string name="filter_dialog_msg">변경 사항을 적용하시겠습니까?</string>
     <string name="delete_dialog_msg">삭제하시겠습니까?</string>
     <string name="series_delete_dialog_title">시리즈 삭제</string>
     <string name="series_delete_dialog_msg">이 시리즈를 삭제하시겠습니까?</string>

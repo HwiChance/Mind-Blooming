@@ -1,15 +1,13 @@
 package com.hwichance.android.mindblooming
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
@@ -22,14 +20,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
-import com.hwichance.android.mindblooming.enums.DiagramClassEnum
-import com.hwichance.android.mindblooming.enums.FilterCaller
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
-import com.hwichance.android.mindblooming.fragments.AddDiagramFragment
+import com.hwichance.android.mindblooming.fragments.SortFragment
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SortViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainToolbar: MaterialToolbar
@@ -40,23 +39,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
     private lateinit var mainRecyclerView: RecyclerView
+    private lateinit var sortData: SortData
     private val ideaViewModel: IdeaViewModel by viewModels()
     private val mindMapViewModel: MindMapViewModel by viewModels()
     private val seriesViewModel: SeriesViewModel by viewModels()
+    private val sortViewModel: SortViewModel by viewModels()
     private var ideaListAdapter = IdeaListAdapter()
-    private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.CREATED_DATE
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("class", classFilter)
-        outState.putSerializable("sort", sortFilter)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        classFilter = savedInstanceState.getSerializable("class") as DiagramClassEnum
-        sortFilter = savedInstanceState.getSerializable("sort") as SortEnum
+    private val sortStrings by lazy {
+        resources.getStringArray(R.array.sortStrings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             ideaListAdapter.setIdeaList(ideas)
         })
 
-        seriesViewModel.getAll().observe(this, {seriesList ->
+        seriesViewModel.getAll().observe(this, { seriesList ->
             ideaListAdapter.setSeriesList(seriesList)
         })
 
@@ -93,17 +83,19 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         })
-    }
 
-    private val startForFilterResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-        { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
-                sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
-                ideaListAdapter.filtering(classFilter, sortFilter)
+        sortViewModel.getData().observe(this, { data ->
+            sortData = data
+            val sortText = when (sortData.sortEnum) {
+                SortEnum.TITLE -> sortStrings[0]
+                SortEnum.CREATED_DATE -> sortStrings[1]
+                SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
+                SortEnum.STARRED_DATE -> sortStrings[3]
+                SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
             }
-        }
+            ideaListAdapter.sortingData(sortText, sortData)
+        })
+    }
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -209,6 +201,11 @@ class MainActivity : AppCompatActivity() {
                 ideaViewModel.update(idea)
             }
         })
+        ideaListAdapter.setSortBtnClickListener {
+            SortFragment(SortCaller.MAIN, sortData)
+                .show(supportFragmentManager, "SORT_FRAGMENT")
+        }
+
         mainRecyclerView.adapter = ideaListAdapter
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -275,25 +272,19 @@ class MainActivity : AppCompatActivity() {
         mainToolbar.setNavigationOnClickListener {
             mainDrawerLayout.openDrawer(GravityCompat.START)
         }
-        mainToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.mainFilterMenu -> {
-                    val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
-                    filterActIntent.putExtra("caller", FilterCaller.MAIN)
-                    filterActIntent.putExtra("class", classFilter)
-                    filterActIntent.putExtra("sort", sortFilter)
-                    startForFilterResult.launch(filterActIntent)
-                    overridePendingTransition(R.anim.up, R.anim.no_animation)
-                }
-            }
-            true
-        }
     }
 
     private fun setFabListener() {
         mainFab.setOnClickListener {
-            val addDiagramFragment = AddDiagramFragment()
-            addDiagramFragment.show(supportFragmentManager, "ADD_DIAGRAM_FRAGMENT")
+            val date = System.currentTimeMillis()
+            val title = getString(R.string.new_mind_map)
+            val newIdea = IdeaData(null, title, date, date, true, null)
+            ideaViewModel.insert(newIdea) { groupId ->
+                val intent = Intent(this, MindMapEditActivity::class.java)
+                intent.putExtra("groupId", groupId)
+                intent.putExtra("isNewIdea", true)
+                startActivity(intent)
+            }
         }
     }
 

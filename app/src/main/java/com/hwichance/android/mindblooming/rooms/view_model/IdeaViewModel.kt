@@ -17,10 +17,6 @@ class IdeaViewModel(application: Application) : AndroidViewModel(application) {
         return ideaList
     }
 
-    fun findIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>> {
-        return repository.findIdeasByIds(ideaIds)
-    }
-
     fun findOneIdeaById(ideaId: Long): LiveData<IdeaData> {
         return repository.findOneIdeaById(ideaId)
     }

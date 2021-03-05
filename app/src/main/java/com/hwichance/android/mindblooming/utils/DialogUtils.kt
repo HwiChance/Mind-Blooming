@@ -5,6 +5,8 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -46,10 +48,12 @@ class DialogUtils {
                 .setView(view)
                 .setNegativeButton(context.resources.getString(R.string.dialog_cancel), null)
                 .setPositiveButton(context.resources.getString(R.string.dialog_ok), null)
-                .setCancelable(false)
                 .create()
 
             dialog.setOnShowListener {
+                val manager =
+                    context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.showSoftInput(editText, 0)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                     val newText = editText.text.toString()
                     if (StringUtils.hasCharacter(newText)) {

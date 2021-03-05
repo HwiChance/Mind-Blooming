@@ -15,7 +15,7 @@
     <color name="palette_purple">#9E7EB9</color>
     <color name="palette_soft_purple">#BBB8DC</color>
 
-    <color name="palette_white_gray">#E9ECEF</color>
+    <color name="palette_white">#FFFFFF</color>
     <color name="palette_gray">#A7A9AC</color>
     <color name="palette_black">#000000</color>
 
@@ -35,7 +35,7 @@
         <item>@color/palette_purple</item>
         <item>@color/palette_soft_purple</item>
 
-        <item>@color/palette_white_gray</item>
+        <item>@color/palette_white</item>
         <item>@color/palette_gray</item>
         <item>@color/palette_black</item>
     </array>

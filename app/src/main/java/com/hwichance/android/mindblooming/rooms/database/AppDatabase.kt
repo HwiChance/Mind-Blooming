@@ -5,18 +5,22 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.converter.IdeaTypeConverter
+import com.hwichance.android.mindblooming.enums.OrderEnum
+import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.dao.IdeaDao
 import com.hwichance.android.mindblooming.rooms.dao.MindMapItemDao
 import com.hwichance.android.mindblooming.rooms.dao.SeriesDao
+import com.hwichance.android.mindblooming.rooms.dao.SortDao
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 import com.hwichance.android.mindblooming.rooms.data.SeriesData
+import com.hwichance.android.mindblooming.rooms.data.SortData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MindMapItemData::class, IdeaData::class, SeriesData::class],
+    entities = [MindMapItemData::class, IdeaData::class, SeriesData::class, SortData::class],
     version = 1,
     exportSchema = false
 )
@@ -25,6 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun mindMapItemDao(): MindMapItemDao
     abstract fun ideaDao(): IdeaDao
     abstract fun seriesDao(): SeriesDao
+    abstract fun sortDao(): SortDao
 
     companion object {
         private const val DB_NAME = "mind_blooming_db"
@@ -61,16 +66,15 @@ abstract class AppDatabase : RoomDatabase() {
                             data.seriesTitle = context.getString(R.string.drawer_series_three)
                             data.seriesDescription = context.getString(R.string.drawer_series_three)
                             getInstance(context).seriesDao().insertSeries(data)
+
+                            val sortData = SortData(null, SortEnum.TITLE, OrderEnum.ASC)
+                            getInstance(context).sortDao().insertSortData(sortData)
                         }
                     }
                 })
                 .fallbackToDestructiveMigration()
                 .build()
                 .also { dbInstance = it }
-        }
-
-        fun destroyInstance() {
-            dbInstance = null
         }
     }
 }

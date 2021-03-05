@@ -18,7 +18,6 @@
     <!-- Toolbar -->
     <string name="main_toolbar_title">Idea List</string>
     <string name="main_toolbar_hint">Search for ideas</string>
-    <string name="filter_toolbar_title">Filter</string>
     <string name="starred_toolbar_title">Starred</string>
     <string name="series_list_toolbar_title">Series List</string>
     <string name="series_title_edit">Title</string>
@@ -26,7 +25,6 @@
 
     <!-- menu -->
     <string name="search_menu">Search</string>
-    <string name="filter_menu">Filter</string>
     <string name="series_add_menu">Add series</string>
     <string name="series_delete_menu">Delete series</string>
     <string name="add_idea_menu">Add idea</string>
@@ -51,24 +49,15 @@
 
     <string name="version_text" translatable="false">Ver.</string>
 
-    <string name="filter_apply">Apply</string>
-
-    <!-- filter -->
-    <string name="filter_group_class">CLASS</string>
-    <string name="filter_class_all">All</string>
-    <string name="filter_class_mind_map">Mind map</string>
-    <string name="filter_class_flow_chart">Flow chart</string>
-
-    <string name="filter_group_sort">SORT BY</string>
-    <string name="filter_sort_title">Title</string>
-    <string name="filter_sort_created_date">Created Date</string>
-    <string name="filter_sort_modified_date">Last modified Date</string>
-    <string name="filter_sort_starred">Starred Date</string>
-    <string name="filter_sort_series">Series added Date</string>
+    <!-- sort -->
+    <string name="sort_group">SORT BY</string>
+    <string name="sort_title">Idea title</string>
+    <string name="sort_created_date">Idea creation date</string>
+    <string name="sort_modified_date">Last modified date</string>
+    <string name="sort_starred">Starred date</string>
+    <string name="sort_series">Date added to series</string>
 
     <!-- AlertDialog -->
-    <string name="filter_dialog_title">Changes not applied</string>
-    <string name="filter_dialog_msg">Discard Changes?</string>
     <string name="delete_dialog_msg">Are you sure you want to delete?</string>
     <string name="series_delete_dialog_title">Series delete</string>
     <string name="series_delete_dialog_msg">Are you sure you want to delete this series?</string>

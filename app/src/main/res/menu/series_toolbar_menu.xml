@@ -9,12 +9,6 @@
         app:showAsAction="always|collapseActionView" />
 
     <item
-        android:id="@+id/seriesFilterMenu"
-        android:icon="@drawable/ic_filter_list_24dp"
-        android:title="@string/filter_menu"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/seriesDeleteMenu"
         android:icon="@drawable/ic_delete_24dp"
         android:title="@string/series_delete_menu"

@@ -12,11 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MindBlooming">
-        <activity android:name=".SeriesListActivity"></activity>
+        <activity android:name=".SeriesListActivity"/>
         <activity android:name=".MindMapEditActivity" />
         <activity android:name=".SeriesActivity" />
         <activity android:name=".StarredActivity" />
-        <activity android:name=".IdeaFilterActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".IntroActivity" />
         <activity android:name=".SplashScreen">

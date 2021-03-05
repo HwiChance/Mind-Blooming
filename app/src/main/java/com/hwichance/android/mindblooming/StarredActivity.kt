@@ -1,14 +1,11 @@
 package com.hwichance.android.mindblooming
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
@@ -17,35 +14,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
-import com.hwichance.android.mindblooming.enums.DiagramClassEnum
-import com.hwichance.android.mindblooming.enums.FilterCaller
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import com.hwichance.android.mindblooming.fragments.SortFragment
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
+import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SortViewModel
 
 class StarredActivity : AppCompatActivity() {
     private lateinit var starredToolbar: MaterialToolbar
     private lateinit var searchItem: MenuItem
     private lateinit var searchView: SearchView
     private lateinit var starredRecyclerView: RecyclerView
+    private lateinit var sortData: SortData
     private val starredListAdapter = IdeaListAdapter()
     private val ideaViewModel: IdeaViewModel by viewModels()
     private val seriesViewModel: SeriesViewModel by viewModels()
-    private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.CREATED_DATE
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("class", classFilter)
-        outState.putSerializable("sort", sortFilter)
+    private val sortViewModel: SortViewModel by viewModels()
+    private val sortStrings by lazy {
+        resources.getStringArray(R.array.sortStrings)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        classFilter = savedInstanceState.getSerializable("class") as DiagramClassEnum
-        sortFilter = savedInstanceState.getSerializable("sort") as SortEnum
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,18 +50,20 @@ class StarredActivity : AppCompatActivity() {
             starredListAdapter.setSeriesList(seriesList)
         })
 
+        sortViewModel.getData().observe(this, { data ->
+            sortData = data
+            val sortText = when (sortData.sortEnum) {
+                SortEnum.TITLE -> sortStrings[0]
+                SortEnum.CREATED_DATE -> sortStrings[1]
+                SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
+                SortEnum.STARRED_DATE -> sortStrings[3]
+                SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+            }
+            starredListAdapter.sortingData(sortText, sortData)
+        })
+
         bindViews()
     }
-
-    private val startForFilterResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-        { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
-                sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
-                starredListAdapter.filtering(classFilter, sortFilter)
-            }
-        }
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -169,6 +162,10 @@ class StarredActivity : AppCompatActivity() {
                 ideaViewModel.update(idea)
             }
         })
+        starredListAdapter.setSortBtnClickListener {
+            SortFragment(SortCaller.STARRED, sortData)
+                .show(supportFragmentManager, "SORT_FRAGMENT")
+        }
         starredRecyclerView.adapter = starredListAdapter
         starredRecyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -196,19 +193,6 @@ class StarredActivity : AppCompatActivity() {
     private fun setToolbarListener() {
         starredToolbar.setNavigationOnClickListener {
             finish()
-        }
-        starredToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.starredFilterMenu -> {
-                    val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
-                    filterActIntent.putExtra("caller", FilterCaller.STARRED)
-                    filterActIntent.putExtra("class", classFilter)
-                    filterActIntent.putExtra("sort", sortFilter)
-                    startForFilterResult.launch(filterActIntent)
-                    overridePendingTransition(R.anim.up, R.anim.no_animation)
-                }
-            }
-            true
         }
     }
 

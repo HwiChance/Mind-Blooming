@@ -21,16 +21,13 @@ class IdeaRepository(application: Application) {
         val db = AppDatabase.getInstance(application.applicationContext)
         db.ideaDao()
     }
+
     private val ideaList: LiveData<List<IdeaData>> by lazy {
         ideaDao.getAll()
     }
 
     fun getAllIdeas(): LiveData<List<IdeaData>> {
         return ideaList
-    }
-
-    fun findIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>> {
-        return ideaDao.getIdeasByIds(ideaIds)
     }
 
     fun findOneIdeaById(ideaId: Long): LiveData<IdeaData> {

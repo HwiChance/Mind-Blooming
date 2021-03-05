@@ -1,6 +1,5 @@
 package com.hwichance.android.mindblooming
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -12,8 +11,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -25,14 +22,16 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
-import com.hwichance.android.mindblooming.enums.DiagramClassEnum
-import com.hwichance.android.mindblooming.enums.FilterCaller
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import com.hwichance.android.mindblooming.fragments.SortFragment
 import com.hwichance.android.mindblooming.listeners.SeriesAppBarListener
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.SeriesData
+import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
+import com.hwichance.android.mindblooming.rooms.view_model.SortViewModel
 
 class SeriesActivity : AppCompatActivity() {
     private lateinit var seriesToolbar: MaterialToolbar
@@ -47,24 +46,15 @@ class SeriesActivity : AppCompatActivity() {
     private lateinit var seriesTitle: TextView
     private lateinit var newSeriesText: String
     private lateinit var seriesData: SeriesData
+    private lateinit var sortData: SortData
     private val ideaListAdapter = IdeaListAdapter()
     private val seriesViewModel: SeriesViewModel by viewModels()
     private val ideaViewModel: IdeaViewModel by viewModels()
+    private val sortViewModel: SortViewModel by viewModels()
+    private val sortStrings by lazy {
+        resources.getStringArray(R.array.sortStrings)
+    }
     private var seriesId: Long = -1L
-    private var classFilter = DiagramClassEnum.ALL
-    private var sortFilter = SortEnum.CREATED_DATE
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("class", classFilter)
-        outState.putSerializable("sort", sortFilter)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        classFilter = savedInstanceState.getSerializable("class") as DiagramClassEnum
-        sortFilter = savedInstanceState.getSerializable("sort") as SortEnum
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,25 +75,27 @@ class SeriesActivity : AppCompatActivity() {
                 }
             })
 
-            seriesViewModel.getAll().observe(this, {seriesList ->
+            seriesViewModel.getAll().observe(this, { seriesList ->
                 ideaListAdapter.setSeriesList(seriesList)
             })
 
             ideaViewModel.findIdeaInSeries(seriesId).observe(this, { ideas ->
                 ideaListAdapter.setIdeaList(ideas)
             })
+
+            sortViewModel.getData().observe(this, { data ->
+                sortData = data
+                val sortText = when (sortData.sortEnum) {
+                    SortEnum.TITLE -> sortStrings[0]
+                    SortEnum.CREATED_DATE -> sortStrings[1]
+                    SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
+                    SortEnum.STARRED_DATE -> sortStrings[3]
+                    SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+                }
+                ideaListAdapter.sortingData(sortText, sortData)
+            })
         }
     }
-
-    private val startForFilterResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-        { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                classFilter = result.data?.getSerializableExtra("classFilter") as DiagramClassEnum
-                sortFilter = result.data?.getSerializableExtra("sortFilter") as SortEnum
-                ideaListAdapter.filtering(classFilter, sortFilter)
-            }
-        }
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -230,6 +222,10 @@ class SeriesActivity : AppCompatActivity() {
                 ideaViewModel.update(idea)
             }
         })
+        ideaListAdapter.setSortBtnClickListener {
+            SortFragment(SortCaller.SERIES, sortData)
+                .show(supportFragmentManager, "SORT_FRAGMENT")
+        }
         seriesRecyclerView.adapter = ideaListAdapter
     }
 
@@ -314,14 +310,6 @@ class SeriesActivity : AppCompatActivity() {
         }
         seriesToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.seriesFilterMenu -> {
-                    val filterActIntent = Intent(this, IdeaFilterActivity::class.java)
-                    filterActIntent.putExtra("caller", FilterCaller.SERIES)
-                    filterActIntent.putExtra("class", classFilter)
-                    filterActIntent.putExtra("sort", sortFilter)
-                    startForFilterResult.launch(filterActIntent)
-                    overridePendingTransition(R.anim.up, R.anim.no_animation)
-                }
                 R.id.seriesDeleteMenu -> {
                     MaterialAlertDialogBuilder(this)
                         .setTitle(getString(R.string.series_delete_dialog_title))

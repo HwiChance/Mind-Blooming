@@ -10,9 +10,6 @@ interface IdeaDao {
     @Query("SELECT * FROM idea_data")
     fun getAll(): LiveData<List<IdeaData>>
 
-    @Query("SELECT * FROM idea_data WHERE idea_id IN (:ideaIds)")
-    fun getIdeasByIds(ideaIds: List<Long>): LiveData<List<IdeaData>>
-
     @Query("SELECT * FROM idea_data WHERE idea_id = :ideaId")
     fun getOneIdeaById(ideaId: Long): LiveData<IdeaData>
 

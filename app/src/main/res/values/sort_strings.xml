@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sortStrings">
+        <item>@string/sort_title</item>
+        <item>@string/sort_created_date</item>
+        <item>@string/sort_modified_date</item>
+        <item>@string/sort_starred</item>
+        <item>@string/sort_series</item>
+    </array>
+</resources>

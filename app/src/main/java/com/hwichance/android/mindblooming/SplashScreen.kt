@@ -77,7 +77,7 @@ class SplashScreen : AppCompatActivity() {
     private fun checkFirstRun(): Boolean {
         val firstRunPref =
             getSharedPreferences(getString(R.string.preference_first_run), Context.MODE_PRIVATE)
-        val isFirstRun = firstRunPref.getBoolean(getString(R.string.is_first_run), true);
+        val isFirstRun = firstRunPref.getBoolean(getString(R.string.is_first_run), true)
         return if (isFirstRun) {
             firstRunPref.edit()
                 .putBoolean(getString(R.string.is_first_run), false)

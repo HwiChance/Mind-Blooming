@@ -2,6 +2,7 @@ package com.hwichance.android.mindblooming.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,7 +19,7 @@ class ColorPaletteDialog(context: Context) : MaterialAlertDialogBuilder(context)
         adapter = ColorPaletteAdapter(context.resources.getIntArray(R.array.palettes))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(context, 4)
+        background = ContextCompat.getDrawable(context, R.drawable.color_picker_dialog_background)
         setView(view)
-        setCancelable(false)
     }
 }
