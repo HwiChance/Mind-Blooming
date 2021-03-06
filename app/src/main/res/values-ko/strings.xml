@@ -101,4 +101,7 @@
     <!-- Series -->
     <string name="new_series">새 시리즈</string>
     <string name="no_series">시리즈 없음</string>
+
+    <!-- ColorPicker -->
+    <string name="recently_used_color">최근에 사용한 색</string>
 </resources>

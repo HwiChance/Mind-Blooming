@@ -11,11 +11,12 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.R
-import com.hwichance.android.mindblooming.adapters.ColorPaletteAdapter
+import com.hwichance.android.mindblooming.adapters.ColorPaletteAdapter.*
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import com.hwichance.android.mindblooming.custom_views.MindMapItem
 import com.hwichance.android.mindblooming.dialogs.ColorPaletteDialog
+import com.hwichance.android.mindblooming.dialogs.ColorPickerDialog
 import com.hwichance.android.mindblooming.listeners.OnEditTextDialogBtnClick
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
@@ -176,13 +177,28 @@ class MindMapEditToolFragment(
             val dialog = builder.setTitle(R.string.background_color_dialog_title)
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .create()
-            builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
+            builder.adapter.setItemClickListener(object : ItemClickListener {
                 override fun onClick(color: Int) {
                     mItem.getItemData().backgroundColor = color
                     mindMapViewModel.update(mItem.getItemData())
                     updateChangesAndModifiedDate()
                     dialog.dismiss()
                     dismiss()
+                }
+            })
+            builder.adapter.setSeeMoreBtnClickListener(object : SeeMoreBtnClickListener {
+                override fun onClick() {
+                    dialog.dismiss()
+                    dismiss()
+                    ColorPickerDialog(
+                        mItem.getItemData(),
+                        ideaData,
+                        mItem.getItemData().backgroundColor,
+                        true
+                    ).show(
+                        parentFragmentManager,
+                        "COLOR_PICKER_DIALOG"
+                    )
                 }
             })
             dialog.show()
@@ -193,13 +209,28 @@ class MindMapEditToolFragment(
             val dialog = builder.setTitle(R.string.text_color_dialog_title)
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .create()
-            builder.adapter.setItemClickListener(object : ColorPaletteAdapter.ItemClickListener {
+            builder.adapter.setItemClickListener(object : ItemClickListener {
                 override fun onClick(color: Int) {
                     mItem.getItemData().textColor = color
                     mindMapViewModel.update(mItem.getItemData())
                     updateChangesAndModifiedDate()
                     dialog.dismiss()
                     dismiss()
+                }
+            })
+            builder.adapter.setSeeMoreBtnClickListener(object : SeeMoreBtnClickListener {
+                override fun onClick() {
+                    dialog.dismiss()
+                    dismiss()
+                    ColorPickerDialog(
+                        mItem.getItemData(),
+                        ideaData,
+                        mItem.getItemData().textColor,
+                        false
+                    ).show(
+                        parentFragmentManager,
+                        "COLOR_PICKER_DIALOG"
+                    )
                 }
             })
             dialog.show()

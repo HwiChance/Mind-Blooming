@@ -5,23 +5,15 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.rooms.converter.IdeaTypeConverter
-import com.hwichance.android.mindblooming.enums.OrderEnum
 import com.hwichance.android.mindblooming.enums.SortCaller
-import com.hwichance.android.mindblooming.enums.SortEnum
-import com.hwichance.android.mindblooming.rooms.dao.IdeaDao
-import com.hwichance.android.mindblooming.rooms.dao.MindMapItemDao
-import com.hwichance.android.mindblooming.rooms.dao.SeriesDao
-import com.hwichance.android.mindblooming.rooms.dao.SortDao
-import com.hwichance.android.mindblooming.rooms.data.IdeaData
-import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
-import com.hwichance.android.mindblooming.rooms.data.SeriesData
-import com.hwichance.android.mindblooming.rooms.data.SortData
+import com.hwichance.android.mindblooming.rooms.dao.*
+import com.hwichance.android.mindblooming.rooms.data.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MindMapItemData::class, IdeaData::class, SeriesData::class, SortData::class],
+    entities = [MindMapItemData::class, IdeaData::class, SeriesData::class, SortData::class, ColorData::class],
     version = 1,
     exportSchema = false
 )
@@ -31,6 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ideaDao(): IdeaDao
     abstract fun seriesDao(): SeriesDao
     abstract fun sortDao(): SortDao
+    abstract fun colorDao(): ColorDao
 
     companion object {
         private const val DB_NAME = "mind_blooming_db"

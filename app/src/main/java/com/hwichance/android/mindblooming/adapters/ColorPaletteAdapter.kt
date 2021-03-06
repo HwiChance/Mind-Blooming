@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.hwichance.android.mindblooming.R
@@ -15,7 +16,12 @@ class ColorPaletteAdapter(private var paletteColors: IntArray) :
         fun onClick(color: Int)
     }
 
+    interface SeeMoreBtnClickListener {
+        fun onClick()
+    }
+
     private lateinit var itemClickListener: ItemClickListener
+    private lateinit var seeMoreBtnClickListener: SeeMoreBtnClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorPaletteViewHolder {
         val view =
@@ -31,28 +37,35 @@ class ColorPaletteAdapter(private var paletteColors: IntArray) :
             }
         } else {
             holder.setSeeMoreBtn()
+            holder.itemView.setOnClickListener {
+                seeMoreBtnClickListener.onClick()
+            }
         }
     }
 
     override fun getItemCount(): Int = (paletteColors.size + 1)
 
     fun setItemClickListener(listener: ItemClickListener) {
-        this.itemClickListener = listener
+        itemClickListener = listener
     }
 
-    class ColorPaletteViewHolder(private var view: View) : RecyclerView.ViewHolder(view) {
-        private var colorPickBtn = view.findViewById<View>(R.id.colorPickBtn)
+    fun setSeeMoreBtnClickListener(listener: SeeMoreBtnClickListener) {
+        seeMoreBtnClickListener = listener
+    }
+
+    class ColorPaletteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var colorPickBtn = itemView.findViewById<View>(R.id.colorPickBtn)
+        private val btnShape =
+            getDrawable(itemView.context, R.drawable.color_palette_view_shape) as GradientDrawable
 
         fun setBackgroundColor(color: Int) {
-            val btnShape =
-                getDrawable(view.context, R.drawable.color_palette_view_shape) as GradientDrawable
             btnShape.setColor(color)
             colorPickBtn.background = btnShape
         }
 
         fun setSeeMoreBtn() {
-            val btnShape = getDrawable(view.context, R.drawable.ic_add_circle_32dp)
-            colorPickBtn.background = btnShape
+            val seeMoreBtnShape = getDrawable(itemView.context, R.drawable.ic_add_circle_32dp)
+            colorPickBtn.background = seeMoreBtnShape
         }
     }
 }

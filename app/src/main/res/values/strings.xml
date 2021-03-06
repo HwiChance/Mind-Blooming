@@ -105,4 +105,7 @@
     <!-- Series -->
     <string name="new_series">New Series</string>
     <string name="no_series">No Series</string>
+
+    <!-- ColorPicker -->
+    <string name="recently_used_color">Recently used color</string>
 </resources>
