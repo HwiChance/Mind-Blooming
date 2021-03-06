@@ -1,8 +1,9 @@
-package com.hwichance.android.mindblooming.converter
+package com.hwichance.android.mindblooming.rooms.converter
 
 import androidx.room.TypeConverter
 import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import com.hwichance.android.mindblooming.enums.OrderEnum
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 
 class IdeaTypeConverter {
@@ -59,6 +60,24 @@ class IdeaTypeConverter {
         return when (order) {
             OrderEnum.ASC -> 0
             OrderEnum.DES -> 1
+        }
+    }
+
+    @TypeConverter
+    fun toCallerEnum(caller: Int): SortCaller {
+        return when (caller) {
+            0 -> SortCaller.MAIN
+            1 -> SortCaller.STARRED
+            else -> SortCaller.SERIES
+        }
+    }
+
+    @TypeConverter
+    fun fromCallerEnum(caller: SortCaller): Int {
+        return when (caller) {
+            SortCaller.MAIN -> 0
+            SortCaller.STARRED -> 1
+            SortCaller.SERIES -> 2
         }
     }
 }

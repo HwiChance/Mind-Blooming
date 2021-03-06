@@ -50,16 +50,18 @@ class StarredActivity : AppCompatActivity() {
             starredListAdapter.setSeriesList(seriesList)
         })
 
-        sortViewModel.getData().observe(this, { data ->
-            sortData = data
-            val sortText = when (sortData.sortEnum) {
-                SortEnum.TITLE -> sortStrings[0]
-                SortEnum.CREATED_DATE -> sortStrings[1]
-                SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
-                SortEnum.STARRED_DATE -> sortStrings[3]
-                SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+        sortViewModel.getDataByCaller(SortCaller.STARRED).observe(this, { data ->
+            if (data != null) {
+                sortData = data
+                val sortText = when (sortData.sortEnum) {
+                    SortEnum.TITLE -> sortStrings[0]
+                    SortEnum.CREATED_DATE -> sortStrings[1]
+                    SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
+                    SortEnum.STARRED_DATE -> sortStrings[3]
+                    SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+                }
+                starredListAdapter.sortingData(sortText, sortData)
             }
-            starredListAdapter.sortingData(sortText, sortData)
         })
 
         bindViews()

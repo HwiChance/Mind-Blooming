@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.repository.SortRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,10 @@ class SortViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getData(): LiveData<SortData> {
         return sortData
+    }
+
+    fun getDataByCaller(caller: SortCaller): LiveData<SortData> {
+        return repository.getDataByCaller(caller)
     }
 
     fun insert(data: SortData) = viewModelScope.launch(Dispatchers.IO) {

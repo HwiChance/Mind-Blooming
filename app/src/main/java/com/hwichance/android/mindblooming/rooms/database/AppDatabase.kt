@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hwichance.android.mindblooming.R
-import com.hwichance.android.mindblooming.converter.IdeaTypeConverter
+import com.hwichance.android.mindblooming.rooms.converter.IdeaTypeConverter
 import com.hwichance.android.mindblooming.enums.OrderEnum
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.dao.IdeaDao
 import com.hwichance.android.mindblooming.rooms.dao.MindMapItemDao
@@ -67,7 +68,13 @@ abstract class AppDatabase : RoomDatabase() {
                             data.seriesDescription = context.getString(R.string.drawer_series_three)
                             getInstance(context).seriesDao().insertSeries(data)
 
-                            val sortData = SortData(null, SortEnum.TITLE, OrderEnum.ASC)
+                            val sortData = SortData(null, SortCaller.MAIN)
+                            getInstance(context).sortDao().insertSortData(sortData)
+
+                            sortData.caller = SortCaller.STARRED
+                            getInstance(context).sortDao().insertSortData(sortData)
+
+                            sortData.caller = SortCaller.SERIES
                             getInstance(context).sortDao().insertSortData(sortData)
                         }
                     }

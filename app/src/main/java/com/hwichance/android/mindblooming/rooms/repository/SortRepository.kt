@@ -2,6 +2,7 @@ package com.hwichance.android.mindblooming.rooms.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.rooms.dao.SortDao
 import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.database.AppDatabase
@@ -29,6 +30,11 @@ class SortRepository(application: Application) {
     fun getData(): LiveData<SortData> {
         return sortData
     }
+
+    fun getDataByCaller(caller: SortCaller): LiveData<SortData> {
+        return sortDao.getSortDataByCaller(caller)
+    }
+
 
     suspend fun insert(data: SortData) {
         sortDao.insertSortData(data)

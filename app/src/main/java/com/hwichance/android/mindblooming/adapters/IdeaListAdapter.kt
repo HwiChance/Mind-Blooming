@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.enums.OrderEnum
+import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.SeriesData
@@ -35,7 +36,7 @@ class IdeaListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isCheckedList = mutableListOf<Boolean>()
     private var defaultSeriesText = ""
     private var sortText = ""
-    private var sortData = SortData(null)
+    private var sortData = SortData(null, SortCaller.MAIN)
     private lateinit var sortBtnClickListener: View.OnClickListener
     private lateinit var ideaClickListener: IdeaClickListener
     private lateinit var starredBtnClickListener: StarredBtnClickListener

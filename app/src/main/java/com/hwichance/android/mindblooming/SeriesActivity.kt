@@ -83,16 +83,18 @@ class SeriesActivity : AppCompatActivity() {
                 ideaListAdapter.setIdeaList(ideas)
             })
 
-            sortViewModel.getData().observe(this, { data ->
-                sortData = data
-                val sortText = when (sortData.sortEnum) {
-                    SortEnum.TITLE -> sortStrings[0]
-                    SortEnum.CREATED_DATE -> sortStrings[1]
-                    SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
-                    SortEnum.STARRED_DATE -> sortStrings[3]
-                    SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+            sortViewModel.getDataByCaller(SortCaller.SERIES).observe(this, { data ->
+                if (data != null) {
+                    sortData = data
+                    val sortText = when (sortData.sortEnum) {
+                        SortEnum.TITLE -> sortStrings[0]
+                        SortEnum.CREATED_DATE -> sortStrings[1]
+                        SortEnum.LAST_MODIFIED_DATE -> sortStrings[2]
+                        SortEnum.STARRED_DATE -> sortStrings[3]
+                        SortEnum.SERIES_ADDED_DATE -> sortStrings[4]
+                    }
+                    ideaListAdapter.sortingData(sortText, sortData)
                 }
-                ideaListAdapter.sortingData(sortText, sortData)
             })
         }
     }
