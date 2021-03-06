@@ -44,7 +44,8 @@ class MindMapEditActivity : AppCompatActivity() {
     private val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
         override fun onClick(text: CharSequence) {
             ideaData.ideaTitle = text.toString()
-            updateChangesAndModifiedDate()
+            ideaData.modifiedDate = System.currentTimeMillis()
+            ideaViewModel.update(ideaData)
         }
     }
 
@@ -155,7 +156,7 @@ class MindMapEditActivity : AppCompatActivity() {
                 R.id.ideaStarredMenu -> {
                     ideaData.isStarred = !ideaData.isStarred
                     ideaData.starredDate = System.currentTimeMillis()
-                    updateChangesAndModifiedDate()
+                    ideaViewModel.update(ideaData)
                 }
                 R.id.ideaDeleteMenu -> {
                     MaterialAlertDialogBuilder(this)
@@ -179,10 +180,5 @@ class MindMapEditActivity : AppCompatActivity() {
             }
             true
         }
-    }
-
-    private fun updateChangesAndModifiedDate() {
-        ideaData.modifiedDate = System.currentTimeMillis()
-        ideaViewModel.update(ideaData)
     }
 }
