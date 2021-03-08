@@ -40,6 +40,7 @@ class FlexibleLayout : RelativeLayout {
     private val mMatrix = Matrix()
     private val matrixInverse = Matrix()
     private val savedMatrix = Matrix()
+    var isAddedItem = false
 
     private var touchPoint = FloatArray(2)
 
@@ -133,6 +134,10 @@ class FlexibleLayout : RelativeLayout {
         primaryItem.layout(left, top, right, bottom)
         setLeftFamilyPosition(primaryItem)
         setRightFamilyPosition(primaryItem)
+        if (isAddedItem) {
+            moveToLastInsertedItem()
+            isAddedItem = false
+        }
     }
 
     override fun dispatchDraw(canvas: Canvas) {
@@ -346,6 +351,29 @@ class FlexibleLayout : RelativeLayout {
         }
     }
 
+    private fun moveToLastInsertedItem() {
+        val lastItem = children.elementAt(childCount - 1)
+        val widthMoveDist = (width - (lastItem.left + lastItem.right)).toFloat() / 2
+        val heightMoveDist = (height - (lastItem.top + lastItem.bottom)).toFloat() / 2
+
+        mMatrix.set(savedMatrix)
+
+        val values = FloatArray(9)
+        mMatrix.getValues(values)
+
+        mMatrix.reset()
+        mMatrix.postTranslate(widthMoveDist, heightMoveDist)
+        mMatrix.postScale(
+            values[Matrix.MSCALE_X],
+            values[Matrix.MSCALE_Y],
+            width.toFloat() / 2,
+            height.toFloat() / 2
+        )
+        mMatrix.invert(matrixInverse)
+        savedMatrix.set(mMatrix)
+        invalidate()
+    }
+
     private fun getWidthAndHeight(): Rect {
         var l = 0
         var r = 0
@@ -376,7 +404,7 @@ class FlexibleLayout : RelativeLayout {
         newScaleFactor = if (newScaleFactor > 1.0f) {
             1.0f
         } else {
-            floor(newScaleFactor * 10) / 10
+            floor(newScaleFactor * 1000) / 1000
         }
 
         savedMatrix.set(mMatrix)

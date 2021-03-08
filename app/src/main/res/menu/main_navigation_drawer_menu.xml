@@ -4,10 +4,6 @@
         android:id="@+id/actionGroup"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/mainDrawerExport"
-            android:icon="@drawable/ic_export_24dp"
-            android:title="@string/drawer_export_menu" />
-        <item
             android:id="@+id/mainDrawerStarred"
             android:icon="@drawable/ic_star_24dp"
             android:title="@string/drawer_starred_menu" />

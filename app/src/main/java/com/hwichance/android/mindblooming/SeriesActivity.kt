@@ -234,46 +234,44 @@ class SeriesActivity : AppCompatActivity() {
     private fun setEditTextListener() {
         seriesTitleEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                val newText = v.text.trim().toString()
-                if (newText.isEmpty()) {
-                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    seriesData.seriesTitle = newText
-                    seriesViewModel.update(seriesData)
-                }
                 v.clearFocus()
             }
             false
         }
         seriesTitleEditText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                if (seriesTitleEditText.text.trim().isEmpty()) {
+                val newText = seriesTitleEditText.text.trim().toString()
+                if (newText.isEmpty()) {
                     seriesTitleEditText.setText(seriesData.seriesTitle)
+                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    seriesData.seriesTitle = newText
+                    seriesViewModel.update(seriesData)
                 }
+
                 val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
             }
         }
         seriesDescriptionEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val newText = v.text.trim().toString()
-                if (newText.isEmpty()) {
-                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    seriesData.seriesDescription = newText
-                    seriesViewModel.update(seriesData)
-                }
                 v.clearFocus()
             }
             false
         }
         seriesDescriptionEditText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                if (seriesDescriptionEditText.text.trim().isEmpty()) {
+                val newText = seriesDescriptionEditText.text.trim().toString()
+                if (newText.isEmpty()) {
                     seriesDescriptionEditText.setText(seriesData.seriesDescription)
+                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    seriesData.seriesDescription = newText
+                    seriesViewModel.update(seriesData)
                 }
+
                 val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
             }

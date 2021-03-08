@@ -101,6 +101,7 @@ class MindMapEditToolFragment(
                         itemData.itemId = id
                     }
                     updateChangesAndModifiedDate()
+                    mLayout.isAddedItem = true
                     dismiss()
                 }
             }

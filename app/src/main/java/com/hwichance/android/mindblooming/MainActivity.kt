@@ -254,9 +254,6 @@ class MainActivity : AppCompatActivity() {
     private fun setDrawerAction() {
         mainNavigationDrawer.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.mainDrawerExport -> {
-
-                }
                 R.id.mainDrawerStarred -> {
                     startActivity(Intent(this, StarredActivity::class.java))
                 }

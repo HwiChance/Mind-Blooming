@@ -8,6 +8,11 @@
     <!-- permission message -->
     <string name="permission_denied">Storage access is required to run this app.</string>
 
+    <!-- intro text -->
+    <string name="intro_one_text">Organize your ideas\ninto a mind map!</string>
+    <string name="intro_two_text">Manage mind map\nas a series</string>
+    <string name="intro_three_text">save mind map\nas a picture</string>
+
     <!-- button -->
     <string name="ok">OK</string>
     <string name="skip">Skip</string>
@@ -38,7 +43,6 @@
     <string name="action_mode_select_all_menu">Select all</string>
     <string name="action_mode_delete_menu">Delete</string>
 
-    <string name="drawer_export_menu">Export</string>
     <string name="drawer_starred_menu">Starred</string>
     <string name="drawer_setting_menu">Setting</string>
 

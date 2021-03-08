@@ -5,6 +5,11 @@
     <!-- permission message -->
     <string name="permission_denied">앱을 실행하려면 저장소 접근 권한이 필요합니다.</string>
 
+    <!-- intro text -->
+    <string name="intro_one_text">떠오르는 생각을\n마인드 맵으로!</string>
+    <string name="intro_two_text">마인드 맵을 시리즈로\n관리하세요</string>
+    <string name="intro_three_text">마인드 맵을 사진으로\n저장하세요</string>
+
     <!-- button text-->
     <string name="ok">OK</string>
     <string name="skip">건너뛰기</string>
@@ -35,7 +40,6 @@
     <string name="action_mode_select_all_menu">모두 선택</string>
     <string name="action_mode_delete_menu">삭제</string>
 
-    <string name="drawer_export_menu">내보내기</string>
     <string name="drawer_starred_menu">즐겨찾기</string>
     <string name="drawer_setting_menu">설정</string>
 
