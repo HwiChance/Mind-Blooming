@@ -14,7 +14,9 @@ import androidx.core.view.children
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.enums.ItemPosEnum
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.max
+import kotlin.math.min
 
 class FlexibleLayout : RelativeLayout {
 
@@ -29,7 +31,7 @@ class FlexibleLayout : RelativeLayout {
 
     private val edgePaint = Paint()
 
-    private val minZoom = 0.5f
+    private val minZoom = 0.1f
     private val maxZoom = 4.0f
     private var scaleFactor = 1f
 
@@ -342,5 +344,50 @@ class FlexibleLayout : RelativeLayout {
             nextTop += (child.rightTotalHeight + verInterval)
             setRightFamilyPosition(child)
         }
+    }
+
+    private fun getWidthAndHeight(): Rect {
+        var l = 0
+        var r = 0
+        var t = 0
+        var b = 0
+        for (child in children) {
+            l = min(l, child.left)
+            r = max(r, child.right)
+            t = min(t, child.top)
+            b = max(b, child.bottom)
+        }
+        return Rect(l, t, r, b)
+    }
+
+    fun setFullView() {
+        val layoutSize = getWidthAndHeight()
+        val widthTotal = layoutSize.right - layoutSize.left
+        val heightTotal = layoutSize.bottom - layoutSize.top
+        val widthMoveDist = (width - (layoutSize.left + layoutSize.right)).toFloat() / 2
+        val heightMoveDist = (height - (layoutSize.top + layoutSize.bottom)).toFloat() / 2
+        val widthDiff = abs(widthTotal - width)
+        val heightDiff = abs(heightTotal - height)
+        var newScaleFactor: Float = if (widthDiff >= heightDiff) {
+            width.toFloat() / widthTotal
+        } else {
+            height.toFloat() / heightTotal
+        }
+        newScaleFactor = if (newScaleFactor > 1.0f) {
+            1.0f
+        } else {
+            floor(newScaleFactor * 10) / 10
+        }
+
+        savedMatrix.set(mMatrix)
+        mMatrix.reset()
+        mMatrix.postTranslate(widthMoveDist, heightMoveDist)
+        mMatrix.postScale(newScaleFactor, newScaleFactor, width.toFloat() / 2, height.toFloat() / 2)
+        invalidate()
+    }
+
+    fun restoreView() {
+        mMatrix.set(savedMatrix)
+        invalidate()
     }
 }

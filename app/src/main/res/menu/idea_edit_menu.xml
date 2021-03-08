@@ -6,23 +6,26 @@
         android:id="@+id/ideaTitleEditMenu"
         android:icon="@drawable/ic_edit_24dp"
         android:title="@string/idea_title_edit_menu"
-        app:showAsAction="ifRoom" />
-
+        app:showAsAction="always" />
     <item
         android:id="@+id/ideaStarredMenu"
         android:icon="@drawable/ic_star_border_24dp"
         android:title="@string/idea_save_menu"
         app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/ideaDeleteMenu"
         android:icon="@drawable/ic_delete_24dp"
         android:title="@string/idea_delete_menu"
-        app:showAsAction="ifRoom" />
-
+        app:showAsAction="never" />
     <item
         android:id="@+id/ideaSeriesAddMenu"
         android:icon="@drawable/ic_bookmark_24dp"
         android:title="@string/idea_series_add_menu"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/ideaExportMenu"
+        android:icon="@drawable/ic_export_24dp"
+        android:title="@string/idea_export_menu"
+        app:showAsAction="never" />
+
 </menu>

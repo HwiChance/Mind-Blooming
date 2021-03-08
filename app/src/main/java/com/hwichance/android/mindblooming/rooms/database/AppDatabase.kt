@@ -35,7 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // TODO: decide logic in onCreate
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
                 .addCallback(object : RoomDatabase.Callback() {

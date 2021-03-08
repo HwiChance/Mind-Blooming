@@ -1,8 +1,18 @@
 package com.hwichance.android.mindblooming
 
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.getColor
@@ -18,7 +28,11 @@ import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
+import com.hwichance.android.mindblooming.utils.DateTimeUtils.Companion.convertDateToFileName
 import com.hwichance.android.mindblooming.utils.DialogUtils
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.util.*
 
 class MindMapEditActivity : AppCompatActivity() {
     private lateinit var mindMapEditToolbar: Toolbar
@@ -153,11 +167,13 @@ class MindMapEditActivity : AppCompatActivity() {
                         dialogBtnClickListener
                     )
                 }
+
                 R.id.ideaStarredMenu -> {
                     ideaData.isStarred = !ideaData.isStarred
                     ideaData.starredDate = System.currentTimeMillis()
                     ideaViewModel.update(ideaData)
                 }
+
                 R.id.ideaDeleteMenu -> {
                     MaterialAlertDialogBuilder(this)
                         .setMessage(R.string.idea_delete_dialog_msg)
@@ -171,14 +187,91 @@ class MindMapEditActivity : AppCompatActivity() {
                         .create()
                         .show()
                 }
+
                 R.id.ideaSeriesAddMenu -> {
                     SeriesListDialog(ideaData).show(
                         supportFragmentManager,
                         "SERIES_LIST_DIALOG"
                     )
                 }
+
+                R.id.ideaExportMenu -> {
+                    val bitmap = getBitmapImage()
+                    val view = getExportDialogView(bitmap)
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.export_idea_dialog_title)
+                        .setView(view)
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .setPositiveButton(R.string.dialog_save) { dialog, _ ->
+                            saveBitmap(bitmap)
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+                }
             }
             true
+        }
+    }
+
+    private fun getBitmapImage(): Bitmap {
+        return Bitmap.createBitmap(
+            editFlexibleLayout.width,
+            editFlexibleLayout.height,
+            Bitmap.Config.ARGB_8888
+        ).apply {
+            Canvas(this).apply {
+                this.drawColor(Color.WHITE)
+                editFlexibleLayout.setFullView()
+                editFlexibleLayout.draw(this)
+                editFlexibleLayout.restoreView()
+            }
+        }
+    }
+
+    private fun getExportDialogView(bitmap: Bitmap): View {
+        return LayoutInflater.from(this).inflate(R.layout.export_idea_dialog, null).apply {
+            this.findViewById<ImageView>(R.id.previewImage).setImageBitmap(bitmap)
+        }
+    }
+
+    private fun saveBitmap(bitmap: Bitmap) {
+        val fileName: String
+        ByteArrayOutputStream().apply {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
+            fileName = convertDateToFileName("mind_blooming", System.currentTimeMillis())
+        }
+
+        val dir = File("${getExternalFilesDir(Environment.DIRECTORY_PICTURES)}/MindBlooming")
+            .apply {
+                if (!this.exists()) {
+                    this.mkdir()
+                }
+            }
+
+        val file = File(dir, fileName)
+        if (!file.exists()) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.TITLE, fileName)
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, file.absolutePath)
+                } else {
+                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+                }
+            }
+
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                .apply {
+                    bitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        100,
+                        contentResolver.openOutputStream(this!!)
+                    )
+                }
+            Toast.makeText(this, getString(R.string.save_as_image_toast), Toast.LENGTH_SHORT).show()
         }
     }
 }

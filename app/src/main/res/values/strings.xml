@@ -33,6 +33,7 @@
     <string name="idea_save_menu">Save Idea</string>
     <string name="idea_delete_menu">Delete Idea</string>
     <string name="idea_series_add_menu">Add to series</string>
+    <string name="idea_export_menu">Export</string>
 
     <string name="action_mode_select_all_menu">Select all</string>
     <string name="action_mode_delete_menu">Delete</string>
@@ -67,6 +68,8 @@
     <string name="item_delete_dialog_msg">Are you sure you want to delete this item?</string>
     <string name="idea_delete_dialog_msg">Are you sure you want to delete this idea?</string>
 
+    <string name="export_idea_dialog_title">Save as Image</string>
+
     <string name="background_color_dialog_title">Select background color</string>
     <string name="text_color_dialog_title">Select text color</string>
 
@@ -75,6 +78,8 @@
     <string name="dialog_delete">DELETE</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_save">SAVE</string>
+
 
     <!-- Fab -->
     <string name="main_add_fab">Add an idea</string>
@@ -96,7 +101,10 @@
 
     <!-- Error msg -->
     <string name="no_character">Please enter a letter.</string>
+
+    <!-- toast -->
     <string name="no_character_toast">Character must be entered.</string>
+    <string name="save_as_image_toast">Saved as an image.</string>
 
     <!-- Idea List -->
     <string name="idea_list_date">Last modified Date:</string>
