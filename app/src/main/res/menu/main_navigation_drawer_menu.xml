@@ -7,10 +7,6 @@
             android:id="@+id/mainDrawerStarred"
             android:icon="@drawable/ic_star_24dp"
             android:title="@string/drawer_starred_menu" />
-        <item
-            android:id="@+id/mainDrawerSetting"
-            android:icon="@drawable/ic_settings_24dp"
-            android:title="@string/drawer_setting_menu" />
     </group>
     <group
         android:id="@+id/seriesGroup"

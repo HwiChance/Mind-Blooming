@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -256,9 +255,6 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.mainDrawerStarred -> {
                     startActivity(Intent(this, StarredActivity::class.java))
-                }
-                R.id.mainDrawerSetting -> {
-
                 }
             }
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
