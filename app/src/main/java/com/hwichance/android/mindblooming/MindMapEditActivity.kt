@@ -4,10 +4,11 @@ import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -30,8 +31,7 @@ import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DateTimeUtils.Companion.convertDateToFileName
 import com.hwichance.android.mindblooming.utils.DialogUtils
-import java.io.ByteArrayOutputStream
-import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 class MindMapEditActivity : AppCompatActivity() {
@@ -203,7 +203,7 @@ class MindMapEditActivity : AppCompatActivity() {
                         .setView(view)
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .setPositiveButton(R.string.dialog_save) { dialog, _ ->
-                            saveBitmap(bitmap)
+                            saveBitmapAsImage(bitmap)
                             dialog.dismiss()
                         }
                         .create()
@@ -235,43 +235,37 @@ class MindMapEditActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveBitmap(bitmap: Bitmap) {
-        val fileName: String
-        ByteArrayOutputStream().apply {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
-            fileName = convertDateToFileName("mind_blooming", System.currentTimeMillis())
+    private fun saveBitmapAsImage(bitmap: Bitmap) {
+        val fileName = convertDateToFileName("mind_blooming", System.currentTimeMillis())
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/*")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
         }
 
-        val dir = File("${getExternalFilesDir(Environment.DIRECTORY_PICTURES)}/MindBlooming")
-            .apply {
-                if (!this.exists()) {
-                    this.mkdir()
+        val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        try {
+            if (uri != null) {
+                val descriptor = contentResolver.openFileDescriptor(uri, "w")
+                if (descriptor != null) {
+                    val fos = FileOutputStream(descriptor.fileDescriptor)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    fos.close()
                 }
-            }
 
-        val file = File(dir, fileName)
-        if (!file.exists()) {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Images.Media.TITLE, fileName)
-                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
-                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    put(MediaStore.Images.Media.RELATIVE_PATH, file.absolutePath)
-                } else {
-                    put(MediaStore.Images.Media.DATA, file.absolutePath)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    values.clear()
+                    values.put(MediaStore.Images.Media.IS_PENDING, 0)
+                    contentResolver.update(uri, values, null, null)
                 }
-            }
 
-            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                .apply {
-                    bitmap.compress(
-                        Bitmap.CompressFormat.JPEG,
-                        100,
-                        contentResolver.openOutputStream(this!!)
-                    )
-                }
-            Toast.makeText(this, getString(R.string.save_as_image_toast), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.save_as_image_toast), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } catch (e: java.lang.Exception) {
+            Log.e("SAVE_AS_FILE", "error=${e.localizedMessage}")
         }
     }
 }

@@ -375,10 +375,10 @@ class FlexibleLayout : RelativeLayout {
     }
 
     private fun getWidthAndHeight(): Rect {
-        var l = 0
-        var r = 0
-        var t = 0
-        var b = 0
+        var l = right
+        var r = left
+        var t = bottom
+        var b = top
         for (child in children) {
             l = min(l, child.left)
             r = max(r, child.right)
@@ -394,18 +394,18 @@ class FlexibleLayout : RelativeLayout {
         val heightTotal = layoutSize.bottom - layoutSize.top
         val widthMoveDist = (width - (layoutSize.left + layoutSize.right)).toFloat() / 2
         val heightMoveDist = (height - (layoutSize.top + layoutSize.bottom)).toFloat() / 2
-        val widthDiff = abs(widthTotal - width)
-        val heightDiff = abs(heightTotal - height)
-        var newScaleFactor: Float = if (widthDiff >= heightDiff) {
-            width.toFloat() / widthTotal
-        } else {
-            height.toFloat() / heightTotal
-        }
-        newScaleFactor = if (newScaleFactor > 1.0f) {
+        val widthDiff = widthTotal - width
+        val heightDiff = heightTotal - height
+        var newScaleFactor = if (widthDiff <= 0 && heightDiff <= 0) {
             1.0f
         } else {
-            floor(newScaleFactor * 1000) / 1000
+            if (widthDiff < heightDiff) {
+                height.toFloat() / heightTotal
+            } else {
+                width.toFloat() / widthTotal
+            }
         }
+        newScaleFactor = floor(newScaleFactor * 1000) / 1000
 
         savedMatrix.set(mMatrix)
         mMatrix.reset()
