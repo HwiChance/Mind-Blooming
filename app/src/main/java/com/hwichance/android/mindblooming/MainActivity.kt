@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mainToolbar.menu.findItem(R.id.mainSearchMenu).isEnabled = false
             val count = ideaListAdapter.getCheckedItemCount()
             val selectAllIcon = menu?.findItem(R.id.actionModeSelectAll)
             val deleteIcon = menu?.findItem(R.id.actionModeDelete)
@@ -151,6 +152,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            mainToolbar.menu.findItem(R.id.mainSearchMenu).isEnabled = true
             ideaListAdapter.setActionMode(false)
             ideaListAdapter.initializeChecked(false)
             mainFab.show()

@@ -75,6 +75,7 @@ class StarredActivity : AppCompatActivity() {
         }
 
         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            starredToolbar.menu.findItem(R.id.starredSearchMenu).isEnabled = false
             val count = starredListAdapter.getCheckedItemCount()
             val selectAllIcon = menu?.findItem(R.id.actionModeSelectAll)
             val deleteIcon = menu?.findItem(R.id.actionModeDelete)
@@ -120,6 +121,7 @@ class StarredActivity : AppCompatActivity() {
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            starredToolbar.menu.findItem(R.id.starredSearchMenu).isEnabled = true
             starredListAdapter.setActionMode(false)
             starredListAdapter.initializeChecked(false)
         }
