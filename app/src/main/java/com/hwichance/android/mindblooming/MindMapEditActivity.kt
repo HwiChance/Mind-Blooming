@@ -1,21 +1,27 @@
 package com.hwichance.android.mindblooming
 
-import android.content.ContentValues
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.ContextCompat.getColor
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
@@ -29,10 +35,8 @@ import com.hwichance.android.mindblooming.rooms.data.IdeaData
 import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
-import com.hwichance.android.mindblooming.utils.DateTimeUtils.Companion.convertDateToFileName
 import com.hwichance.android.mindblooming.utils.DialogUtils
 import com.hwichance.android.mindblooming.utils.PictureUtils
-import java.io.FileOutputStream
 import java.util.*
 
 class MindMapEditActivity : AppCompatActivity() {
@@ -196,24 +200,7 @@ class MindMapEditActivity : AppCompatActivity() {
                     )
                 }
 
-                R.id.ideaExportMenu -> {
-                    val bitmap = getBitmapImage()
-                    val view = getExportDialogView(bitmap)
-                    MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.export_idea_dialog_title)
-                        .setView(view)
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .setPositiveButton(R.string.dialog_save) { dialog, _ ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                PictureUtils.saveBitmapAsImageAfterQ(this, contentResolver, bitmap)
-                            } else {
-                                PictureUtils.saveBitmapAsImageBeforeQ(this, bitmap)
-                            }
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
-                }
+                R.id.ideaExportMenu -> runWithPermission()
             }
             true
         }
@@ -237,6 +224,69 @@ class MindMapEditActivity : AppCompatActivity() {
     private fun getExportDialogView(bitmap: Bitmap): View {
         return LayoutInflater.from(this).inflate(R.layout.export_idea_dialog, null).apply {
             this.findViewById<ImageView>(R.id.previewImage).setImageBitmap(bitmap)
+        }
+    }
+
+    private val permissionLauncher = registerForActivityResult(RequestPermission()) { isGranted ->
+        if (isGranted) {
+            showExportDialog()
+        } else {
+            Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showExportDialog() {
+        val bitmap = getBitmapImage()
+        val view = getExportDialogView(bitmap)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.export_idea_dialog_title)
+            .setView(view)
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .setPositiveButton(R.string.dialog_save) { dialog, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    PictureUtils.saveBitmapAsImageAfterQ(this, contentResolver, bitmap)
+                } else {
+                    PictureUtils.saveBitmapAsImageBeforeQ(this, bitmap)
+                }
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun runWithPermission() {
+        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val pref = getPreferences(Context.MODE_PRIVATE)
+        val isFirstRequest = pref.getBoolean("isFirstRequest", true)
+
+        when {
+            checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED -> {
+                showExportDialog()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(this, permission) -> {
+                permissionLauncher.launch(permission)
+            }
+            isFirstRequest -> {
+                pref.edit().putBoolean("isFirstRequest", false).apply()
+                permissionLauncher.launch(permission)
+            }
+            else -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.permission_dialog_title)
+                    .setMessage(R.string.permission_dialog_msg)
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .setPositiveButton(R.string.dialog_setting) { dialog, _ ->
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            addCategory(Intent.CATEGORY_DEFAULT)
+                            data = Uri.parse("package:$packageName")
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+            }
         }
     }
 }

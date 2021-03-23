@@ -3,7 +3,7 @@
     <string name="app_name">마인드 블루밍</string>
 
     <!-- permission message -->
-    <string name="permission_denied">앱을 실행하려면 저장소 접근 권한이 필요합니다.</string>
+    <string name="permission_denied">이 기능을 실행하려면 저장소 접근 권한이 필요합니다.</string>
 
     <!-- intro text -->
     <string name="intro_one_text">떠오르는 생각을\n마인드 맵으로!</string>
@@ -58,6 +58,9 @@
     <string name="sort_series">시리즈에 추가한 날짜</string>
 
     <!-- AlertDialog -->
+    <string name="permission_dialog_title">권한</string>
+    <string name="permission_dialog_msg">이 기능을 실행하려면 저장소 접근 권한이 필요합니다.
+        [설정 > 권한]에서 저장소 접근 권한을 허용해주세요.</string>
     <string name="delete_dialog_msg">삭제하시겠습니까?</string>
     <string name="series_delete_dialog_title">시리즈 삭제</string>
     <string name="series_delete_dialog_msg">이 시리즈를 삭제하시겠습니까?</string>
@@ -79,6 +82,7 @@
     <string name="dialog_cancel">취소</string>
     <string name="dialog_ok">확인</string>
     <string name="dialog_save">저장</string>
+    <string name="dialog_setting">설정</string>
 
     <!-- Fab -->
     <string name="main_add_fab">아이디어를 추가합니다.</string>

@@ -6,7 +6,7 @@
     <string name="is_first_run" translatable="false">isFirstRun</string>
 
     <!-- permission message -->
-    <string name="permission_denied">Storage access is required to run this app.</string>
+    <string name="permission_denied">Storage access permission is required to run this feature.</string>
 
     <!-- intro text -->
     <string name="intro_one_text">Organize your ideas\ninto a mind map!</string>
@@ -63,6 +63,9 @@
     <string name="sort_series">Date added to series</string>
 
     <!-- AlertDialog -->
+    <string name="permission_dialog_title">Permission</string>
+    <string name="permission_dialog_msg">Storage access permission is required to run this feature.
+        Please allow storage access permission at [Settings > Permission]</string>
     <string name="delete_dialog_msg">Are you sure you want to delete?</string>
     <string name="series_delete_dialog_title">Series delete</string>
     <string name="series_delete_dialog_msg">Are you sure you want to delete this series?</string>
@@ -83,6 +86,7 @@
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_save">SAVE</string>
+    <string name="dialog_setting">SETTINGS</string>
 
 
     <!-- Fab -->

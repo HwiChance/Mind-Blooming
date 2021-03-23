@@ -49,12 +49,7 @@ class PictureUtils {
                     )
                 }
 
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.saved_as_image),
-                    Toast.LENGTH_SHORT
-                ).show()
-
+                Toast.makeText(context, R.string.saved_as_image, Toast.LENGTH_SHORT).show()
             } catch (e: java.lang.Exception) {
                 Log.e("SAVE_AS_FILE", "error=${e.localizedMessage}")
             }
@@ -87,11 +82,7 @@ class PictureUtils {
                     values.put(MediaStore.Images.Media.IS_PENDING, 0)
                     resolver.update(uri, values, null, null)
 
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.saved_as_image),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, R.string.saved_as_image, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: java.lang.Exception) {
                 Log.e("SAVE_AS_FILE", "error=${e.localizedMessage}")
