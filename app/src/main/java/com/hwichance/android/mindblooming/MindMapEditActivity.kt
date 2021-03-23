@@ -31,6 +31,7 @@ import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DateTimeUtils.Companion.convertDateToFileName
 import com.hwichance.android.mindblooming.utils.DialogUtils
+import com.hwichance.android.mindblooming.utils.PictureUtils
 import java.io.FileOutputStream
 import java.util.*
 
@@ -203,7 +204,11 @@ class MindMapEditActivity : AppCompatActivity() {
                         .setView(view)
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .setPositiveButton(R.string.dialog_save) { dialog, _ ->
-                            saveBitmapAsImage(bitmap)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                PictureUtils.saveBitmapAsImageAfterQ(this, contentResolver, bitmap)
+                            } else {
+                                PictureUtils.saveBitmapAsImageBeforeQ(this, bitmap)
+                            }
                             dialog.dismiss()
                         }
                         .create()
@@ -232,40 +237,6 @@ class MindMapEditActivity : AppCompatActivity() {
     private fun getExportDialogView(bitmap: Bitmap): View {
         return LayoutInflater.from(this).inflate(R.layout.export_idea_dialog, null).apply {
             this.findViewById<ImageView>(R.id.previewImage).setImageBitmap(bitmap)
-        }
-    }
-
-    private fun saveBitmapAsImage(bitmap: Bitmap) {
-        val fileName = convertDateToFileName("mind_blooming", System.currentTimeMillis())
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/*")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.IS_PENDING, 1)
-            }
-        }
-
-        val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        try {
-            if (uri != null) {
-                val descriptor = contentResolver.openFileDescriptor(uri, "w")
-                if (descriptor != null) {
-                    val fos = FileOutputStream(descriptor.fileDescriptor)
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                    fos.close()
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    values.clear()
-                    values.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    contentResolver.update(uri, values, null, null)
-                }
-
-                Toast.makeText(this, getString(R.string.save_as_image_toast), Toast.LENGTH_SHORT)
-                    .show()
-            }
-        } catch (e: java.lang.Exception) {
-            Log.e("SAVE_AS_FILE", "error=${e.localizedMessage}")
         }
     }
 }

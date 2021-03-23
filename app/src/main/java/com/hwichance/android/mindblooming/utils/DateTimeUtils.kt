@@ -12,7 +12,7 @@ class DateTimeUtils {
 
         fun convertDateToFileName(appName: String, date: Long): String {
             val dateFormat = SimpleDateFormat("yyyyMMdd_hhmmss", Locale.getDefault())
-            return appName.plus("_${dateFormat.format(Date(date))}")
+            return appName.plus("_${dateFormat.format(Date(date))}.jpg")
         }
     }
 }

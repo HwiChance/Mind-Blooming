@@ -104,7 +104,7 @@
 
     <!-- toast -->
     <string name="no_character_toast">문자가 입력되야 합니다.</string>
-    <string name="save_as_image_toast">이미지로 저장되었습니다.</string>
+    <string name="saved_as_image">이미지로 저장되었습니다.</string>
 
     <!-- Idea List -->
     <string name="idea_list_date">마지막 수정일:</string>

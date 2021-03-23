@@ -108,7 +108,7 @@
 
     <!-- toast -->
     <string name="no_character_toast">Character must be entered.</string>
-    <string name="save_as_image_toast">Saved as an image.</string>
+    <string name="saved_as_image">Saved as an image.</string>
 
     <!-- Idea List -->
     <string name="idea_list_date">Last modified Date:</string>
