@@ -15,7 +15,7 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private fun moveNextActivity() {
-        val intent: Intent = if (checkFirstRun()) {
+        val intent = if (checkFirstRun()) {
             Intent(this, IntroActivity::class.java)
         } else {
             Intent(this, MainActivity::class.java)
@@ -28,16 +28,15 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private fun checkFirstRun(): Boolean {
-        val firstRunPref =
-            getSharedPreferences(getString(R.string.preference_first_run), Context.MODE_PRIVATE)
-        val isFirstRun = firstRunPref.getBoolean(getString(R.string.is_first_run), true)
-        return if (isFirstRun) {
-            firstRunPref.edit()
-                .putBoolean(getString(R.string.is_first_run), false)
-                .apply()
-            true
-        } else {
-            false
+        val pref = getPreferences(Context.MODE_PRIVATE)
+        val isFirstRun = pref.getBoolean("isFirstRun", true)
+
+        return when {
+            isFirstRun -> {
+                pref.edit().putBoolean("isFirstRun", false).apply()
+                true
+            }
+            else -> false
         }
     }
 
