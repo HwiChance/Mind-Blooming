@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Environment.getExternalStorageDirectory
@@ -14,6 +16,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.hwichance.android.mindblooming.R
+import com.hwichance.android.mindblooming.custom_views.FlexibleLayout
 import java.io.File
 import java.io.FileOutputStream
 
@@ -21,6 +24,17 @@ class PictureUtils {
     companion object {
         private const val APP_NAME = "mind_blooming"
         private const val APP_PATH = "/Mind Blooming"
+
+        fun getBitmapImage(layout: FlexibleLayout): Bitmap {
+            return Bitmap.createBitmap(layout.width, layout.height, Bitmap.Config.ARGB_8888).apply {
+                Canvas(this).apply {
+                    this.drawColor(Color.WHITE)
+                    layout.setFullView()
+                    layout.draw(this)
+                    layout.restoreView()
+                }
+            }
+        }
 
         fun saveBitmapAsImageBeforeQ(context: Context, bitmap: Bitmap) {
             val fileName = DateTimeUtils.convertDateToFileName(APP_NAME, System.currentTimeMillis())

@@ -4,16 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -206,38 +202,19 @@ class MindMapEditActivity : AppCompatActivity() {
         }
     }
 
-    private fun getBitmapImage(): Bitmap {
-        return Bitmap.createBitmap(
-            editFlexibleLayout.width,
-            editFlexibleLayout.height,
-            Bitmap.Config.ARGB_8888
-        ).apply {
-            Canvas(this).apply {
-                this.drawColor(Color.WHITE)
-                editFlexibleLayout.setFullView()
-                editFlexibleLayout.draw(this)
-                editFlexibleLayout.restoreView()
-            }
-        }
-    }
-
-    private fun getExportDialogView(bitmap: Bitmap): View {
-        return LayoutInflater.from(this).inflate(R.layout.export_idea_dialog, null).apply {
-            this.findViewById<ImageView>(R.id.previewImage).setImageBitmap(bitmap)
-        }
-    }
-
     private val permissionLauncher = registerForActivityResult(RequestPermission()) { isGranted ->
-        if (isGranted) {
-            showExportDialog()
-        } else {
-            Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
+        when {
+            isGranted -> showExportDialog()
+            else -> Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun showExportDialog() {
-        val bitmap = getBitmapImage()
-        val view = getExportDialogView(bitmap)
+        val bitmap = PictureUtils.getBitmapImage(editFlexibleLayout)
+        val view = LayoutInflater.from(this).inflate(R.layout.export_idea_dialog, null).apply {
+            this.findViewById<ImageView>(R.id.previewImage).setImageBitmap(bitmap)
+        }
+
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.export_idea_dialog_title)
             .setView(view)
