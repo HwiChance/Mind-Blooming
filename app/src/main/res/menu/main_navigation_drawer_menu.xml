@@ -4,15 +4,19 @@
         android:id="@+id/actionGroup"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/mainDrawerStarred"
+            android:id="@+id/drawerStarredMenu"
             android:icon="@drawable/ic_star_24dp"
             android:title="@string/drawer_starred_menu" />
+        <item
+            android:id="@+id/drawerSettingMenu"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="@string/drawer_setting_menu" />
     </group>
     <group
-        android:id="@+id/seriesGroup"
+        android:id="@+id/drawerSeriesGroup"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/seriesGroupTitle"
+            android:id="@+id/drawerSeriesGroupTitle"
             android:title="@string/drawer_series_title">
             <menu>
 

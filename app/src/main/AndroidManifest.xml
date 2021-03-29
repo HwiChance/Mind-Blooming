@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MindBlooming">
+        <activity android:name=".SettingActivity" />
         <activity android:name=".SeriesListActivity" />
         <activity android:name=".MindMapEditActivity" />
         <activity android:name=".SeriesActivity" />

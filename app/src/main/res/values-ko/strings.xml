@@ -24,6 +24,7 @@
     <string name="series_list_toolbar_title">시리즈 목록</string>
     <string name="series_title_edit">제목</string>
     <string name="series_description_edit">설명</string>
+    <string name="setting_toolbar_title">설정</string>
 
     <!-- menu -->
     <string name="search_menu">검색</string>
@@ -120,4 +121,11 @@
 
     <!-- ColorPicker -->
     <string name="recently_used_color">최근에 사용한 색</string>
+
+    <!-- Setting Fragment -->
+    <string name="theme_setting">테마</string>
+    <string name="system_theme">시스템 설정 모드</string>
+    <string name="system_theme_detail">시스템 설정에 따라 라이트/다크 모드로 자동 전환됩니다.</string>
+    <string name="light_theme">라이트 모드</string>
+    <string name="dark_theme">다크 모드</string>
 </resources>

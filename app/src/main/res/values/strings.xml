@@ -23,6 +23,7 @@
     <string name="series_list_toolbar_title">Series List</string>
     <string name="series_title_edit">Title</string>
     <string name="series_description_edit">Description</string>
+    <string name="setting_toolbar_title">Setting</string>
 
     <!-- menu -->
     <string name="search_menu">Search</string>
@@ -120,4 +121,11 @@
 
     <!-- ColorPicker -->
     <string name="recently_used_color">Recently used color</string>
+
+    <!-- Setting Fragment -->
+    <string name="theme_setting">Themes</string>
+    <string name="system_theme">System Mode</string>
+    <string name="system_theme_detail">Automatically switches to light/dark mode according to system settings.</string>
+    <string name="light_theme">Light Mode</string>
+    <string name="dark_theme">Dark Mode</string>
 </resources>

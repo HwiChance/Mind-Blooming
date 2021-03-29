@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         seriesViewModel.findFavoriteSeries(true).observe(this, { seriesList ->
-            val container = mainNavigationDrawer.menu.findItem(R.id.seriesGroupTitle).subMenu
+            val container = mainNavigationDrawer.menu.findItem(R.id.drawerSeriesGroupTitle).subMenu
             container.clear()
             container.add(getString(R.string.drawer_series_list))
                 .setIcon(R.drawable.ic_bookmarks_24dp)
@@ -255,8 +255,11 @@ class MainActivity : AppCompatActivity() {
     private fun setDrawerAction() {
         mainNavigationDrawer.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.mainDrawerStarred -> {
+                R.id.drawerStarredMenu -> {
                     startActivity(Intent(this, StarredActivity::class.java))
+                }
+                R.id.drawerSettingMenu-> {
+                    startActivity(Intent(this, SettingActivity::class.java))
                 }
             }
             overridePendingTransition(R.anim.fadein, R.anim.fadeout)
