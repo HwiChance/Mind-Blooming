@@ -1,7 +1,6 @@
 package com.hwichance.android.mindblooming.fragments
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -10,6 +9,7 @@ import androidx.preference.PreferenceScreen
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.SettingActivity
 import com.hwichance.android.mindblooming.custom_views.RadioButtonPreference
+import com.hwichance.android.mindblooming.utils.ThemeUtils
 
 class SettingFragment : PreferenceFragmentCompat() {
     private val pref by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
@@ -17,6 +17,7 @@ class SettingFragment : PreferenceFragmentCompat() {
     private val prefClickListener = Preference.OnPreferenceClickListener { pref ->
         if (pref is RadioButtonPreference) {
             updateRadioButton(pref)
+            ThemeUtils.changeTheme(pref.key)
         }
         true
     }
