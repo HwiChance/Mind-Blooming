@@ -10,11 +10,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hwichance.android.mindblooming.adapters.IntroViewPagerAdapter
 
-class IntroActivity : AppCompatActivity(), View.OnClickListener {
+class IntroActivity : AppCompatActivity() {
+    private lateinit var introViewPager: ViewPager2
     private lateinit var introSkipBtn: Button
     private lateinit var introNextBtn: Button
-    private lateinit var introViewPagerAdapter: IntroViewPagerAdapter
-    private lateinit var introViewPager: ViewPager2
     private lateinit var introTab: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +22,7 @@ class IntroActivity : AppCompatActivity(), View.OnClickListener {
 
         bindViews()
 
-        TabLayoutMediator(introTab, introViewPager) { tab, position ->
-
-        }.attach()
+        TabLayoutMediator(introTab, introViewPager) { _, _ -> }.attach()
     }
 
     private var pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -45,33 +42,22 @@ class IntroActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun bindViews() {
+        introViewPager = findViewById(R.id.introViewPager)
         introSkipBtn = findViewById(R.id.introSkipBtn)
         introNextBtn = findViewById(R.id.introNextBtn)
-        introViewPagerAdapter = IntroViewPagerAdapter(this)
-        introViewPager = findViewById(R.id.introViewPager)
         introTab = findViewById(R.id.introTab)
 
-        introViewPager.adapter = introViewPagerAdapter
-
+        introViewPager.adapter = IntroViewPagerAdapter(this)
         introViewPager.registerOnPageChangeCallback(pageChangeCallback)
-        introSkipBtn.setOnClickListener(this)
-        introNextBtn.setOnClickListener(this)
-    }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.introSkipBtn -> {
-                moveNextActivity()
-            }
-            R.id.introNextBtn -> {
-                when (introViewPager.currentItem) {
-                    2 -> {
-                        moveNextActivity()
-                    }
-                    else -> {
-                        introViewPager.currentItem++
-                    }
-                }
+        introSkipBtn.setOnClickListener {
+            moveNextActivity()
+        }
+
+        introNextBtn.setOnClickListener {
+            when (introViewPager.currentItem) {
+                2 -> moveNextActivity()
+                else -> introViewPager.currentItem++
             }
         }
     }

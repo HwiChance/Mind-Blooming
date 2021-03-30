@@ -12,7 +12,7 @@ import com.hwichance.android.mindblooming.custom_views.RadioButtonPreference
 import com.hwichance.android.mindblooming.utils.ThemeUtils
 
 class SettingFragment : PreferenceFragmentCompat() {
-    private val pref by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
+    private val defaultPref by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var prevPref: RadioButtonPreference? = null
     private val prefClickListener = Preference.OnPreferenceClickListener { pref ->
         if (pref is RadioButtonPreference) {
@@ -38,7 +38,7 @@ class SettingFragment : PreferenceFragmentCompat() {
         findPreference<RadioButtonPreference>(key).apply {
             if (this != null) {
                 onPreferenceClickListener = prefClickListener
-                isChecked = pref.getBoolean(key, defValue)
+                isChecked = defaultPref.getBoolean(key, defValue)
                 if (isChecked) {
                     prevPref = this
                 }

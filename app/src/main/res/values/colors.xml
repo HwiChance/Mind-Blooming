@@ -5,8 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
 
     <color name="crestor">#E4F5FF</color>
     <color name="electric_blue">#4DBCE9</color>
@@ -22,4 +21,18 @@
     <color name="tomato">#D12A02</color>
 
     <color name="transparent">#00000000</color>
+
+    <color name="blue_200">#7ECFEE</color>
+    <color name="blue_500">#00A0E0</color>
+    <color name="blue_700">#0081BF</color>
+
+    <color name="light_blue_200">#81D4FA</color>
+    <color name="light_blue_900">#01579B</color>
+
+    <color name="black">#000000</color>
+    <color name="darker_gray">#121212</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="red_900">#B00020</color>
+    <color name="red_400">#CF6679</color>
 </resources>

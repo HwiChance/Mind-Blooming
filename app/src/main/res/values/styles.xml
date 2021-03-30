@@ -49,4 +49,11 @@
         <item name="subtitleTextStyle">?attr/textAppearanceSubtitle2</item>
         <item name="background">@color/indigo</item>
     </style>
+
+    <style name="introButtonStyle">
+        <item name="android:textColor">@color/blube</item>
+        <item name="android:textSize">@dimen/transparent_btn_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>
