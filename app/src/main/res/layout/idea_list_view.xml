@@ -4,6 +4,7 @@
     android:id="@+id/ideaCard"
     android:layout_width="match_parent"
     android:layout_height="108dp"
+    app:cardElevation="4dp"
     android:layout_margin="4dp">
 
     <RelativeLayout
@@ -22,13 +23,13 @@
                 android:layout_centerInParent="true"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_check_circle_40dp"
-                app:tint="@color/indigo" />
+                app:tint="@color/select_idea_icon" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0.5"
-                android:background="@color/blube" />
+                android:alpha="0.7"
+                android:background="@color/select_idea_background" />
 
         </RelativeLayout>
 
@@ -78,7 +79,7 @@
                 android:maxLines="1"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

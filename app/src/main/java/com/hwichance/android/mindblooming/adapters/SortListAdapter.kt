@@ -75,19 +75,19 @@ class SortListAdapter : RecyclerView.Adapter<SortListAdapter.SortViewHolder>() {
         private val sortImageView = itemView.findViewById<ImageView>(R.id.sortImageView)
         private val upArrow = getDrawable(itemView.context, R.drawable.ic_arrow_upward_20dp)
         private val downArrow = getDrawable(itemView.context, R.drawable.ic_arrow_downward_20dp)
-        private val whiteColor = getColor(itemView.context, R.color.white)
-        private val blackColor = getColor(itemView.context, R.color.black)
-        private val blueColor = getColor(itemView.context, R.color.blube)
-        private val softBlueColor = getColor(itemView.context, R.color.crestor)
+        private val unselectedBGColor = getColor(itemView.context, R.color.unselected_sort_bg_color)
+        private val unselectedTColor = getColor(itemView.context, R.color.unselected_sort_txt_color)
+        private val selectedTColor = getColor(itemView.context, R.color.selected_sort_txt_color)
+        private val selectedBGColor = getColor(itemView.context, R.color.selected_sort_bg_color)
         private var sortOrder: OrderEnum = OrderEnum.ASC
 
         fun setItemSelect(isSelected: Boolean) {
             if (isSelected) {
-                sortItemLayout.setBackgroundColor(softBlueColor)
-                sortTextView.setTextColor(blueColor)
+                sortItemLayout.setBackgroundColor(selectedBGColor)
+                sortTextView.setTextColor(selectedTColor)
             } else {
-                sortItemLayout.setBackgroundColor(whiteColor)
-                sortTextView.setTextColor(blackColor)
+                sortItemLayout.setBackgroundColor(unselectedBGColor)
+                sortTextView.setTextColor(unselectedTColor)
             }
         }
 

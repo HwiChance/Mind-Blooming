@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:fitsSystemWindows="true"
-    android:background="@color/blube"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
     <ImageView

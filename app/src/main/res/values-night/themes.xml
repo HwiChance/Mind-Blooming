@@ -2,18 +2,18 @@
     <!-- Base application theme. -->
     <style name="Theme.MindBlooming" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blue_200</item>
-        <item name="colorPrimaryVariant">@color/blue_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/gray_900</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/light_blue_200</item>
-        <item name="colorSecondaryVariant">@color/light_blue_200</item>
+        <item name="colorSecondaryVariant">@color/light_blue_900</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Background color. -->
-        <item name="android:colorBackground">@color/darker_gray</item>
+        <item name="android:colorBackground">@color/gray_900</item>
         <item name="colorOnBackground">@color/white</item>
         <!-- Surface color. -->
-        <item name="colorSurface">@color/darker_gray</item>
+        <item name="colorSurface">@color/gray_900</item>
         <item name="colorOnSurface">@color/white</item>
         <!-- Error color. -->
         <item name="colorError">@color/red_400</item>
