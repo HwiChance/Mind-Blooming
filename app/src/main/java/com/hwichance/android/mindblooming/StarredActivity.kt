@@ -83,7 +83,7 @@ class StarredActivity : AppCompatActivity() {
             mode?.title = count.toString() + getString(R.string.selected_idea_count)
 
             when (count) {
-                starredListAdapter.itemCount -> {
+                starredListAdapter.itemCount - 1 -> {
                     selectAllIcon?.setIcon(R.drawable.ic_select_all_colored_24dp)
                     deleteIcon?.isEnabled = true
                 }
@@ -102,7 +102,7 @@ class StarredActivity : AppCompatActivity() {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.actionModeSelectAll -> {
-                    if (starredListAdapter.getCheckedItemCount() == starredListAdapter.itemCount) {
+                    if (starredListAdapter.getCheckedItemCount() == starredListAdapter.itemCount - 1) {
                         starredListAdapter.initializeChecked(false)
                     } else {
                         starredListAdapter.initializeChecked(true)
@@ -148,9 +148,9 @@ class StarredActivity : AppCompatActivity() {
 
             override fun onLongClick(isActionMode: Boolean, position: Int) {
                 if (!isActionMode) {
-                    actionMode = startSupportActionMode(actionModeCallback)
                     starredListAdapter.setActionMode(true)
                     starredListAdapter.toggleItemChecked(position)
+                    actionMode = startSupportActionMode(actionModeCallback)
                     actionMode?.invalidate()
                 }
             }

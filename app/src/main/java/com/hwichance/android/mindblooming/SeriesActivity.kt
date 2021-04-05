@@ -116,7 +116,7 @@ class SeriesActivity : AppCompatActivity() {
             mode?.title = count.toString() + getString(R.string.selected_idea_count)
 
             when (count) {
-                ideaListAdapter.itemCount -> {
+                ideaListAdapter.itemCount - 1 -> {
                     selectAllIcon?.setIcon(R.drawable.ic_select_all_colored_24dp)
                     deleteIcon?.isEnabled = true
                 }
@@ -135,7 +135,7 @@ class SeriesActivity : AppCompatActivity() {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.actionModeSelectAll -> {
-                    if (ideaListAdapter.getCheckedItemCount() == ideaListAdapter.itemCount) {
+                    if (ideaListAdapter.getCheckedItemCount() == ideaListAdapter.itemCount - 1) {
                         ideaListAdapter.initializeChecked(false)
                     } else {
                         ideaListAdapter.initializeChecked(true)
@@ -209,9 +209,9 @@ class SeriesActivity : AppCompatActivity() {
 
             override fun onLongClick(isActionMode: Boolean, position: Int) {
                 if (!isActionMode) {
-                    actionMode = startSupportActionMode(actionModeCallback)
                     ideaListAdapter.setActionMode(true)
                     ideaListAdapter.toggleItemChecked(position)
+                    actionMode = startSupportActionMode(actionModeCallback)
                     actionMode?.invalidate()
                 }
             }
