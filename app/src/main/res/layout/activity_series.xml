@@ -27,8 +27,7 @@
                 android:background="@color/series_toolbar_color"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="10dp">
+                android:paddingRight="16dp">
 
                 <TextView
                     android:id="@+id/seriesTitleLabel"
@@ -69,6 +68,15 @@
                     android:inputType="textMultiLine|textNoSuggestions"
                     android:theme="@style/seriesEditText"
                     tools:ignore="LabelFor" />
+
+                <Button
+                    android:id="@+id/seriesEditBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@android:color/transparent"
+                    android:minWidth="0dp"
+                    android:text="@string/dialog_save" />
 
             </LinearLayout>
 

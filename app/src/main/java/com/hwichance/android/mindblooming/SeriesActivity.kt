@@ -2,15 +2,14 @@ package com.hwichance.android.mindblooming
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -39,10 +38,11 @@ class SeriesActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
     private lateinit var seriesRecyclerView: RecyclerView
     private lateinit var seriesToolbarLayout: AppBarLayout
-    private lateinit var seriesTitleEditText: EditText
-    private lateinit var seriesDescriptionEditText: EditText
+    private lateinit var titleEditText: EditText
+    private lateinit var descriptionEditText: EditText
     private lateinit var seriesTitleLabel: TextView
     private lateinit var seriesDescriptionLabel: TextView
+    private lateinit var editBtn: Button
     private lateinit var seriesTitle: TextView
     private lateinit var newSeriesText: String
     private lateinit var seriesData: SeriesData
@@ -70,8 +70,8 @@ class SeriesActivity : AppCompatActivity() {
                 if (series != null) {
                     seriesData = series
                     seriesTitle.text = series.seriesTitle
-                    seriesTitleEditText.setText(series.seriesTitle)
-                    seriesDescriptionEditText.setText(series.seriesDescription)
+                    titleEditText.setText(series.seriesTitle)
+                    descriptionEditText.setText(series.seriesDescription)
                 }
             })
 
@@ -173,11 +173,12 @@ class SeriesActivity : AppCompatActivity() {
         seriesToolbar = findViewById(R.id.seriesToolbar)
         seriesRecyclerView = findViewById(R.id.seriesRecyclerView)
         seriesToolbarLayout = findViewById(R.id.seriesToolbarLayout)
-        seriesTitleEditText = findViewById(R.id.seriesTitleEditText)
-        seriesDescriptionEditText = findViewById(R.id.seriesDescriptionEditText)
+        titleEditText = findViewById(R.id.seriesTitleEditText)
+        descriptionEditText = findViewById(R.id.seriesDescriptionEditText)
         seriesDescriptionLabel = findViewById(R.id.seriesDescriptionLabel)
         seriesTitleLabel = findViewById(R.id.seriesTitleLabel)
         seriesTitle = findViewById(R.id.seriesTitle)
+        editBtn = findViewById(R.id.seriesEditBtn)
 
         searchItem = seriesToolbar.menu.findItem(R.id.seriesSearchMenu)
         searchView = searchItem.actionView as SearchView
@@ -187,17 +188,18 @@ class SeriesActivity : AppCompatActivity() {
         setEditTextListener()
         setSearchAction()
         setToolbarListener()
+        setBtnListener()
     }
 
     private fun setInitialState() {
         seriesTitle.text = newSeriesText
 
-        seriesTitleEditText.setText(newSeriesText)
-        seriesTitleEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+        titleEditText.setText(newSeriesText)
+        titleEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        seriesDescriptionEditText.setText(newSeriesText)
-        seriesDescriptionEditText.imeOptions = EditorInfo.IME_ACTION_DONE
-        seriesDescriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        descriptionEditText.setText(newSeriesText)
+        descriptionEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+        descriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT)
     }
 
     private fun setRecyclerView() {
@@ -244,50 +246,62 @@ class SeriesActivity : AppCompatActivity() {
     }
 
     private fun setEditTextListener() {
-        seriesTitleEditText.setOnEditorActionListener { v, actionId, _ ->
+        titleEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                 v.clearFocus()
             }
             false
         }
-        seriesTitleEditText.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val newText = seriesTitleEditText.text.trim().toString()
-                if (newText.isEmpty()) {
-                    seriesTitleEditText.setText(seriesData.seriesTitle)
-                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    seriesData.seriesTitle = newText
-                    seriesViewModel.update(seriesData)
-                }
 
+        titleEditText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus && !descriptionEditText.hasFocus()) {
                 val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                manager.hideSoftInputFromWindow(
+                    v.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             }
         }
-        seriesDescriptionEditText.setOnEditorActionListener { v, actionId, _ ->
+
+        titleEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                editBtn.isEnabled = !(isSameString(seriesData.seriesTitle, s)
+                        && isSameString(seriesData.seriesDescription, descriptionEditText.text))
+            }
+        })
+
+        descriptionEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 v.clearFocus()
+                val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(
+                    v.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             }
             false
         }
-        seriesDescriptionEditText.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val newText = seriesDescriptionEditText.text.trim().toString()
-                if (newText.isEmpty()) {
-                    seriesDescriptionEditText.setText(seriesData.seriesDescription)
-                    Toast.makeText(this, getString(R.string.no_character_toast), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    seriesData.seriesDescription = newText
-                    seriesViewModel.update(seriesData)
-                }
 
+        descriptionEditText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus && !titleEditText.hasFocus()) {
                 val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                manager.hideSoftInputFromWindow(
+                    v.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             }
         }
+
+        descriptionEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                editBtn.isEnabled = !(isSameString(seriesData.seriesDescription, s)
+                        && isSameString(seriesData.seriesTitle, titleEditText.text))
+            }
+        })
     }
 
     private fun setSearchAction() {
@@ -311,8 +325,8 @@ class SeriesActivity : AppCompatActivity() {
         seriesToolbarLayout.addOnOffsetChangedListener(
             SeriesAppBarListener(
                 seriesTitle,
-                seriesTitleEditText,
-                seriesDescriptionEditText,
+                titleEditText,
+                descriptionEditText,
                 seriesTitleLabel,
                 seriesDescriptionLabel
             )
@@ -339,6 +353,24 @@ class SeriesActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+
+    private fun setBtnListener() {
+        editBtn.setOnClickListener {
+            seriesData.seriesTitle = titleEditText.text.toString().trim()
+            seriesData.seriesDescription = descriptionEditText.text.toString().trim()
+            seriesViewModel.update(seriesData)
+
+            titleEditText.clearFocus()
+            descriptionEditText.clearFocus()
+
+            Toast.makeText(this, R.string.saved_series, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun isSameString(origin: String, newString: Editable?): Boolean {
+        return origin == newString.toString().trim()
     }
 
     override fun onBackPressed() {
