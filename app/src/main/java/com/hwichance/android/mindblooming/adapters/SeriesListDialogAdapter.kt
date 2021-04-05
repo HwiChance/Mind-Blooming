@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.rooms.data.SeriesData
@@ -78,15 +78,19 @@ class SeriesListDialogAdapter :
 
     class SeriesDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val itemTextView = itemView.findViewById<TextView>(R.id.seriesDialogItemTextView)
+        private val unselectedBGColor = getColor(itemView.context, R.color.unselected_bg_color)
+        private val unselectedTColor = getColor(itemView.context, R.color.unselected_txt_color)
+        private val selectedTColor = getColor(itemView.context, R.color.selected_txt_color)
+        private val selectedBGColor = getColor(itemView.context, R.color.selected_bg_color)
 
         fun setClickedView() {
-            itemTextView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.blube))
-            itemTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+            itemTextView.setBackgroundColor(selectedBGColor)
+            itemTextView.setTextColor(selectedTColor)
         }
 
         fun resetView() {
-            itemTextView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white))
-            itemTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
+            itemTextView.setBackgroundColor(unselectedBGColor)
+            itemTextView.setTextColor(unselectedTColor)
         }
 
         fun setTextViewText(text: String) {

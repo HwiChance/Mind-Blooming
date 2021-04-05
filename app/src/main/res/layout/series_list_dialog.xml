@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/unselected_bg_color"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seriesDialogAddLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,16 +24,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_weight="1"
             android:hint="@string/series_add_hint"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/seriesDialogAddBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/seriesDialogEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
@@ -40,21 +42,22 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="0"
-            android:background="@drawable/corner_round_blube_shape"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/corner_round_shape"
             android:src="@drawable/ic_add_24dp"
-            android:tint="@color/white" />
-    </LinearLayout>
+            android:tint="?attr/colorSurface"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/seriesDialogInputLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/soft_gray" />
+        android:background="@color/divider_color" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/seriesDialogRecyclerView"
@@ -67,7 +70,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/soft_gray" />
+        android:background="@color/divider_color" />
 
     <Button
         android:id="@+id/seriesSetBtn"
@@ -77,5 +80,5 @@
         android:layout_weight="0"
         android:background="@color/transparent"
         android:text="@string/dialog_ok"
-        android:textColor="@color/blube" />
+        android:textColor="?attr/colorPrimary" />
 </LinearLayout>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/unselected_sort_bg_color"
+    android:background="@color/unselected_bg_color"
     android:orientation="vertical">
 
     <TextView

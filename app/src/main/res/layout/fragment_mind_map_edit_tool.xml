@@ -13,16 +13,7 @@
         android:background="@color/transparent"
         android:padding="10dp"
         android:src="@drawable/ic_add_circle_32dp"
-        android:tint="@color/blube" />
-
-    <ImageButton
-        android:id="@+id/mindMapRemoveBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:padding="10dp"
-        android:src="@drawable/ic_delete_32dp"
-        android:tint="@color/palette_red" />
+        android:tint="?attr/colorPrimary" />
 
     <ImageButton
         android:id="@+id/mindMapEditBtn"
@@ -31,7 +22,7 @@
         android:background="@color/transparent"
         android:padding="10dp"
         android:src="@drawable/ic_edit_32dp"
-        android:tint="@color/mackup" />
+        android:tint="?attr/colorOnSurface" />
 
     <ImageButton
         android:id="@+id/mindMapBgColorBtn"
@@ -40,7 +31,7 @@
         android:background="@color/transparent"
         android:padding="10dp"
         android:src="@drawable/ic_color_fill_32dp"
-        android:tint="@color/palette_blue" />
+        android:tint="?attr/colorPrimary" />
 
     <ImageButton
         android:id="@+id/mindMapTxtColorBtn"
@@ -49,6 +40,16 @@
         android:background="@color/transparent"
         android:padding="10dp"
         android:src="@drawable/ic_color_text_32dp"
-        android:tint="@color/palette_black" />
+        android:tint="?attr/colorOnSurface" />
+
+
+    <ImageButton
+        android:id="@+id/mindMapRemoveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:padding="10dp"
+        android:src="@drawable/ic_delete_32dp"
+        android:tint="?attr/colorError" />
 
 </LinearLayout>

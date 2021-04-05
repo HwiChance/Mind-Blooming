@@ -75,10 +75,10 @@ class SortListAdapter : RecyclerView.Adapter<SortListAdapter.SortViewHolder>() {
         private val sortImageView = itemView.findViewById<ImageView>(R.id.sortImageView)
         private val upArrow = getDrawable(itemView.context, R.drawable.ic_arrow_upward_20dp)
         private val downArrow = getDrawable(itemView.context, R.drawable.ic_arrow_downward_20dp)
-        private val unselectedBGColor = getColor(itemView.context, R.color.unselected_sort_bg_color)
-        private val unselectedTColor = getColor(itemView.context, R.color.unselected_sort_txt_color)
-        private val selectedTColor = getColor(itemView.context, R.color.selected_sort_txt_color)
-        private val selectedBGColor = getColor(itemView.context, R.color.selected_sort_bg_color)
+        private val unselectedBGColor = getColor(itemView.context, R.color.unselected_bg_color)
+        private val unselectedTColor = getColor(itemView.context, R.color.unselected_txt_color)
+        private val selectedTColor = getColor(itemView.context, R.color.selected_txt_color)
+        private val selectedBGColor = getColor(itemView.context, R.color.selected_bg_color)
         private var sortOrder: OrderEnum = OrderEnum.ASC
 
         fun setItemSelect(isSelected: Boolean) {

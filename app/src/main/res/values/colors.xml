@@ -30,8 +30,14 @@
     <color name="gray_900">#121212</color>
     <color name="black">#000000</color>
 
+    <color name="gray_900_with_overlay">#282828</color>
+
     <color name="red_900">#B00020</color>
     <color name="red_400">#CF6679</color>
+
+    <color name="main_color">@color/blue_500</color>
+
+    <color name="series_toolbar_color">@color/blue_500</color>
 
     <color name="fab_background_tint">@color/blue_500</color>
     <color name="fab_icon_tint">@color/white</color>
@@ -39,8 +45,12 @@
     <color name="select_idea_background">@color/light_blue_200</color>
     <color name="select_idea_icon">@color/light_blue_900</color>
 
-    <color name="selected_sort_bg_color">@color/crestor</color>
-    <color name="unselected_sort_bg_color">@color/white</color>
-    <color name="selected_sort_txt_color">@color/blue_500</color>
-    <color name="unselected_sort_txt_color">@color/black</color>
+    <color name="selected_bg_color">@color/crestor</color>
+    <color name="unselected_bg_color">@color/white</color>
+    <color name="selected_txt_color">@color/blue_500</color>
+    <color name="unselected_txt_color">@color/black</color>
+
+    <color name="color_palette_bg_color">@color/gray_200</color>
+
+    <color name="divider_color">@color/gray_200</color>
 </resources>

@@ -26,6 +26,6 @@
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_arrow_upward_20dp"
-        app:tint="@color/selected_sort_txt_color" />
+        app:tint="@color/selected_txt_color" />
 
 </LinearLayout>

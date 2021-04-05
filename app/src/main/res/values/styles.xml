@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="toolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/toolbar_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="toolbarStyle" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/main_color</item>
         <item name="titleTextAppearance">@style/toolbarTitleText</item>
         <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 
-    <style name="toolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/toolbar_text_size</item>
-        <item name="android:textStyle">bold</item>
+    <style name="seriesToolbarStyle" parent="toolbarStyle">
+        <item name="android:background">@color/series_toolbar_color</item>
     </style>
 
     <style name="seriesEditText">
         <item name="android:paddingTop">0dp</item>
         <item name="android:editTextColor">@color/white</item>
         <item name="android:textSize">@dimen/toolbar_text_size</item>
-        <item name="colorControlActivated">@color/soft_gray</item>
-        <item name="colorControlHighlight">@color/soft_gray</item>
-        <item name="colorControlNormal">@color/soft_gray</item>
+        <item name="colorControlNormal">@color/white</item>
     </style>
 
     <style name="seriesTextLabel">
-        <item name="android:textColor">@color/soft_gray</item>
+        <item name="android:textColor">@color/gray_200</item>
         <item name="android:textSize">@dimen/toolbar_label_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ThemeOverlay.App.EditDialog" parent="">
-        <item name="colorSecondary">@color/blube</item>
-        <item name="colorSecondaryVariant">@color/camborne</item>
-        <item name="colorOnSecondary">@color/white</item>
-    </style>
-
     <style name="titleEditDialogStyle" parent="Widget.Design.TextInputLayout">
         <item name="boxBackgroundColor">@color/transparent</item>
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.EditDialog</item>
     </style>
 
     <style name="primary_item_text_style">
         <item name="android:textSize">@dimen/primary_item_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="item_text_style">
         <item name="android:textSize">@dimen/item_text_size</item>
     </style>
