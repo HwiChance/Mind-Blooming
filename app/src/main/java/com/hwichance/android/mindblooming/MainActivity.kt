@@ -15,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
@@ -141,10 +142,18 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.actionModeDelete -> {
-                    val deleteList = ideaListAdapter.getCheckedItemIds()
-                    mindMapViewModel.deleteItems(deleteList)
-                    ideaViewModel.deleteIdeas(deleteList)
-                    mode?.finish()
+                    MaterialAlertDialogBuilder(this@MainActivity)
+                        .setMessage(R.string.delete_selected_dialog_msg)
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .setPositiveButton(R.string.dialog_ok) { dialog, _ ->
+                            val deleteList = ideaListAdapter.getCheckedItemIds()
+                            mindMapViewModel.deleteItems(deleteList)
+                            ideaViewModel.deleteIdeas(deleteList)
+                            dialog.dismiss()
+                            mode?.finish()
+                        }
+                        .create()
+                        .show()
                     true
                 }
                 else -> false
@@ -258,7 +267,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.drawerStarredMenu -> {
                     startActivity(Intent(this, StarredActivity::class.java))
                 }
-                R.id.drawerSettingMenu-> {
+                R.id.drawerSettingMenu -> {
                     startActivity(Intent(this, SettingActivity::class.java))
                 }
             }

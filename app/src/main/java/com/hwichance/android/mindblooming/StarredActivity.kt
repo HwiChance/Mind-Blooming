@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter
 import com.hwichance.android.mindblooming.adapters.IdeaListAdapter.*
 import com.hwichance.android.mindblooming.enums.SortCaller
@@ -111,9 +112,17 @@ class StarredActivity : AppCompatActivity() {
                     true
                 }
                 R.id.actionModeDelete -> {
-                    val deleteList = starredListAdapter.getCheckedItemIds()
-                    ideaViewModel.updateStar(false, deleteList)
-                    mode?.finish()
+                    MaterialAlertDialogBuilder(this@StarredActivity)
+                        .setMessage(R.string.unstarred_selected_dialog_msg)
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .setPositiveButton(R.string.dialog_ok) { dialog, _ ->
+                            val deleteList = starredListAdapter.getCheckedItemIds()
+                            ideaViewModel.updateStar(false, deleteList)
+                            dialog.dismiss()
+                            mode?.finish()
+                        }
+                        .create()
+                        .show()
                     true
                 }
                 else -> false

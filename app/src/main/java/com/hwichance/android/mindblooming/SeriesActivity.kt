@@ -144,9 +144,17 @@ class SeriesActivity : AppCompatActivity() {
                     true
                 }
                 R.id.actionModeDelete -> {
-                    val deleteList = ideaListAdapter.getCheckedItemIds()
-                    ideaViewModel.updateSeries(deleteList)
-                    mode?.finish()
+                    MaterialAlertDialogBuilder(this@SeriesActivity)
+                        .setMessage(R.string.remove_selected_from_series_dialog_msg)
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .setPositiveButton(R.string.dialog_ok) { dialog, _ ->
+                            val deleteList = ideaListAdapter.getCheckedItemIds()
+                            ideaViewModel.updateSeries(deleteList)
+                            dialog.dismiss()
+                            mode?.finish()
+                        }
+                        .create()
+                        .show()
                     true
                 }
                 else -> false

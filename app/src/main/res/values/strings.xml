@@ -71,6 +71,9 @@
     <string name="edit_item_text_dialog_title">Edit item text</string>
     <string name="item_delete_dialog_msg">Are you sure you want to delete this item?</string>
     <string name="idea_delete_dialog_msg">Are you sure you want to delete this idea?</string>
+    <string name="delete_selected_dialog_msg">Are you sure you want to delete the selected ideas?</string>
+    <string name="remove_selected_from_series_dialog_msg">Are you sure you want to remove the selected ideas from the series?</string>
+    <string name="unstarred_selected_dialog_msg">Are you sure you want to change the selected ideas to an asterisk-free state?</string>
 
     <string name="export_idea_dialog_title">Save as Image</string>
 
