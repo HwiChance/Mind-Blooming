@@ -3,6 +3,7 @@ package com.hwichance.android.mindblooming.rooms.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "idea_data")
 data class IdeaData(
@@ -16,4 +17,4 @@ data class IdeaData(
     @ColumnInfo(name = "starred_date") var starredDate: Long? = null,
     @ColumnInfo(name = "series_added_date") var seriesAddedDate: Long? = null,
     @ColumnInfo(name = "is_starred") var isStarred: Boolean = false
-)
+) : Serializable

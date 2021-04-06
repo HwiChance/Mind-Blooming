@@ -176,8 +176,12 @@ class StarredActivity : AppCompatActivity() {
             }
         })
         starredListAdapter.setSortBtnClickListener {
-            SortFragment(SortCaller.STARRED, sortData)
-                .show(supportFragmentManager, "SORT_FRAGMENT")
+            SortFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable("caller", SortCaller.STARRED)
+                    putSerializable("sortData", sortData)
+                }
+            }.show(supportFragmentManager, "SORT_FRAGMENT")
         }
         starredRecyclerView.adapter = starredListAdapter
         starredRecyclerView.layoutManager = LinearLayoutManager(this)

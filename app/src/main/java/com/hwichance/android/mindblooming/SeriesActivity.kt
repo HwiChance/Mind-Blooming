@@ -45,7 +45,7 @@ class SeriesActivity : AppCompatActivity() {
     private lateinit var editBtn: Button
     private lateinit var seriesTitle: TextView
     private lateinit var newSeriesText: String
-    private lateinit var seriesData: SeriesData
+    private var seriesData: SeriesData? = null
     private lateinit var sortData: SortData
     private val ideaListAdapter = IdeaListAdapter()
     private val seriesViewModel: SeriesViewModel by viewModels()
@@ -239,8 +239,12 @@ class SeriesActivity : AppCompatActivity() {
             }
         })
         ideaListAdapter.setSortBtnClickListener {
-            SortFragment(SortCaller.SERIES, sortData)
-                .show(supportFragmentManager, "SORT_FRAGMENT")
+            SortFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable("caller", SortCaller.SERIES)
+                    putSerializable("sortData", sortData)
+                }
+            }.show(supportFragmentManager, "SORT_FRAGMENT")
         }
         seriesRecyclerView.adapter = ideaListAdapter
     }
@@ -267,8 +271,10 @@ class SeriesActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                editBtn.isEnabled = !(isSameString(seriesData.seriesTitle, s)
-                        && isSameString(seriesData.seriesDescription, descriptionEditText.text))
+                if(seriesData != null) {
+                    editBtn.isEnabled = !(isSameString(seriesData!!.seriesTitle, s)
+                            && isSameString(seriesData!!.seriesDescription, descriptionEditText.text))
+                }
             }
         })
 
@@ -298,8 +304,10 @@ class SeriesActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                editBtn.isEnabled = !(isSameString(seriesData.seriesDescription, s)
-                        && isSameString(seriesData.seriesTitle, titleEditText.text))
+                if(seriesData != null) {
+                    editBtn.isEnabled = !(isSameString(seriesData!!.seriesDescription, s)
+                            && isSameString(seriesData!!.seriesTitle, titleEditText.text))
+                }
             }
         })
     }
@@ -345,7 +353,7 @@ class SeriesActivity : AppCompatActivity() {
                         }
                         .setPositiveButton(getString(R.string.dialog_ok)) { _, _ ->
                             ideaViewModel.updateSeries(ideaListAdapter.getItemIds())
-                            seriesViewModel.delete(seriesData)
+                            seriesViewModel.delete(seriesData!!)
                             finish()
                         }
                         .show()
@@ -358,9 +366,11 @@ class SeriesActivity : AppCompatActivity() {
 
     private fun setBtnListener() {
         editBtn.setOnClickListener {
-            seriesData.seriesTitle = titleEditText.text.toString().trim()
-            seriesData.seriesDescription = descriptionEditText.text.toString().trim()
-            seriesViewModel.update(seriesData)
+            seriesData?.seriesTitle = titleEditText.text.toString().trim()
+            seriesData?.seriesDescription = descriptionEditText.text.toString().trim()
+            if(seriesData != null) {
+                seriesViewModel.update(seriesData!!)
+            }
 
             titleEditText.clearFocus()
             descriptionEditText.clearFocus()

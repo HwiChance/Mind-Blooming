@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.hwichance.android.mindblooming.enums.OrderEnum
 import com.hwichance.android.mindblooming.enums.SortCaller
 import com.hwichance.android.mindblooming.enums.SortEnum
+import java.io.Serializable
 
 @Entity(tableName = "sort_data")
 data class SortData(
@@ -14,4 +15,4 @@ data class SortData(
     @ColumnInfo(name = "caller") var caller: SortCaller,
     @ColumnInfo(name = "sort_enum") var sortEnum: SortEnum = SortEnum.TITLE,
     @ColumnInfo(name = "order_enum") var orderEnum: OrderEnum = OrderEnum.ASC
-)
+) : Serializable

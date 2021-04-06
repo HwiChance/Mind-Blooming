@@ -214,8 +214,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
         ideaListAdapter.setSortBtnClickListener {
-            SortFragment(SortCaller.MAIN, sortData)
-                .show(supportFragmentManager, "SORT_FRAGMENT")
+            SortFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable("caller", SortCaller.MAIN)
+                    putSerializable("sortData", sortData)
+                }
+            }.show(supportFragmentManager, "SORT_FRAGMENT")
         }
 
         mainRecyclerView.adapter = ideaListAdapter

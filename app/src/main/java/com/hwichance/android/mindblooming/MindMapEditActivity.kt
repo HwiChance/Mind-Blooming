@@ -33,7 +33,6 @@ import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import com.hwichance.android.mindblooming.utils.DialogUtils
 import com.hwichance.android.mindblooming.utils.PictureUtils
-import java.util.*
 
 class MindMapEditActivity : AppCompatActivity() {
     private lateinit var mindMapEditToolbar: Toolbar
@@ -44,29 +43,106 @@ class MindMapEditActivity : AppCompatActivity() {
     private val ideaViewModel: IdeaViewModel by viewModels()
     private val mindMapViewModel: MindMapViewModel by viewModels()
     private var groupId: Long = -1L
+    private var defaultBGColor: Int = -1
+    private var defaultTxtColor: Int = -1
 
     private val itemClickListener = object : MindMapItemClick {
         override fun onClick(item: MindMapItem) {
-            MindMapEditToolFragment(
-                this@MindMapEditActivity,
-                item,
-                editFlexibleLayout,
-                groupId
-            ).show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
+            MindMapEditToolFragment.newInstance(
+                item.getItemData(),
+                object : MindMapEditToolFragment.ToolListener {
+                    override fun onAdd(text: String) {
+                        val itemData = MindMapItemData(
+                            null, item.getItemData().itemId, text,
+                            ItemPosEnum.LEFT, defaultBGColor, defaultTxtColor, groupId
+                        )
+                        when (item.itemPosition) {
+                            ItemPosEnum.PRIMARY -> {
+                                if (item.getLeftChildSize() <= item.getRightChildSize()) {
+                                    itemData.itemPos = ItemPosEnum.LEFT
+                                } else {
+                                    itemData.itemPos = ItemPosEnum.RIGHT
+                                }
+                            }
+                            ItemPosEnum.LEFT -> {
+                                itemData.itemPos = ItemPosEnum.LEFT
+                            }
+                            ItemPosEnum.RIGHT -> {
+                                itemData.itemPos = ItemPosEnum.RIGHT
+                            }
+                        }
+
+                        mindMapViewModel.insert(itemData) { id ->
+                            itemData.itemId = id
+                        }
+                        updateChangesAndModifiedDate()
+                        editFlexibleLayout.isAddedItem = true
+                    }
+
+                    override fun onDelete() {
+                        val parentItem = item.getItemParent()!!
+                        when (item.itemPosition) {
+                            ItemPosEnum.LEFT -> {
+                                var changes = -item.leftTotalHeight
+                                if (parentItem.getLeftChildSize() > 1) {
+                                    changes -= editFlexibleLayout.verInterval
+                                }
+                                parentItem.leftChildHeight += changes
+                                editFlexibleLayout.changeParentLeftHeight(parentItem)
+                                parentItem.getLeftChild().remove(item)
+                            }
+                            ItemPosEnum.RIGHT -> {
+                                var changes = -item.rightTotalHeight
+                                if (parentItem.getRightChildSize() > 1) {
+                                    changes -= editFlexibleLayout.verInterval
+                                }
+                                parentItem.rightChildHeight += changes
+                                editFlexibleLayout.changeParentRightHeight(parentItem)
+                                parentItem.getRightChild().remove(item)
+                            }
+                            else -> {
+                            }
+                        }
+                        removeFromDB(item)
+                        updateChangesAndModifiedDate()
+                        editFlexibleLayout.removeChildViews(item)
+                    }
+
+                    override fun onEditText(text: String) {
+                        item.getItemData().itemText = text
+                        mindMapViewModel.update(item.getItemData())
+                        updateChangesAndModifiedDate()
+                    }
+
+                    override fun onEditBackgroundColor(color: Int) {
+                        item.getItemData().backgroundColor = color
+                        mindMapViewModel.update(item.getItemData())
+                        updateChangesAndModifiedDate()
+                    }
+
+                    override fun onEditTextColor(color: Int) {
+                        item.getItemData().textColor = color
+                        mindMapViewModel.update(item.getItemData())
+                        updateChangesAndModifiedDate()
+                    }
+
+                }).show(supportFragmentManager, "MIND_MAP_EDIT_TOOL_FRAGMENT")
         }
     }
 
     private val dialogBtnClickListener = object : OnEditTextDialogBtnClick {
         override fun onClick(text: CharSequence) {
             ideaData.ideaTitle = text.toString()
-            ideaData.modifiedDate = System.currentTimeMillis()
-            ideaViewModel.update(ideaData)
+            updateChangesAndModifiedDate()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mind_map_edit)
+
+        defaultBGColor = getColor(this, R.color.crestor)
+        defaultTxtColor = getColor(this, R.color.black)
 
         bindViews()
 
@@ -171,8 +247,7 @@ class MindMapEditActivity : AppCompatActivity() {
 
                 R.id.ideaStarredMenu -> {
                     ideaData.isStarred = !ideaData.isStarred
-                    ideaData.starredDate = System.currentTimeMillis()
-                    ideaViewModel.update(ideaData)
+                    updateChangesAndModifiedDate()
                 }
 
                 R.id.ideaDeleteMenu -> {
@@ -190,7 +265,11 @@ class MindMapEditActivity : AppCompatActivity() {
                 }
 
                 R.id.ideaSeriesAddMenu -> {
-                    SeriesListDialog(ideaData).show(
+                    SeriesListDialog().apply {
+                        arguments = Bundle().apply {
+                            putSerializable("ideaData", ideaData)
+                        }
+                    }.show(
                         supportFragmentManager,
                         "SERIES_LIST_DIALOG"
                     )
@@ -200,6 +279,22 @@ class MindMapEditActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    private fun removeFromDB(item: MindMapItem) {
+        for (child in item.getLeftChild()) {
+            removeFromDB(child)
+        }
+        for (child in item.getRightChild()) {
+            removeFromDB(child)
+        }
+        editFlexibleLayout.getItemList().remove(item)
+        mindMapViewModel.delete(item.getItemData())
+    }
+
+    private fun updateChangesAndModifiedDate() {
+        ideaData.modifiedDate = System.currentTimeMillis()
+        ideaViewModel.update(ideaData)
     }
 
     private val permissionLauncher = registerForActivityResult(RequestPermission()) { isGranted ->

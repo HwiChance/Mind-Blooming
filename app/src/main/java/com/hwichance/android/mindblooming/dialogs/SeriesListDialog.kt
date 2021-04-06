@@ -26,7 +26,8 @@ import com.hwichance.android.mindblooming.rooms.data.SeriesData
 import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
 import com.hwichance.android.mindblooming.rooms.view_model.SeriesViewModel
 
-class SeriesListDialog(private val ideaData: IdeaData) : DialogFragment() {
+class SeriesListDialog : DialogFragment() {
+    private lateinit var ideaData: IdeaData
     private lateinit var textInputLayout: TextInputLayout
     private lateinit var editText: TextInputEditText
     private lateinit var seriesAddBtn: ImageButton
@@ -35,6 +36,14 @@ class SeriesListDialog(private val ideaData: IdeaData) : DialogFragment() {
     private val seriesDialogAdapter = SeriesListDialogAdapter()
     private val seriesViewModel: SeriesViewModel by activityViewModels()
     private val ideaViewModel: IdeaViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            ideaData = it.getSerializable("ideaData") as IdeaData
+        }
+    }
 
     override fun onResume() {
         super.onResume()

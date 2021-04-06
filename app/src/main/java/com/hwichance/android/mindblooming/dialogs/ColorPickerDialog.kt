@@ -11,7 +11,6 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,19 +18,17 @@ import com.hwichance.android.mindblooming.R
 import com.hwichance.android.mindblooming.adapters.ColorPickerAdapter
 import com.hwichance.android.mindblooming.adapters.ColorPickerAdapter.ColorItemClickListener
 import com.hwichance.android.mindblooming.rooms.data.ColorData
-import com.hwichance.android.mindblooming.rooms.data.IdeaData
-import com.hwichance.android.mindblooming.rooms.data.MindMapItemData
 import com.hwichance.android.mindblooming.rooms.view_model.ColorViewModel
-import com.hwichance.android.mindblooming.rooms.view_model.IdeaViewModel
-import com.hwichance.android.mindblooming.rooms.view_model.MindMapViewModel
 import top.defaults.colorpicker.*
 
-class ColorPickerDialog(
-    private val mindMapItemData: MindMapItemData,
-    private val ideaData: IdeaData,
-    private var pickedColor: Int,
-    private var isBackground: Boolean
-) : DialogFragment() {
+class ColorPickerDialog : DialogFragment() {
+    interface ColorSelectListener {
+        fun onSelect(color: Int)
+    }
+
+    private var colorSelectListener: ColorSelectListener? = null
+    private var pickedColor: Int = 0
+    private var isBackground: Boolean = true
     private lateinit var colorPicker: ColorPickerView
     private lateinit var pickedColorView: View
     private lateinit var recyclerView: RecyclerView
@@ -42,9 +39,15 @@ class ColorPickerDialog(
     private val colorPickerAdapter: ColorPickerAdapter by lazy {
         ColorPickerAdapter()
     }
-    private val mindMapViewModel: MindMapViewModel by activityViewModels()
-    private val ideaViewModel: IdeaViewModel by activityViewModels()
     private val colorViewModel: ColorViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            pickedColor = it.getInt("color")
+            isBackground = it.getBoolean("isBackground")
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -91,7 +94,7 @@ class ColorPickerDialog(
     }
 
     private fun setColorPicker() {
-        colorPicker.setInitialColor(pickedColor);
+        colorPicker.setInitialColor(pickedColor)
         colorPicker.subscribe { color, _, _ ->
             pickedColor = color
             btnShape.setColor(pickedColor)
@@ -103,7 +106,8 @@ class ColorPickerDialog(
         colorPickerAdapter.setColorItemClickListener(object : ColorItemClickListener {
             override fun onClick(color: Int) {
                 pickedColor = color
-                applyColorChange()
+                saveColorUsage()
+                colorSelectListener?.onSelect(pickedColor)
                 dismiss()
             }
         })
@@ -117,26 +121,22 @@ class ColorPickerDialog(
         }
 
         positiveBtn.setOnClickListener {
-            applyColorChange()
+            saveColorUsage()
+            colorSelectListener?.onSelect(pickedColor)
             dismiss()
         }
     }
 
-    private fun applyColorChange() {
+    fun setColorSelectListener(listener: ColorSelectListener) {
+        colorSelectListener = listener
+    }
+
+    private fun saveColorUsage() {
         val colorData = ColorData(pickedColor, System.currentTimeMillis())
         if (colorList.size > 8) {
             colorViewModel.insertNewDeleteOld(colorData, colorList.last())
         } else {
             colorViewModel.insert(colorData)
         }
-        if (isBackground) {
-            mindMapItemData.backgroundColor = pickedColor
-            mindMapViewModel.update(mindMapItemData)
-        } else {
-            mindMapItemData.textColor = pickedColor
-            mindMapViewModel.update(mindMapItemData)
-        }
-        ideaData.modifiedDate = System.currentTimeMillis()
-        ideaViewModel.update(ideaData)
     }
 }

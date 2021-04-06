@@ -16,11 +16,20 @@ import com.hwichance.android.mindblooming.enums.SortEnum
 import com.hwichance.android.mindblooming.rooms.data.SortData
 import com.hwichance.android.mindblooming.rooms.view_model.SortViewModel
 
-class SortFragment(private val caller: SortCaller, private val sortData: SortData) :
-    BottomSheetDialogFragment() {
+class SortFragment :   BottomSheetDialogFragment() {
+    private lateinit var caller: SortCaller
+    private lateinit var sortData: SortData
     private lateinit var sortRecyclerView: RecyclerView
     private val sortListAdapter = SortListAdapter()
     private val sortViewModel: SortViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            caller = it.getSerializable("caller") as SortCaller
+            sortData = it.getSerializable("sortData") as SortData
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

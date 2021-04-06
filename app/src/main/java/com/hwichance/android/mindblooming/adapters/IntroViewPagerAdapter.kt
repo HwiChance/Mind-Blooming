@@ -12,13 +12,13 @@ class IntroViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateA
     override fun createFragment(position: Int): Fragment {
         return when(position){
             0->{
-                IntroFragment(R.layout.fragment_intro_first)
+                IntroFragment.newInstance(R.layout.fragment_intro_first)
             }
             1-> {
-                IntroFragment(R.layout.fragment_intro_second)
+                IntroFragment.newInstance(R.layout.fragment_intro_second)
             }
             else-> {
-                IntroFragment(R.layout.fragment_intro_third)
+                IntroFragment.newInstance(R.layout.fragment_intro_third)
             }
         }
     }
