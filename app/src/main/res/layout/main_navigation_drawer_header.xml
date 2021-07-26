@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:fitsSystemWindows="true"
     android:background="@color/main_color"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
 
     <ImageView
         android:layout_width="75dp"
@@ -13,15 +13,13 @@
         android:layout_gravity="center"
         android:layout_margin="15dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_appicon" />
+        android:src="@drawable/ic_app_icon" />
 
     <TextView
+        style="@style/AppTitleTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/imcresoojin"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView

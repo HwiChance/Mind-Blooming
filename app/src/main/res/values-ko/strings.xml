@@ -132,4 +132,7 @@
     <string name="system_theme_detail">시스템 설정에 따라 라이트/다크 모드로 자동 전환됩니다.</string>
     <string name="light_theme">라이트 모드</string>
     <string name="dark_theme">다크 모드</string>
+
+    <!-- View Description -->
+    <string name="splash_image_description">앱 아이콘</string>
 </resources>

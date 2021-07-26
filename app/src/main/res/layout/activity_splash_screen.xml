@@ -5,37 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/blue_gradient"
-    android:id="@+id/splashScreenLayout"
     tools:context=".SplashScreen">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/SplashImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/splash_image_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_app_icon"
+        app:layout_constraintBottom_toTopOf="@id/SplashTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/SplashTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_margin="16dp"
+        style="@style/AppTitleTextViewStyle"
+        android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/SplashImageView" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_appicon"
-            android:scaleType="fitCenter"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textSize="30sp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/imcresoojin" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

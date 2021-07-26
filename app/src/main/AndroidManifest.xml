@@ -19,7 +19,9 @@
         <activity android:name=".StarredActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".IntroActivity" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

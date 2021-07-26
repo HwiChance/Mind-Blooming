@@ -132,4 +132,7 @@
     <string name="system_theme_detail">Automatically switches to light/dark mode according to system settings.</string>
     <string name="light_theme">Light Mode</string>
     <string name="dark_theme">Dark Mode</string>
+
+    <!-- View Description -->
+    <string name="splash_image_description">App icon</string>
 </resources>
