@@ -4,72 +4,84 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hwichance.android.mindblooming.adapters.IntroViewPagerAdapter
+import com.hwichance.android.mindblooming.databinding.ActivityIntroBinding
 
 class IntroActivity : AppCompatActivity() {
-    private lateinit var introViewPager: ViewPager2
-    private lateinit var introSkipBtn: Button
-    private lateinit var introNextBtn: Button
-    private lateinit var introTab: TabLayout
+    private lateinit var binding: ActivityIntroBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_intro)
+        binding = ActivityIntroBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        bindViews()
-
-        TabLayoutMediator(introTab, introViewPager) { _, _ -> }.attach()
+        setViewPager()
+        setButton()
+        setTab()
     }
 
+    /**
+     *   Callback to set buttons when the page changes
+     */
     private var pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             when (position) {
-                2 -> {
-                    introSkipBtn.visibility = View.INVISIBLE
-                    introNextBtn.text = getText(R.string.start)
+                0, 1 -> {
+                    binding.introSkipBtn.visibility = View.VISIBLE
+                    binding.introNextBtn.text = getText(R.string.next)
                 }
-                else -> {
-                    introSkipBtn.visibility = View.VISIBLE
-                    introNextBtn.text = getText(R.string.next)
+                2 -> {
+                    binding.introSkipBtn.visibility = View.INVISIBLE
+                    binding.introNextBtn.text = getText(R.string.start)
                 }
             }
             super.onPageSelected(position)
         }
     }
 
-    private fun bindViews() {
-        introViewPager = findViewById(R.id.introViewPager)
-        introSkipBtn = findViewById(R.id.introSkipBtn)
-        introNextBtn = findViewById(R.id.introNextBtn)
-        introTab = findViewById(R.id.introTab)
+    /**
+     *   Set the ViewPager's adapter and register the PageChangeCallback
+     */
+    private fun setViewPager() {
+        binding.introViewPager.adapter = IntroViewPagerAdapter(this)
+        binding.introViewPager.registerOnPageChangeCallback(pageChangeCallback)
+    }
 
-        introViewPager.adapter = IntroViewPagerAdapter(this)
-        introViewPager.registerOnPageChangeCallback(pageChangeCallback)
-
-        introSkipBtn.setOnClickListener {
-            moveNextActivity()
-        }
-
-        introNextBtn.setOnClickListener {
-            when (introViewPager.currentItem) {
+    /**
+     *   Set button's click listener
+     */
+    private fun setButton() {
+        binding.introSkipBtn.setOnClickListener { moveNextActivity() }
+        binding.introNextBtn.setOnClickListener {
+            when (binding.introViewPager.currentItem) {
+                0, 1 -> binding.introViewPager.currentItem++
                 2 -> moveNextActivity()
-                else -> introViewPager.currentItem++
             }
         }
     }
 
+    /**
+     *   Set the tab layout mediator
+     */
+    private fun setTab() {
+        TabLayoutMediator(binding.introTab, binding.introViewPager) { _, _ -> }.attach()
+    }
+
+    /**
+     *   Move to main activity
+     */
     private fun moveNextActivity() {
         startActivity(Intent(this, MainActivity::class.java))
-        overridePendingTransition(R.anim.no_animation, R.anim.fadeout)
         finish()
     }
 
+    /**
+     *   Unregister the PageChangeCallback before the activity is destroyed
+     */
     override fun onDestroy() {
-        introViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+        binding.introViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
         super.onDestroy()
     }
 }
